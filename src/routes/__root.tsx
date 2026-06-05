@@ -85,6 +85,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Sua avaliação física personalizada pelo método Shape em V.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Shape em V — Fernando Contarini" },
+      { name: "description", content: "Shape in V is a web app for physical assessment and workout prescription." },
+      { property: "og:description", content: "Shape in V is a web app for physical assessment and workout prescription." },
+      { name: "twitter:description", content: "Shape in V is a web app for physical assessment and workout prescription." },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
