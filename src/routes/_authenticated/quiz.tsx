@@ -137,7 +137,9 @@ function QuizPage() {
                 ? "Finalizar avaliação"
                 : step.type === "intersticial"
                   ? "Continuar"
-                  : "Próximo"}
+                  : step.type === "textarea" || step.type === "yes-no-conditional"
+                    ? "Enviar resposta"
+                    : "Próximo"}
           </Button>
         </div>
       </div>
