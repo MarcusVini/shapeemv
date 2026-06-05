@@ -42,6 +42,13 @@ function QuizPage() {
     if (step.type === "cards" && stepIdx < TOTAL_STEPS - 1) {
       setTimeout(() => setStepIdx((i) => (i === stepIdx ? i + 1 : i)), 280);
     }
+    // Auto-advance for yes-no when user picks "Não" (no detail needed)
+    if (step.type === "yes-no-conditional" && stepIdx < TOTAL_STEPS - 1) {
+      const v = value as { resposta?: string } | undefined;
+      if (v?.resposta === "nao") {
+        setTimeout(() => setStepIdx((i) => (i === stepIdx ? i + 1 : i)), 280);
+      }
+    }
   }
 
   function canAdvance(): boolean {

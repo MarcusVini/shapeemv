@@ -43,12 +43,6 @@ function WaitingPage() {
     }
   }, [now, unlockTs, navigate]);
 
-  useEffect(() => {
-    if (data && !data.workout) {
-      navigate({ to: "/dashboard", replace: true });
-    }
-  }, [data, navigate]);
-
   const diff = unlockTs ? Math.max(0, unlockTs - now) : 0;
   const h = Math.floor(diff / 3_600_000);
   const m = Math.floor((diff % 3_600_000) / 60_000);
