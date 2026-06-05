@@ -91,9 +91,12 @@ export const QUIZ_STEPS: QuizStep[] = [
   },
   {
     id: "treinando_agora",
-    type: "yes-no-conditional",
+    type: "cards",
     question: "Está treinando atualmente?",
-    conditionalPlaceholder: "O que você treina?",
+    options: [
+      { value: "sim", label: "Sim" },
+      { value: "nao", label: "Não" },
+    ],
   },
   {
     id: "outro_esporte",
@@ -112,9 +115,9 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: "cards",
     question: "Qual é o seu principal objetivo?",
     options: [
-      { value: "crescer", label: "Crescer (hipertrofia)", emoji: "📈" },
-      { value: "crescer_secar", label: "Crescer e secar", emoji: "⚡" },
-      { value: "secar", label: "Secar (emagrecer)", emoji: "🔥" },
+      { value: "crescer", label: "Crescer", description: "Ganhar massa muscular" },
+      { value: "crescer_secar", label: "Crescer e Secar", description: "Ganhar músculo e perder gordura" },
+      { value: "secar", label: "Secar Muito", description: "Perder muita gordura" },
     ],
   },
   {
@@ -195,9 +198,9 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: "cards",
     question: "Como é seu nível de execução nos exercícios?",
     options: [
-      { value: "iniciante", label: "Iniciante" },
-      { value: "intermediario", label: "Intermediário" },
-      { value: "avancado", label: "Avançado" },
+      { value: "iniciante", label: "Iniciante", description: "Preciso aprender as técnicas básicas" },
+      { value: "intermediario", label: "Intermediário", description: "Sei executar os principais exercícios" },
+      { value: "avancado", label: "Avançado", description: "Tenho boa técnica na maioria dos exercícios" },
     ],
   },
   {
