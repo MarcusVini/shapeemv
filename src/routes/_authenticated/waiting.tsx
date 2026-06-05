@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
-import { Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Lock, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 
 export const Route = createFileRoute("/_authenticated/waiting")({
   component: WaitingPage,
 });
+
 
 function WaitingPage() {
   const fetchState = useServerFn(getLatestState);
@@ -97,6 +99,15 @@ function WaitingPage() {
             <span>seg</span>
           </div>
         </div>
+
+        <Link to="/dashboard" className="mt-6 inline-block">
+          <Button
+            variant="outline"
+            className="h-12 rounded-2xl border-border bg-card/60 px-6 text-sm font-bold text-foreground hover:bg-card"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para página inicial
+          </Button>
+        </Link>
       </div>
     </main>
   );
