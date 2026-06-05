@@ -68,9 +68,8 @@ function QuizPage() {
     // Submit
     setSubmitting(true);
     try {
-      const unlock = nextUnlockDate();
       await submitFn({
-        data: { respostas: answers, unlockDateIso: unlock.toISOString() },
+        data: { respostas: answers },
       });
       navigate({ to: "/processing", replace: true });
     } catch (e) {
