@@ -4,8 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
 import { Lock, Sparkles } from "lucide-react";
-import { getLatestState, unlockNow } from "@/lib/assessment.functions";
-import { Button } from "@/components/ui/button";
+import { getLatestState } from "@/lib/assessment.functions";
 
 export const Route = createFileRoute("/_authenticated/waiting")({
   component: WaitingPage,
@@ -13,10 +12,9 @@ export const Route = createFileRoute("/_authenticated/waiting")({
 
 function WaitingPage() {
   const fetchState = useServerFn(getLatestState);
-  const unlockFn = useServerFn(unlockNow);
   const navigate = useNavigate();
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ["state"],
     queryFn: () => fetchState(),
   });
@@ -99,20 +97,6 @@ function WaitingPage() {
             <span>seg</span>
           </div>
         </div>
-
-
-        {import.meta.env.DEV && (
-          <Button
-            variant="ghost"
-            className="mt-6 text-xs text-muted-foreground"
-            onClick={async () => {
-              await unlockFn();
-              await refetch();
-            }}
-          >
-            (dev) Liberar agora
-          </Button>
-        )}
       </div>
     </main>
   );
