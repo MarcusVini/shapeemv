@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
 import { WelcomeModal, useWelcomeModal } from "@/components/WelcomeModal";
 import { getLatestState } from "@/lib/assessment.functions";
+import { calcIMC, calcScoreGeral, imcLabel } from "@/lib/assessment-calc";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
