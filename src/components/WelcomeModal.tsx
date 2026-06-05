@@ -75,7 +75,7 @@ export function WelcomeModal({ show, onDismiss }: { show: boolean; onDismiss: ()
                 <StepCard
                   icon={<ClipboardList className="h-4 w-4 text-primary-foreground" />}
                   title="Passo 1"
-                  text="Responda nossa avaliação física rápida de 23 perguntas. Seja 100% sincero, é com base nisso que nossa inteligência vai moldar seu treino."
+                  text="Responda nossa avaliação física. Seja 100% sincero, é com base nisso que nossa inteligência vai moldar seu treino e sua dieta."
                 />
                 <StepCard
                   icon={<Clock className="h-4 w-4 text-primary-foreground" />}

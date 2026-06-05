@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
 import { WelcomeModal, useWelcomeModal } from "@/components/WelcomeModal";
 import { getLatestState } from "@/lib/assessment.functions";
+import { calcIMC, calcScoreGeral, imcLabel } from "@/lib/assessment-calc";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +51,22 @@ function DashboardPage() {
   const s = Math.floor((diff % 60_000) / 1000);
   const pad = (n: number) => String(n).padStart(2, "0");
   const countdown = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+  // Insight chave da avaliação (mostrado no card quando disponível)
+  const respostas = (data?.assessment?.respostas ?? {}) as Record<string, unknown>;
+  const peso = typeof respostas.peso === "number" ? respostas.peso : 0;
+  const altura = typeof respostas.altura === "number" ? respostas.altura : 0;
+  const imc = peso && altura ? calcIMC(peso, altura) : 0;
+  const scoreGeral = hasAssessment ? calcScoreGeral(respostas) : 0;
+  const objetivo = String(respostas.objetivo ?? "");
+  const objetivoTxt =
+    objetivo === "secar" ? "Definição" : objetivo === "crescer" ? "Hipertrofia" : "Recomposição";
+  const insightAvaliacao = hasAssessment && imc
+    ? `Score ${scoreGeral}/100 · IMC ${imc} · ${imcLabel(imc).label}`
+    : null;
+  const insightProtocolo = hasAssessment && objetivo
+    ? `Foco: ${objetivoTxt}`
+    : null;
 
   const { show, dismiss } = useWelcomeModal();
 
@@ -105,7 +122,7 @@ function DashboardPage() {
                   Faça sua <span className="text-gold-gradient">avaliação física</span>
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  23 perguntas rápidas para a inteligência Shape em V montar seu protocolo personalizado.
+                  Perguntas rápidas para a inteligência Shape em V montar seu protocolo personalizado.
                 </p>
                 <Link to="/quiz" className="mt-6 block">
                   <Button className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm">
@@ -121,7 +138,7 @@ function DashboardPage() {
             <HubCard
               icon={<CheckCircle2 className="h-6 w-6" />}
               title="Sua Avaliação Trinca"
-              description="Confira a sua avaliação física completa."
+              description={insightAvaliacao ?? "Confira a sua avaliação física completa."}
               to="/results"
               locked={!isUnlocked}
               hasAssessment={hasAssessment}
@@ -132,7 +149,7 @@ function DashboardPage() {
             <HubCard
               icon={<Dumbbell className="h-6 w-6" />}
               title="Seu Protocolo está Pronto"
-              description="Acesse seu treino personalizado."
+              description={insightProtocolo ?? "Acesse seu treino personalizado."}
               to="/protocol"
               locked={!isUnlocked}
               hasAssessment={hasAssessment}

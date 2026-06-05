@@ -1,31 +1,49 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
+import { getLatestState } from "@/lib/assessment.functions";
 
 export const Route = createFileRoute("/_authenticated/processing")({
   component: ProcessingPage,
 });
 
-const MESSAGES = [
-  "Analisando suas respostas…",
-  "Realizando análises corporais…",
-  "Calculando seus dados…",
-  "Cruzando com o método Fernando Contarini…",
-  "Preparando sua avaliação…",
-];
-
 function ProcessingPage() {
   const navigate = useNavigate();
   const [idx, setIdx] = useState(0);
+  const fetchState = useServerFn(getLatestState);
+  const { data } = useQuery({ queryKey: ["state"], queryFn: () => fetchState() });
+
+  const primeiro = data?.profile?.nome_completo?.trim().split(/\s+/)[0] || "atleta";
+  const objetivo = String(
+    (data?.assessment?.respostas as Record<string, unknown> | undefined)?.objetivo ?? "",
+  );
+  const objetivoTxt =
+    objetivo === "secar"
+      ? "queima de gordura"
+      : objetivo === "crescer"
+        ? "ganho de massa"
+        : "recomposição corporal";
+
+  const MESSAGES = [
+    `Analisando as respostas de ${primeiro}…`,
+    "Realizando análises corporais…",
+    "Calculando seu metabolismo e calorias…",
+    `Calibrando para o seu foco: ${objetivoTxt}…`,
+    "Cruzando com o método Fernando Cantarelli…",
+    "Preparando sua avaliação…",
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => setIdx((i) => (i + 1) % MESSAGES.length), 1100);
-    const t = setTimeout(() => navigate({ to: "/waiting", replace: true }), 5500);
+    const t = setTimeout(() => navigate({ to: "/waiting", replace: true }), 6500);
     return () => {
       clearInterval(interval);
       clearTimeout(t);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   return (
@@ -55,3 +73,4 @@ function ProcessingPage() {
     </main>
   );
 }
+
