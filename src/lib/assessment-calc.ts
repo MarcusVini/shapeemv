@@ -103,6 +103,56 @@ export function projectProgress(
   }));
 }
 
+export interface PhysicalProjectionPoint {
+  dia: string;
+  ganhoMuscular: number;
+  queimaGordura: number;
+  disposicao: number;
+}
+
+/**
+ * 28-day physical projection used in the results page chart.
+ * Returns percentage progress (0-100%) across 5 checkpoints.
+ */
+export function project28DaysPhysical(objetivo: string): PhysicalProjectionPoint[] {
+  const labels = ["Hoje", "Dia 7", "Dia 14", "Dia 21", "Dia 28"];
+  const ganhoMax = objetivo === "secar" ? 60 : 95;
+  const queimaMax = objetivo === "crescer" ? 55 : 92;
+  const dispMax = 90;
+  return labels.map((label, i) => {
+    const t = i / 4;
+    return {
+      dia: label,
+      ganhoMuscular: Math.round(t * ganhoMax),
+      queimaGordura: Math.round(t * queimaMax),
+      disposicao: Math.round(t * dispMax),
+    };
+  });
+}
+
+export interface WellbeingProjectionPoint {
+  dia: string;
+  testosterona: number;
+  autoestima: number;
+  saude: number;
+}
+
+/**
+ * 28-day wellbeing projection (testosterone / self-esteem / overall health).
+ * Percentage progress over 5 checkpoints, ending at the targets shown in the UI.
+ */
+export function project28DaysWellbeing(): WellbeingProjectionPoint[] {
+  const labels = ["Hoje", "Dia 7", "Dia 14", "Dia 21", "Dia 28"];
+  return labels.map((label, i) => {
+    const t = i / 4;
+    return {
+      dia: label,
+      testosterona: Math.round(t * 40),
+      autoestima: Math.round(t * 80),
+      saude: Math.round(t * 65),
+    };
+  });
+
 export function getInitials(name: string, email: string): string {
   const n = (name || "").trim();
   if (n) {
