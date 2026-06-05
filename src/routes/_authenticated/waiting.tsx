@@ -99,6 +99,15 @@ function WaitingPage() {
             <span>seg</span>
           </div>
         </div>
+
+        <Link to="/dashboard" className="mt-6 inline-block">
+          <Button
+            variant="outline"
+            className="h-12 rounded-2xl border-border bg-card/60 px-6 text-sm font-bold text-foreground hover:bg-card"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para página inicial
+          </Button>
+        </Link>
       </div>
     </main>
   );
