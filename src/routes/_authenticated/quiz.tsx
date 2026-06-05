@@ -31,6 +31,10 @@ function QuizPage() {
 
   function setAnswer(value: unknown) {
     setAnswers((a) => ({ ...a, [step.id]: value }));
+    // Auto-advance for single-choice card questions
+    if (step.type === "cards" && stepIdx < TOTAL_STEPS - 1) {
+      setTimeout(() => setStepIdx((i) => (i === stepIdx ? i + 1 : i)), 280);
+    }
   }
 
   function canAdvance(): boolean {
