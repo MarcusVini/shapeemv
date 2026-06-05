@@ -91,9 +91,12 @@ export const QUIZ_STEPS: QuizStep[] = [
   },
   {
     id: "treinando_agora",
-    type: "yes-no-conditional",
+    type: "cards",
     question: "Está treinando atualmente?",
-    conditionalPlaceholder: "O que você treina?",
+    options: [
+      { value: "sim", label: "Sim" },
+      { value: "nao", label: "Não" },
+    ],
   },
   {
     id: "outro_esporte",
