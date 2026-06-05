@@ -11,7 +11,7 @@ export interface QuizStep {
   type: QuizStepType;
   question: string;
   subtitle?: string;
-  options?: { value: string; label: string; emoji?: string }[];
+  options?: { value: string; label: string; emoji?: string; description?: string }[];
   min?: number;
   max?: number;
   unit?: string;
@@ -62,11 +62,13 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: "cards",
     question: "Como está sua composição corporal hoje?",
     options: [
-      { value: "magro", label: "Magro", emoji: "🦴" },
-      { value: "magro_definido", label: "Magro e definido", emoji: "💪" },
-      { value: "medio", label: "Mediano", emoji: "🙂" },
-      { value: "acima_peso", label: "Acima do peso", emoji: "🍔" },
-      { value: "obeso", label: "Obeso", emoji: "🫃" },
+      { value: "muito_magro", label: "Muito magro", emoji: "🦴", description: "Pouca massa e gordura" },
+      { value: "magro", label: "Magro", emoji: "💪", description: "Boa definição, pouca massa" },
+      { value: "magro_barriga", label: "Magro com barriga", emoji: "🫃", description: "Corpo fino mas com barriga" },
+      { value: "medio", label: "Médio", emoji: "🙂", description: "Nem gordo nem magro" },
+      { value: "acima_peso", label: "Acima do peso", emoji: "🍔", description: "Bastante gordura corporal" },
+      { value: "muito_acima_peso", label: "Muito acima do peso", emoji: "⚠️", description: "Sobrepeso significativo" },
+      { value: "musculoso", label: "Musculoso", emoji: "🏋️", description: "Tenho massa, quero mais" },
     ],
   },
   {
