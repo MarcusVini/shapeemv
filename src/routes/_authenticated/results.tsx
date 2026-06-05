@@ -107,6 +107,8 @@ function ResultsPage() {
   const areas = ((a.areas_incomodam as string[]) ?? []) as (keyof typeof LABEL.areas)[];
   const dor = a.dor_lesao as ConditionalAnswer | undefined;
   const dificuldade = (a.dificuldade as string) ?? "";
+  const motivacao = (a.motivacao_atual as string) ?? "";
+  const sonho = (a.vida_dos_sonhos as string) ?? "";
 
   const imc = calcIMC(peso, altura);
   const imcInfo = imcLabel(imc);
@@ -124,11 +126,19 @@ function ResultsPage() {
   ];
 
   const projection = projectProgress(peso, altura, objetivo);
+  const physical28 = project28DaysPhysical(objetivo);
+  const wellbeing28 = project28DaysWellbeing();
+  const lifestyleData = [
+    { name: "Treino", value: sExp, fill: "oklch(0.7 0.18 145)" },
+    { name: "Técnica", value: sExec, fill: "oklch(0.78 0.17 75)" },
+    { name: "Composição", value: sComp, fill: "oklch(0.65 0.2 295)" },
+  ];
 
   const donutData = [
     { name: "Score", value: score },
     { name: "Resto", value: 100 - score },
   ];
+  void projection;
 
   return (
     <main className="min-h-screen bg-background pb-40">
