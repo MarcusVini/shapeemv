@@ -152,6 +152,9 @@ export function project28DaysWellbeing(): WellbeingProjectionPoint[] {
       saude: Math.round(t * 65),
     };
   });
+}
+
+
 
 export function getInitials(name: string, email: string): string {
   const n = (name || "").trim();
