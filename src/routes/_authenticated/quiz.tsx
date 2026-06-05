@@ -129,7 +129,10 @@ function QuizPage() {
           <Button
             disabled={!canAdvance() || submitting}
             onClick={handleNext}
-            className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm disabled:opacity-40 disabled:shadow-none"
+            className={cn(
+              "h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm disabled:opacity-40 disabled:shadow-none",
+              step.type === "intersticial" && "animate-gold-pulse",
+            )}
           >
             {submitting
               ? "Enviando…"
@@ -156,6 +159,9 @@ function StepView({
   value: unknown;
   onChange: (v: unknown) => void;
 }) {
+  if (step.type === "intersticial") {
+    return <Intersticial step={step} />;
+  }
   return (
     <div>
       <h2 className="text-2xl font-black leading-tight text-foreground">
@@ -187,7 +193,6 @@ function StepView({
             onChange={onChange}
           />
         )}
-        {step.type === "intersticial" && <Intersticial />}
       </div>
     </div>
   );
@@ -365,19 +370,103 @@ function YesNoConditional({
   );
 }
 
-function Intersticial() {
-  return (
-    <div className="relative overflow-hidden rounded-3xl gold-border bg-card p-8 text-center shadow-gold">
-      <div className="absolute inset-0 gold-gradient-soft" />
-      <div className="relative">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full gold-gradient text-2xl shadow-gold-sm">
-          💪
+import t1 from "@/assets/transformacao-1.jpg.asset.json";
+import t2 from "@/assets/transformacao-2.jpg.asset.json";
+import t3 from "@/assets/transformacao-3.jpg.asset.json";
+import t4 from "@/assets/transformacao-4.jpg.asset.json";
+import t5 from "@/assets/transformacao-5.jpg.asset.json";
+import t6 from "@/assets/transformacao-6.jpg.asset.json";
+import { useEffect, useRef, useState as useReactState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+
+const TRANSFORMACOES = [t1, t2, t3, t4, t5, t6];
+
+function Intersticial({ step }: { step: QuizStep }) {
+  const isMotivacao = step.id === "motivacao_intersticial";
+
+  if (!isMotivacao) {
+    return (
+      <div>
+        <h2 className="text-2xl font-black leading-tight text-foreground">{step.question}</h2>
+        {step.subtitle && <p className="mt-2 text-sm text-muted-foreground">{step.subtitle}</p>}
+        <div className="mt-8 relative overflow-hidden rounded-3xl gold-border bg-card p-8 text-center shadow-gold">
+          <div className="absolute inset-0 gold-gradient-soft" />
+          <div className="relative">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full gold-gradient text-2xl shadow-gold-sm">
+              💪
+            </div>
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+              O método já transformou milhares de homens e mulheres comuns em versões
+              mais fortes e mais leves de si mesmos.{" "}
+              <strong className="text-foreground">A próxima transformação pode ser a sua.</strong>
+            </p>
+          </div>
         </div>
-        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-          O método já transformou milhares de homens e mulheres comuns em versões
-          mais fortes e mais leves de si mesmos. <strong className="text-foreground">A próxima transformação pode ser a sua.</strong>
-        </p>
       </div>
+    );
+  }
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [selected, setSelected] = useReactState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    intervalRef.current = setInterval(() => emblaApi.scrollNext(), 3500);
+    return () => {
+      emblaApi.off("select", onSelect);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [emblaApi]);
+
+  return (
+    <div>
+      {/* Carrossel */}
+      <div className="relative">
+        <div className="overflow-hidden rounded-3xl gold-border shadow-gold" ref={emblaRef}>
+          <div className="flex">
+            {TRANSFORMACOES.map((img, i) => (
+              <div key={i} className="min-w-0 flex-[0_0_100%]">
+                <img
+                  src={img.url}
+                  alt={`Transformação ${i + 1}`}
+                  className="aspect-square w-full object-cover"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Dots */}
+        <div className="mt-4 flex justify-center gap-2">
+          {TRANSFORMACOES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => emblaApi?.scrollTo(i)}
+              aria-label={`Ir para slide ${i + 1}`}
+              className={cn(
+                "h-1.5 rounded-full transition-all",
+                selected === i ? "w-6 gold-gradient" : "w-1.5 bg-border",
+              )}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Headline */}
+      <h2 className="mt-8 text-3xl font-black leading-tight text-foreground">
+        {step.question}
+      </h2>
+
+      {/* Texto */}
+      <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+        Mais de <strong className="text-foreground">12.000 alunos</strong> já transformaram seus corpos com o
+        método <strong className="text-foreground">Shape em V</strong>. A jornada começa agora.
+      </p>
     </div>
   );
 }
