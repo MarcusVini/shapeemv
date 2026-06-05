@@ -115,9 +115,9 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: "cards",
     question: "Qual é o seu principal objetivo?",
     options: [
-      { value: "crescer", label: "Crescer (hipertrofia)", emoji: "📈" },
-      { value: "crescer_secar", label: "Crescer e secar", emoji: "⚡" },
-      { value: "secar", label: "Secar (emagrecer)", emoji: "🔥" },
+      { value: "crescer", label: "Crescer", description: "Ganhar massa muscular" },
+      { value: "crescer_secar", label: "Crescer e Secar", description: "Ganhar músculo e perder gordura" },
+      { value: "secar", label: "Secar Muito", description: "Perder muita gordura" },
     ],
   },
   {
