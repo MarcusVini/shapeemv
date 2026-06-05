@@ -23,23 +23,29 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Flame, Info, Sparkles, Target } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import {
+  buildDiagnostico,
+  buildLevers,
+  buildTags,
   calcComposicaoScore,
   calcExecucaoScore,
   calcExperienciaScore,
   calcForcaScore,
   calcIMC,
+  calcMetabolism,
+  calcNutricaoScore,
+  calcRecuperacaoScore,
   calcResistenciaScore,
   calcScoreGeral,
   getInitials,
+  imcContextNote,
   imcLabel,
   project28DaysPhysical,
   project28DaysWellbeing,
-  projectProgress,
   type ConditionalAnswer,
 } from "@/lib/assessment-calc";
 
@@ -50,11 +56,13 @@ export const Route = createFileRoute("/_authenticated/results")({
 const LABEL = {
   genero: { masculino: "Masculino", feminino: "Feminino" },
   composicao: {
+    muito_magro: "Muito magro",
     magro: "Magro",
-    magro_definido: "Magro/Definido",
+    magro_barriga: "Magro com barriga",
     medio: "Mediano",
     acima_peso: "Acima do peso",
-    obeso: "Obeso",
+    muito_acima_peso: "Muito acima do peso",
+    musculoso: "Musculoso",
   },
   objetivo: {
     crescer: "Crescer (hipertrofia)",
@@ -63,12 +71,14 @@ const LABEL = {
   },
   areas: {
     barriga: "Barriga",
+    abdomen_definido: "Abdômen definido",
     bracos: "Braços",
     peito: "Peito",
     costas: "Costas",
     pernas: "Pernas",
     gluteos: "Glúteos",
     ombros: "Ombros",
+    postura: "Postura",
   },
 } as const;
 
@@ -112,33 +122,43 @@ function ResultsPage() {
 
   const imc = calcIMC(peso, altura);
   const imcInfo = imcLabel(imc);
+  const imcNote = imcContextNote(a, imc);
   const score = calcScoreGeral(a);
   const sExp = calcExperienciaScore(a);
   const sExec = calcExecucaoScore(a);
   const sComp = calcComposicaoScore(a);
   const sForca = calcForcaScore(a);
   const sResist = calcResistenciaScore(a);
+  const sRec = calcRecuperacaoScore(a);
+  const sNut = calcNutricaoScore(a);
+
+  const diagnostico = buildDiagnostico(a, nome);
+  const tags = buildTags(a);
+  const levers = buildLevers(a);
+  const metab = calcMetabolism(a);
 
   const radarData = [
     { axis: "Força", value: sForca, full: 100 },
     { axis: "Resistência", value: sResist, full: 100 },
     { axis: "Execução", value: sExec, full: 100 },
+    { axis: "Recuperação", value: sRec, full: 100 },
+    { axis: "Nutrição", value: sNut, full: 100 },
   ];
 
-  const projection = projectProgress(peso, altura, objetivo);
-  const physical28 = project28DaysPhysical(objetivo);
-  const wellbeing28 = project28DaysWellbeing();
+  const physical28 = project28DaysPhysical(a);
+  const wellbeing28 = project28DaysWellbeing(a);
   const lifestyleData = [
     { name: "Treino", value: sExp, fill: "oklch(0.7 0.18 145)" },
     { name: "Técnica", value: sExec, fill: "oklch(0.78 0.17 75)" },
     { name: "Composição", value: sComp, fill: "oklch(0.65 0.2 295)" },
+    { name: "Recuperação", value: sRec, fill: "oklch(0.7 0.18 220)" },
+    { name: "Nutrição", value: sNut, fill: "oklch(0.78 0.14 85)" },
   ];
 
   const donutData = [
     { name: "Score", value: score },
     { name: "Resto", value: 100 - score },
   ];
-  void projection;
 
   return (
     <main className="min-h-screen bg-background pb-40">
@@ -155,12 +175,39 @@ function ResultsPage() {
         </div>
         <div className="mx-auto max-w-md px-6 pb-5">
           <div className="inline-flex items-center gap-2 rounded-full gold-border bg-primary/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary">
-            <Sparkles className="h-3 w-3" /> Protocolo Personalizado
+            <Sparkles className="h-3 w-3" /> Avaliação Personalizada
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-md space-y-6 px-6 pt-8">
+        {/* HERO - Diagnóstico personalizado */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-3xl gold-border bg-card p-6 shadow-gold"
+        >
+          <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+              <Target className="h-3 w-3" /> Diagnóstico
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-foreground">{diagnostico}</p>
+            {tags.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {tags.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full bg-background px-3 py-1 text-[11px] font-semibold text-foreground border border-border"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </motion.div>
+
         {/* Section 1 - Dados Pessoais */}
         <Section title="Dados pessoais">
           <div className="grid grid-cols-2 gap-3">
@@ -168,7 +215,11 @@ function ResultsPage() {
             <DataCell label="Idade" value={`${idade} anos`} />
             <DataCell label="Altura" value={`${altura} cm`} />
             <DataCell label="Peso" value={`${peso} kg`} />
-            <DataCell label="Composição" value={LABEL.composicao[composicao]} className="col-span-2" />
+            <DataCell
+              label="Composição"
+              value={LABEL.composicao[composicao] ?? composicao}
+              className="col-span-2"
+            />
           </div>
         </Section>
 
@@ -181,7 +232,10 @@ function ResultsPage() {
             </p>
           </div>
           <div className="mt-6 space-y-2">
-            <div className="relative h-3 overflow-hidden rounded-full" style={{ background: "var(--gradient-imc)" }}>
+            <div
+              className="relative h-3 overflow-hidden rounded-full"
+              style={{ background: "var(--gradient-imc)" }}
+            >
               <motion.div
                 initial={{ left: "0%" }}
                 animate={{ left: `${imcInfo.pct}%` }}
@@ -196,6 +250,77 @@ function ResultsPage() {
               <span>Normal</span>
               <span>Sobrep.</span>
               <span>Obeso</span>
+            </div>
+          </div>
+          {imcNote && (
+            <div className="mt-4 flex items-start gap-2 rounded-2xl bg-background p-3">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <p className="text-xs leading-relaxed text-muted-foreground">{imcNote}</p>
+            </div>
+          )}
+        </Section>
+
+        {/* Section - Alavancas (top 3 ações) */}
+        <Section title="Suas 3 alavancas" subtitle="Onde mexer primeiro para o maior salto em 28 dias">
+          <div className="space-y-3">
+            {levers.map((l, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-2xl bg-background p-4"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full gold-gradient text-sm font-black text-primary-foreground">
+                  {i + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold text-foreground">{l.title}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{l.detail}</p>
+                  <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                    <Flame className="h-3 w-3" /> {l.impact}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* Section - Metabolismo & Calorias */}
+        <Section title="Metabolismo & calorias" subtitle="Estimativa pelo método Mifflin-St Jeor">
+          <div className="grid grid-cols-2 gap-3">
+            <DataCell label="Gasto em repouso" value={`${metab.tmb} kcal`} />
+            <DataCell label="Gasto total/dia" value={`${metab.gastoTotal} kcal`} />
+            <DataCell
+              label="Meta calórica"
+              value={`${metab.metaCalorica} kcal`}
+              className="col-span-2"
+            />
+          </div>
+          <div className="mt-4 rounded-2xl bg-background p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Macronutrientes alvo
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+              <div>
+                <p className="text-xl font-black text-gold-gradient tabular-nums">
+                  {metab.proteinaG}g
+                </p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Proteína
+                </p>
+              </div>
+              <div>
+                <p className="text-xl font-black text-foreground tabular-nums">{metab.carboG}g</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Carbo
+                </p>
+              </div>
+              <div>
+                <p className="text-xl font-black text-foreground tabular-nums">
+                  {metab.gorduraG}g
+                </p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Gordura
+                </p>
+              </div>
             </div>
           </div>
         </Section>
@@ -226,8 +351,8 @@ function ResultsPage() {
               </div>
             </div>
             <div className="flex-1 space-y-3">
-              <ScoreBar label="Experiência" value={sExp} />
-              <ScoreBar label="Execução" value={sExec} />
+              <ScoreBar label="Recuperação" value={sRec} />
+              <ScoreBar label="Nutrição" value={sNut} />
               <ScoreBar label="Composição" value={sComp} />
             </div>
           </div>
@@ -238,10 +363,15 @@ function ResultsPage() {
           <div className="space-y-3">
             <Row label="Objetivo" value={LABEL.objetivo[objetivo]} />
             <Row label="Nível" value={(a.execucao as string) ?? "—"} />
-            <Row label="Dor / lesão" value={dor?.resposta === "sim" ? (dor.detalhe ?? "sim") : "Nenhuma"} />
+            <Row
+              label="Dor / lesão"
+              value={dor?.resposta === "sim" ? (dor.detalhe ?? "sim") : "Nenhuma"}
+            />
             {dificuldade && (
               <div className="rounded-xl bg-background p-3">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Maior dificuldade</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Maior dificuldade
+                </p>
                 <p className="mt-1 text-sm text-foreground">{dificuldade}</p>
               </div>
             )}
@@ -253,15 +383,15 @@ function ResultsPage() {
           </Link>
         </Section>
 
-        {/* Section 5 - Perfil de Performance */}
+        {/* Section 5 - Perfil de Performance (5 eixos) */}
         <Section title="Perfil de performance">
-          <div className="h-64">
+          <div className="h-72">
             <ResponsiveContainer>
               <RadarChart data={radarData} outerRadius="75%">
                 <PolarGrid stroke="oklch(0.26 0.006 60)" />
                 <PolarAngleAxis
                   dataKey="axis"
-                  tick={{ fill: "oklch(0.98 0.005 80)", fontSize: 12, fontWeight: 600 }}
+                  tick={{ fill: "oklch(0.98 0.005 80)", fontSize: 11, fontWeight: 600 }}
                 />
                 <PolarRadiusAxis
                   angle={90}
@@ -305,7 +435,7 @@ function ResultsPage() {
                 <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: "oklch(0.85 0.01 70)", fontSize: 11, fontWeight: 600 }}
+                  tick={{ fill: "oklch(0.85 0.01 70)", fontSize: 10, fontWeight: 600 }}
                   stroke="oklch(0.26 0.006 60)"
                 />
                 <YAxis hide domain={[0, 100]} />
@@ -319,7 +449,7 @@ function ResultsPage() {
                     fontSize: 12,
                   }}
                 />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={56} />
+                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={42} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -350,12 +480,19 @@ function ResultsPage() {
         )}
 
         {/* Section 9 - Seu Progresso Físico (28 dias) */}
-        <Section title="Seu progresso — Físico" subtitle="Evolução estimada nos próximos 28 dias">
+        <Section
+          title="Seu progresso — Físico"
+          subtitle="Projeção estimada nos próximos 28 dias seguindo o protocolo"
+        >
           <div className="h-64">
             <ResponsiveContainer>
               <LineChart data={physical28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
                 <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis dataKey="dia" tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
+                <XAxis
+                  dataKey="dia"
+                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
+                  stroke="oklch(0.26 0.006 60)"
+                />
                 <YAxis
                   domain={[0, 100]}
                   tickFormatter={(v) => `${v}%`}
@@ -373,21 +510,49 @@ function ResultsPage() {
                   }}
                 />
                 <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
-                <Line type="monotone" dataKey="ganhoMuscular" name="Ganho muscular +4.0kg" stroke="oklch(0.7 0.18 220)" strokeWidth={3} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="queimaGordura" name="Queima de gordura -5.4kg" stroke="oklch(0.65 0.2 295)" strokeWidth={3} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="disposicao" name="Disposição +115%" stroke="oklch(0.78 0.14 85)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line
+                  type="monotone"
+                  dataKey="ganhoMuscular"
+                  name="Ganho muscular"
+                  stroke="oklch(0.7 0.18 220)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="queimaGordura"
+                  name="Queima de gordura"
+                  stroke="oklch(0.65 0.2 295)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="disposicao"
+                  name="Disposição"
+                  stroke="oklch(0.78 0.14 85)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </Section>
 
         {/* Section 10 - Seu Progresso Bem-Estar */}
-        <Section title="Seu progresso — Bem-estar" subtitle="Impacto estimado no bem-estar geral nos próximos 28 dias">
+        <Section
+          title="Seu progresso — Bem-estar"
+          subtitle="Impacto estimado no bem-estar geral nos próximos 28 dias"
+        >
           <div className="h-64">
             <ResponsiveContainer>
               <LineChart data={wellbeing28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
                 <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis dataKey="dia" tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
+                <XAxis
+                  dataKey="dia"
+                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
+                  stroke="oklch(0.26 0.006 60)"
+                />
                 <YAxis
                   domain={[0, 100]}
                   tickFormatter={(v) => `${v}%`}
@@ -405,9 +570,30 @@ function ResultsPage() {
                   }}
                 />
                 <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
-                <Line type="monotone" dataKey="testosterona" name="Testosterona +40%" stroke="oklch(0.65 0.2 295)" strokeWidth={3} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="autoestima" name="Autoestima +80%" stroke="oklch(0.7 0.18 220)" strokeWidth={3} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="saude" name="Saúde geral +65%" stroke="oklch(0.7 0.18 145)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line
+                  type="monotone"
+                  dataKey="testosterona"
+                  name="Testosterona"
+                  stroke="oklch(0.65 0.2 295)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="autoestima"
+                  name="Autoestima"
+                  stroke="oklch(0.7 0.18 220)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="saude"
+                  name="Saúde geral"
+                  stroke="oklch(0.7 0.18 145)"
+                  strokeWidth={3}
+                  dot={{ r: 3 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -419,7 +605,12 @@ function ResultsPage() {
         <div className="mx-auto max-w-md">
           <Link to="/protocol">
             <motion.div
-              animate={{ boxShadow: ["0 0 0 0 oklch(0.78 0.14 85 / 0.5)", "0 0 0 12px oklch(0.78 0.14 85 / 0)"] }}
+              animate={{
+                boxShadow: [
+                  "0 0 0 0 oklch(0.78 0.14 85 / 0.5)",
+                  "0 0 0 12px oklch(0.78 0.14 85 / 0)",
+                ],
+              }}
               transition={{ duration: 1.6, repeat: Infinity }}
               className="flex items-center justify-between gap-3 rounded-2xl gold-gradient px-5 py-4 text-primary-foreground shadow-gold"
             >
@@ -450,35 +641,38 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      className="rounded-3xl border border-border bg-card p-6 shadow-card-premium"
-    >
-      <header className="mb-5">
-        <h2 className="text-lg font-black text-foreground">{title}</h2>
+    <section className="rounded-3xl border border-border bg-card p-6 shadow-card-premium">
+      <div className="mb-5">
+        <h2 className="text-base font-black uppercase tracking-wider text-foreground">{title}</h2>
         {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
-      </header>
+      </div>
       {children}
-    </motion.section>
+    </section>
   );
 }
 
-function DataCell({ label, value, className }: { label: string; value: string; className?: string }) {
+function DataCell({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
   return (
-    <div className={`rounded-2xl bg-background p-4 ${className ?? ""}`}>
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 text-base font-bold text-foreground">{value}</p>
+    <div className={`rounded-xl bg-background p-3 ${className ?? ""}`}>
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
     </div>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border pb-2 last:border-0 last:pb-0">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="text-sm font-semibold capitalize text-foreground">{value}</p>
+    <div className="flex items-center justify-between rounded-xl bg-background p-3">
+      <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="text-sm font-semibold text-foreground">{value}</span>
     </div>
   );
 }
@@ -486,11 +680,11 @@ function Row({ label, value }: { label: string; value: string }) {
 function ScoreBar({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between text-[11px]">
+      <div className="flex items-center justify-between text-[11px] font-semibold">
         <span className="text-muted-foreground">{label}</span>
-        <span className="font-bold tabular-nums text-foreground">{value}</span>
+        <span className="tabular-nums text-foreground">{value}</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-background">
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${value}%` }}
