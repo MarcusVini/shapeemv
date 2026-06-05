@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import beforeAfterAsset from "@/assets/before-after.png.asset.json";
 import {
   Dialog,
   DialogContent,
@@ -94,10 +95,11 @@ function LandingPage() {
           transition={{ delay: 0.1 }}
           className="relative mx-auto mb-8 h-56 w-56 overflow-hidden rounded-full gold-border shadow-gold"
         >
-          <div className="absolute inset-0 gold-gradient opacity-25" />
-          <div className="relative flex h-full w-full items-center justify-center text-7xl font-black text-gold-gradient">
-            FC
-          </div>
+          <img
+            src={beforeAfterAsset.url}
+            alt="Transformação Shape em V"
+            className="h-full w-full object-cover"
+          />
         </motion.div>
 
         <motion.div
