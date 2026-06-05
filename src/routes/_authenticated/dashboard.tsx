@@ -83,11 +83,10 @@ function DashboardPage() {
           </div>
         </motion.div>
 
-        <div className="mt-8 grid grid-cols-3 gap-3 text-center">
+        <div className="mt-8 grid grid-cols-2 gap-3 text-center">
           {[
             { v: "23", l: "perguntas" },
             { v: "~5 min", l: "para concluir" },
-            { v: "24h", l: "para liberar" },
           ].map((s) => (
             <div
               key={s.l}
