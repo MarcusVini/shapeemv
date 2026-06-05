@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment } from "@/lib/assessment.functions";
-import { nextUnlockDate } from "@/lib/assessment-calc";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import transformacao1 from "@/assets/transformacao-1.jpg.asset.json";
@@ -68,9 +68,8 @@ function QuizPage() {
     // Submit
     setSubmitting(true);
     try {
-      const unlock = nextUnlockDate();
       await submitFn({
-        data: { respostas: answers, unlockDateIso: unlock.toISOString() },
+        data: { respostas: answers },
       });
       navigate({ to: "/processing", replace: true });
     } catch (e) {
