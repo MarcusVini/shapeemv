@@ -138,7 +138,7 @@ function DashboardPage() {
             <HubCard
               icon={<CheckCircle2 className="h-6 w-6" />}
               title="Sua Avaliação Trinca"
-              description="Confira a sua avaliação física completa."
+              description={insightAvaliacao ?? "Confira a sua avaliação física completa."}
               to="/results"
               locked={!isUnlocked}
               hasAssessment={hasAssessment}
@@ -149,7 +149,7 @@ function DashboardPage() {
             <HubCard
               icon={<Dumbbell className="h-6 w-6" />}
               title="Seu Protocolo está Pronto"
-              description="Acesse seu treino personalizado."
+              description={insightProtocolo ?? "Acesse seu treino personalizado."}
               to="/protocol"
               locked={!isUnlocked}
               hasAssessment={hasAssessment}
