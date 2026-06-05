@@ -93,7 +93,7 @@ function LandingPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="relative mx-auto mb-8 h-56 w-56 overflow-hidden rounded-full gold-border shadow-gold"
+          className="relative mx-auto mb-8 aspect-square w-72 max-w-full overflow-hidden rounded-2xl gold-border shadow-gold"
         >
           <img
             src={beforeAfterAsset.url}
