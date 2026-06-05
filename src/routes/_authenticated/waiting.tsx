@@ -21,7 +21,15 @@ function WaitingPage() {
     queryFn: () => fetchState(),
   });
 
-  const unlockTs = data?.workout ? new Date(data.workout.unlock_date).getTime() : null;
+  const computeNext10am = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(10, 0, 0, 0);
+    return d.getTime();
+  };
+  const unlockTs = data?.workout
+    ? new Date(data.workout.unlock_date).getTime()
+    : computeNext10am();
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -68,18 +76,17 @@ function WaitingPage() {
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
           Nossa inteligência artificial e a metodologia de{" "}
           <span className="font-semibold text-foreground">Fernando Cantarelli</span>{" "}
-          estão analisando as suas respostas. Seu Protocolo Shape em V será liberado{" "}
-          <span className="font-semibold text-primary">amanhã, exatamente às 10:00 da manhã.</span>
+          estão analisando as suas respostas. Seu Protocolo Shape em V será liberado em breve.
         </p>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground/80">
-          Salve o link deste site. Um cronômetro abaixo mostra o tempo exato para a sua liberação:
+          Salve o link deste site. O cronômetro abaixo mostra o tempo exato para a sua liberação:
         </p>
 
         <div className="mt-10 rounded-3xl gold-border bg-card p-6 shadow-card-premium">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             Liberação em
           </p>
-          <div className="mt-4 flex items-center justify-center gap-2 font-black tabular-nums text-gold-gradient">
+          <div className="mt-4 flex items-center justify-center gap-2 font-black tabular-nums">
             <TimeBlock value={pad(h)} />
             <span className="text-3xl text-primary/40">:</span>
             <TimeBlock value={pad(m)} />
@@ -92,6 +99,7 @@ function WaitingPage() {
             <span>seg</span>
           </div>
         </div>
+
 
         {import.meta.env.DEV && (
           <Button
@@ -112,7 +120,7 @@ function WaitingPage() {
 
 function TimeBlock({ value }: { value: string }) {
   return (
-    <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-background px-2 py-3 text-4xl">
+    <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-background px-2 py-3 text-4xl text-gold-gradient">
       {value}
     </span>
   );
