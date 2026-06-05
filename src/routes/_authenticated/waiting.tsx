@@ -20,7 +20,6 @@ function WaitingPage() {
     queryKey: ["state"],
     queryFn: () => fetchState(),
   });
-  void data;
 
   const computeNext10am = () => {
     const d = new Date();
