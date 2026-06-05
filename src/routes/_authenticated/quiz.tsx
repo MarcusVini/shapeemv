@@ -223,7 +223,12 @@ function CardsInput({
                 {opt.emoji}
               </span>
             )}
-            <span className="flex-1 text-base font-semibold text-foreground">{opt.label}</span>
+            <span className="flex-1">
+              <span className="block text-base font-semibold text-foreground">{opt.label}</span>
+              {opt.description && (
+                <span className="mt-0.5 block text-xs text-muted-foreground">{opt.description}</span>
+              )}
+            </span>
             {active && (
               <span className="flex h-6 w-6 items-center justify-center rounded-full gold-gradient">
                 <Check className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={3} />
