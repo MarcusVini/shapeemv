@@ -63,12 +63,16 @@ function WaitingPage() {
         </div>
 
         <h1 className="mt-5 text-3xl font-black leading-tight text-foreground">
-          Seu protocolo será liberado <span className="text-gold-gradient">amanhã às 10h</span>
+          Avaliação Recebida <span className="text-gold-gradient">com Sucesso!</span>
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Nossa inteligência está cruzando os seus dados com o método Fernando
-          Contarini. Aproveite para descansar — sua transformação começa em
-          breve.
+          Nossa inteligência artificial e a metodologia de{" "}
+          <span className="font-semibold text-foreground">Fernando Cantarelli</span>{" "}
+          estão analisando as suas respostas. Seu Protocolo Shape em V será liberado{" "}
+          <span className="font-semibold text-primary">amanhã, exatamente às 10:00 da manhã.</span>
+        </p>
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground/80">
+          Salve o link deste site. Um cronômetro abaixo mostra o tempo exato para a sua liberação:
         </p>
 
         <div className="mt-10 rounded-3xl gold-border bg-card p-6 shadow-card-premium">

@@ -1,89 +1,87 @@
-# Shape em V - Fernando Contarini
+# Plano — Tela de Espera + Área do Aluno (Protocolo)
 
-App de avaliação física com quiz interativo, liberação programada do protocolo (próximo dia às 10h) e dashboard de resultados premium com gráficos.
+## 1. Tela de Espera (`src/routes/_authenticated/waiting.tsx`)
+Refinar a tela existente com os textos exatos pedidos:
+- Ícone de cadeado dourado gigante centralizado (manter animação flutuante).
+- Título: **"Avaliação Recebida com Sucesso!"**
+- Subtítulo: *"Nossa inteligência artificial e a metodologia de Fernando Cantarelli estão analisando as suas respostas. Seu Protocolo Shape em V será liberado amanhã, exatamente às 10:00 da manhã."*
+- Aviso: *"Salve o link deste site. Um cronômetro abaixo mostra o tempo exato para a sua liberação:"*
+- Manter countdown HH:MM:SS em cards dourados + auto-redirect ao zerar (já implementado).
+- Manter botão dev "(dev) Liberar agora".
 
-## Stack & Setup
-- **Lovable Cloud** (backend): auth por e-mail, tabelas `profiles`, `assessments`, `workouts`
-- **Recharts** para Donut, Radar, Line, barras de IMC
-- **Framer Motion** para animações suaves nas condicionais Sim/Não
-- **Tailwind** dark premium: bg `#0B0B0B`, cards `#1E1E1E`, dourado `#D4AF37 → #F9A826`, fonte Inter
+## 2. Protocolo — Estrutura com Abas (`src/routes/_authenticated/protocol.tsx`)
+Reescrever totalmente a página. Layout:
+- `BottomNav` fixo no rodapé (já tem ícone "Protocolo" ativo dourado).
+- Cabeçalho: título **"Protocolo"** + nome do usuário.
+- **Tabs horizontais roláveis** (scroll-x no mobile) com 4 abas:
+  `[ Instruções ] [ Treino 1 ] [ Treino 2 ] [ Treino 3 ]`
+  - Ativa: fundo dourado (`gold-gradient`), texto preto, bold.
+  - Inativa: fundo `#1E1E1E`, texto branco.
+  - Implementado com `useState` + botões (sem Radix Tabs para customização total e scroll horizontal nativo).
 
-## Design System (src/styles.css)
-Tokens semânticos em oklch:
-- `--background` (preto), `--card` (cinza escuro), `--primary` (dourado), `--primary-glow`
-- `--gradient-gold`, `--shadow-gold`
-- Tipografia Inter via `<link>` no `__root.tsx`
-- Botões `rounded-2xl`, bordas sutis douradas em cards de destaque
+## 3. Aba "Instruções" — Carta de Boas-vindas
+Componente `<InstrucoesTab />` renderizando seções verticais escroláveis:
 
-## Schema (Lovable Cloud)
+**a) Capa de destaque**
+- Imagem gerada via `imagegen` (homem atlético, físico em V, iluminação cinematográfica dourada) — `src/assets/welcome-cover.jpg`.
+- Overlay escuro + texto "SHAPE EM V" sobreposto em tipografia black dourada.
+
+**b) Títulos**
+- H1: "SEJA BEM-VINDO AO SEU PROTOCOLO PERSONALIZADO SHAPE EM V"
+- Autor: "FERNANDO CANTARELLI (@fernandocantarelli_)" — dourado.
+- Saudação: "Fala mestre, seja muito bem-vindo ao seu Protocolo Personalizado do Shape em V."
+
+**c) Blocos de texto** (cards `bg-card` `#1E1E1E`, borda sutil, título dourado, parágrafo cinza claro):
+- Quem sou eu
+- Parabéns por estar aqui
+- O método exclusivo
+- Por que o Shape em V funciona
+
+**d) Card destaque "🔥 No Shape em V é outro jogo!"**
+- Fundo preto, borda dourada brilhante (`gold-border` + `shadow-gold`), ícone 🔥.
+
+**e) Bloco "Instruções"** — parágrafo introdutório.
+
+**f) Card "Como Treinar"** — lista com 8 itens (Frequência, Repouso, Aquecimento, Execução, Progressão, Descanso, Alimentação, Consistência). Cada item com label em **dourado bold** seguido do texto.
+
+## 4. Abas "Treino 1, 2, 3"
+Componente `<TreinoTab treino={...} />` recebendo dados de um mock.
+
+**Mock** (novo arquivo `src/lib/protocol-data.ts`):
+```ts
+export const TREINOS = [
+  { id: 1, nome: "Treino 1", foco: "Peito e Tríceps",
+    exercicios: [
+      { nome: "Aquecimento — Esteira", subtitulo: "Preparação cardiovascular", series: 1, reps: "5 min", descanso: "—" },
+      { nome: "Supino Reto com Barra", subtitulo: "Foco no peitoral médio", series: 4, reps: "10 a 12", descanso: "60s" },
+      { nome: "Supino Inclinado com Halteres", subtitulo: "Peitoral superior", series: 4, reps: "10 a 12", descanso: "60s" },
+      { nome: "Crucifixo", subtitulo: "Isolamento do peitoral", series: 3, reps: "12 a 15", descanso: "45s" },
+      { nome: "Tríceps Pulley", subtitulo: "Cabeça lateral do tríceps", series: 4, reps: "12", descanso: "45s" },
+      { nome: "Tríceps Francês", subtitulo: "Alongamento do tríceps", series: 3, reps: "10 a 12", descanso: "60s" },
+    ]},
+  { id: 2, nome: "Treino 2", foco: "Costas e Bíceps (A base do V)",
+    exercicios: [ Aquecimento, Puxada Frontal, Remada Curvada, Pulldown, Remada Baixa, Rosca Direta, Rosca Martelo ] },
+  { id: 3, nome: "Treino 3", foco: "Pernas e Ombros (Alargamento de deltoides)",
+    exercicios: [ Aquecimento, Agachamento Livre, Leg Press, Cadeira Extensora, Elevação Lateral, Desenvolvimento com Halteres, Elevação Frontal ] },
+];
 ```
-profiles: id (uuid, FK auth.users), nome_completo, email, created_at
-assessments: id, user_id, respostas_json (jsonb), status, created_at
-workouts: id, user_id, treinos_json (jsonb), unlock_date (timestamptz)
-```
-- RLS: cada user vê apenas seus próprios registros
-- Trigger `handle_new_user` cria profile automático no signup
-- Auto-confirm de e-mail ativado (sem verificação por link)
 
-## Rotas (TanStack Router)
-```
-/                          → Landing + modal de login (nome + email, magic link ou senha)
-/_authenticated/dashboard  → Saudação + card "Fazer minha avaliação"
-/_authenticated/quiz       → Quiz 23 etapas (state machine, 1 pergunta por tela)
-/_authenticated/processing → Loading 5s com textos rotativos
-/_authenticated/waiting    → Countdown até 10h do dia seguinte
-/_authenticated/results    → Dashboard final com gráficos
-/_authenticated/protocol   → Lista de treinos (placeholder)
-/_authenticated/profile    → Perfil do usuário
-```
-Lógica de roteamento pós-login: lê último `assessment` + `workout.unlock_date` e redireciona para a tela correta (dashboard / waiting / results).
+**Card de Exercício**:
+- Fundo `#18181B`, `rounded-2xl`, padding generoso.
+- Header: círculo dourado com nº do exercício + nome (bold branco) + subtítulo (cinza pequeno).
+- Mídia: `<div>` placeholder com `aspect-video`, `object-cover`, cantos arredondados, gradiente escuro + ícone `Dumbbell` central (sem chamar imagegen para evitar custo — placeholder elegante).
+- 3 badges horizontais centralizadas: `Séries: X` | `Reps: Y` | `Descanso: Z` (fundo escuro, borda sutil cinza).
+- Botão outlined dourado na base: "Adicionar Carga ⚖️" (sem ação funcional ainda — apenas UI, conforme escopo).
 
-## Quiz (23 etapas)
-Componente único `QuizStep` que renderiza por tipo:
-- `cards` (gênero, composição, objetivo, experiência, nível, urgência)
-- `slider` (idade, altura, peso)
-- `textarea` (profissão, frustração, motivação, etc.)
-- `checkbox-multi` (partes do corpo)
-- `yes-no-conditional` (Sim/Não com textarea que desliza via Framer Motion quando "Sim")
+## 5. Detalhes técnicos
+- Reusar tokens existentes: `gold-gradient`, `gold-border`, `shadow-gold`, `text-gold-gradient`, `shadow-card-premium`.
+- Mobile-first: max-width `md`, padding `px-6`, scroll horizontal nas tabs com `overflow-x-auto scrollbar-none`.
+- Framer Motion: fade-in suave ao trocar de aba (`AnimatePresence` + `motion.div` keyed pela aba).
+- `imagegen` (standard quality) para a capa de boas-vindas — único asset novo.
+- Sem mudanças em banco/server functions — toda a entrega é UI estática + mock.
 
-Header fixo: botão voltar `<`, "X de 23", barra de progresso dourada animada.
-Estado em React (ou Zustand leve) + persist no localStorage; submit final grava em `assessments` e cria `workouts` com `unlock_date = amanhã 10:00 local`.
-
-Etapa 6 (motivação Antes/Depois) é uma tela intersticial, não pergunta — avança com botão.
-
-## Sala de Espera
-- Calcula `unlock_date - now` a cada 1s
-- Display HH:MM:SS com tipografia grande dourada
-- Ícone de cadeado pulsando
-- Quando zera, redireciona para `/results`
-
-**Nota:** o "dia seguinte às 10h" é gravado no momento do submit. Para testar, vou incluir um botão dev (oculto em prod) que adianta o `unlock_date`.
-
-## Dashboard de Resultados (página longa, scrolável)
-1. **Header** — iniciais em círculo dourado, email, badge "Protocolo Personalizado"
-2. **Dados Pessoais** — grid 5 cols (mobile: 2)
-3. **IMC** — número grande + barra horizontal gradiente (azul→verde→amarelo→vermelho) com marker SVG
-4. **Score Geral** — Recharts `PieChart` (donut) 67/100 + 3 progress bars
-5. **Objetivo & Protocolo** — resumo + CTA dourado
-6. **Perfil de Performance** — `RadarChart` (Força/Resistência/Execução)
-7. **Áreas de Foco** — badges douradas
-8. **Progresso Projetado** — `LineChart` 4 meses, 2 linhas (peso ↓, massa magra ↑)
-
-Cálculos derivados das respostas (funções puras em `src/lib/assessment-calc.ts`): IMC, score (média ponderada), valores do radar, projeção de peso.
-
-## Navegação inferior
-`BottomNav` fixo em rotas `_authenticated`: Avaliação / Protocolo / Perfil, ícone ativo em dourado.
-CTA flutuante "Seu Protocolo está Pronto" aparece apenas em `/results`, acima do bottom nav, com glow dourado animado.
-
-## Detalhes técnicos
-- Server functions (`createServerFn` + `requireSupabaseAuth`) para gravar assessment/workout e ler estado de desbloqueio
-- Cliente browser supabase para auth flows e `onAuthStateChange` no `__root.tsx`
-- Validação Zod nos inputs do quiz
-- Mobile-first; testado em 375px
-
-## Entregáveis nesta primeira leva
-Enable Lovable Cloud → schema + RLS → design tokens → landing/auth → dashboard → quiz completo → processing → waiting → results dashboard com todos os gráficos → bottom nav + CTA.
-
-A tela `/protocol` ficará com placeholder estruturado (3-4 cards de treino) — você pode me passar depois o conteúdo real dos treinos para eu detalhar.
-
-Posso seguir?
+## Arquivos
+- `src/routes/_authenticated/waiting.tsx` — editar textos.
+- `src/routes/_authenticated/protocol.tsx` — reescrever com tabs.
+- `src/lib/protocol-data.ts` — **novo**, mock dos 3 treinos.
+- `src/assets/welcome-cover.jpg` — **novo**, capa gerada.
