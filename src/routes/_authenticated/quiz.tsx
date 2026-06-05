@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { QUIZ_STEPS, TOTAL_STEPS, type QuizStep } from "@/lib/quiz-data";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +13,12 @@ import { saveAssessment } from "@/lib/assessment.functions";
 import { nextUnlockDate } from "@/lib/assessment-calc";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import t1 from "@/assets/transformacao-1.jpg.asset.json";
+import t2 from "@/assets/transformacao-2.jpg.asset.json";
+import t3 from "@/assets/transformacao-3.jpg.asset.json";
+import t4 from "@/assets/transformacao-4.jpg.asset.json";
+import t5 from "@/assets/transformacao-5.jpg.asset.json";
+import t6 from "@/assets/transformacao-6.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/quiz")({
   component: QuizPage,
