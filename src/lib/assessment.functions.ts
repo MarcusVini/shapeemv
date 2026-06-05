@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 
 const SaveAssessmentInput = z.object({
   respostas: z.record(z.string(), z.unknown()),
@@ -17,7 +18,7 @@ export const saveAssessment = createServerFn({ method: "POST" })
       .from("assessments")
       .insert({
         user_id: userId,
-        respostas_json: data.respostas,
+        respostas_json: data.respostas as Json,
         status: "concluido",
       })
       .select()
@@ -68,7 +69,7 @@ export const getLatestState = createServerFn({ method: "GET" })
       assessment: assessmentRes.data
         ? {
             id: assessmentRes.data.id,
-            respostas: (assessmentRes.data.respostas_json ?? {}) as Record<string, unknown>,
+            respostas: (assessmentRes.data.respostas_json ?? {}) as Json,
             created_at: assessmentRes.data.created_at,
           }
         : null,
