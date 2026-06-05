@@ -297,15 +297,20 @@ function ResultsPage() {
           </Section>
         )}
 
-        {/* Section 7 - Progresso projetado */}
-        <Section title="Progresso físico projetado" subtitle="Estimativa em 4 meses com o protocolo">
-          <div className="h-64">
+        {/* Section 7 - Indicadores de estilo de vida */}
+        <Section title="Indicadores de estilo de vida">
+          <div className="h-56">
             <ResponsiveContainer>
-              <LineChart data={projection} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
+              <BarChart data={lifestyleData} margin={{ top: 16, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
-                <YAxis tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: "oklch(0.85 0.01 70)", fontSize: 11, fontWeight: 600 }}
+                  stroke="oklch(0.26 0.006 60)"
+                />
+                <YAxis hide domain={[0, 100]} />
                 <Tooltip
+                  cursor={{ fill: "oklch(0.22 0.006 60)" }}
                   contentStyle={{
                     background: "oklch(0.18 0.006 60)",
                     border: "1px solid oklch(0.26 0.006 60)",
@@ -314,23 +319,95 @@ function ResultsPage() {
                     fontSize: 12,
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 12, color: "oklch(0.72 0.01 70)" }} />
-                <Line
-                  type="monotone"
-                  dataKey="peso"
-                  name="Peso (kg)"
-                  stroke="oklch(0.62 0.22 25)"
-                  strokeWidth={3}
-                  dot={{ r: 4, fill: "oklch(0.62 0.22 25)" }}
+                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={56} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Section>
+
+        {/* Section 8 - Mentalidade */}
+        {(motivacao || sonho) && (
+          <Section title="Mentalidade">
+            <div className="space-y-5">
+              {motivacao && (
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    O que te motiva a mudar
+                  </p>
+                  <p className="mt-1.5 text-sm italic text-foreground">"{motivacao}"</p>
+                </div>
+              )}
+              {sonho && (
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Seu sonho
+                  </p>
+                  <p className="mt-1.5 text-sm italic text-foreground">"{sonho}"</p>
+                </div>
+              )}
+            </div>
+          </Section>
+        )}
+
+        {/* Section 9 - Seu Progresso Físico (28 dias) */}
+        <Section title="Seu progresso — Físico" subtitle="Evolução estimada nos próximos 28 dias">
+          <div className="h-64">
+            <ResponsiveContainer>
+              <LineChart data={physical28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
+                <XAxis dataKey="dia" tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
+                <YAxis
+                  domain={[0, 100]}
+                  tickFormatter={(v) => `${v}%`}
+                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
+                  stroke="oklch(0.26 0.006 60)"
                 />
-                <Line
-                  type="monotone"
-                  dataKey="massaMagra"
-                  name="Massa magra (kg)"
-                  stroke="oklch(0.78 0.14 85)"
-                  strokeWidth={3}
-                  dot={{ r: 4, fill: "oklch(0.78 0.14 85)" }}
+                <Tooltip
+                  formatter={(v: number) => `${v}%`}
+                  contentStyle={{
+                    background: "oklch(0.18 0.006 60)",
+                    border: "1px solid oklch(0.26 0.006 60)",
+                    borderRadius: 12,
+                    color: "oklch(0.98 0.005 80)",
+                    fontSize: 12,
+                  }}
                 />
+                <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
+                <Line type="monotone" dataKey="ganhoMuscular" name="Ganho muscular +4.0kg" stroke="oklch(0.7 0.18 220)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="queimaGordura" name="Queima de gordura -5.4kg" stroke="oklch(0.65 0.2 295)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="disposicao" name="Disposição +115%" stroke="oklch(0.78 0.14 85)" strokeWidth={3} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Section>
+
+        {/* Section 10 - Seu Progresso Bem-Estar */}
+        <Section title="Seu progresso — Bem-estar" subtitle="Impacto estimado no bem-estar geral nos próximos 28 dias">
+          <div className="h-64">
+            <ResponsiveContainer>
+              <LineChart data={wellbeing28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
+                <XAxis dataKey="dia" tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }} stroke="oklch(0.26 0.006 60)" />
+                <YAxis
+                  domain={[0, 100]}
+                  tickFormatter={(v) => `${v}%`}
+                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
+                  stroke="oklch(0.26 0.006 60)"
+                />
+                <Tooltip
+                  formatter={(v: number) => `${v}%`}
+                  contentStyle={{
+                    background: "oklch(0.18 0.006 60)",
+                    border: "1px solid oklch(0.26 0.006 60)",
+                    borderRadius: 12,
+                    color: "oklch(0.98 0.005 80)",
+                    fontSize: 12,
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
+                <Line type="monotone" dataKey="testosterona" name="Testosterona +40%" stroke="oklch(0.65 0.2 295)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="autoestima" name="Autoestima +80%" stroke="oklch(0.7 0.18 220)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="saude" name="Saúde geral +65%" stroke="oklch(0.7 0.18 145)" strokeWidth={3} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
