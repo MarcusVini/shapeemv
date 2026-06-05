@@ -6,6 +6,7 @@ import { ArrowRight, Zap, LogOut, Lock, Dumbbell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
+import { WelcomeModal, useWelcomeModal } from "@/components/WelcomeModal";
 import { getLatestState } from "@/lib/assessment.functions";
 import { supabase } from "@/integrations/supabase/client";
 
