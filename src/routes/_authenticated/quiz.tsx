@@ -377,15 +377,6 @@ function YesNoConditional({
   );
 }
 
-import t1 from "@/assets/transformacao-1.jpg.asset.json";
-import t2 from "@/assets/transformacao-2.jpg.asset.json";
-import t3 from "@/assets/transformacao-3.jpg.asset.json";
-import t4 from "@/assets/transformacao-4.jpg.asset.json";
-import t5 from "@/assets/transformacao-5.jpg.asset.json";
-import t6 from "@/assets/transformacao-6.jpg.asset.json";
-import { useEffect, useRef, useState as useReactState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-
 const TRANSFORMACOES = [t1, t2, t3, t4, t5, t6];
 
 function Intersticial({ step }: { step: QuizStep }) {
