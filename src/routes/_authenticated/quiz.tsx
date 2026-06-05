@@ -405,7 +405,7 @@ function Intersticial({ step }: { step: QuizStep }) {
   }
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
-  const [selected, setSelected] = useReactState(0);
+  const [selected, setSelected] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
