@@ -4,7 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import { QUIZ_STEPS, TOTAL_STEPS, type QuizStep } from "@/lib/quiz-data";
+import {
+  CATEGORY_LABEL,
+  QUIZ_STEPS,
+  TOTAL_STEPS,
+  stepCategoryProgress,
+  type QuizStep,
+} from "@/lib/quiz-data";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
@@ -26,15 +32,46 @@ export const Route = createFileRoute("/_authenticated/quiz")({
 
 type Answers = Record<string, unknown>;
 
+const STORAGE_KEY = "shapeemv:quiz-progress:v2";
+
 function QuizPage() {
   const navigate = useNavigate();
   const submitFn = useServerFn(saveAssessment);
   const [stepIdx, setStepIdx] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [submitting, setSubmitting] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
+      if (raw) {
+        const parsed = JSON.parse(raw) as { answers?: Answers; stepIdx?: number };
+        if (parsed.answers && typeof parsed.answers === "object") setAnswers(parsed.answers);
+        if (typeof parsed.stepIdx === "number" && parsed.stepIdx >= 0 && parsed.stepIdx < TOTAL_STEPS) {
+          setStepIdx(parsed.stepIdx);
+        }
+      }
+    } catch {
+      // ignore corrupted storage
+    }
+    setHydrated(true);
+  }, []);
+
+  // Persist on every change
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, stepIdx }));
+    } catch {
+      // ignore quota
+    }
+  }, [answers, stepIdx, hydrated]);
 
   const step = QUIZ_STEPS[stepIdx];
   const progress = ((stepIdx + 1) / TOTAL_STEPS) * 100;
+  const catProgress = stepCategoryProgress(stepIdx);
 
   function setAnswer(value: unknown) {
     setAnswers((a) => ({ ...a, [step.id]: value }));
