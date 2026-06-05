@@ -120,7 +120,7 @@ function WaitingPage() {
 
 function TimeBlock({ value }: { value: string }) {
   return (
-    <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-background px-2 py-3 text-4xl">
+    <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-background px-2 py-3 text-4xl text-gold-gradient">
       {value}
     </span>
   );
