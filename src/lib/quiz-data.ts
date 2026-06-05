@@ -198,9 +198,9 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: "cards",
     question: "Como é seu nível de execução nos exercícios?",
     options: [
-      { value: "iniciante", label: "Iniciante" },
-      { value: "intermediario", label: "Intermediário" },
-      { value: "avancado", label: "Avançado" },
+      { value: "iniciante", label: "Iniciante", description: "Preciso aprender as técnicas básicas" },
+      { value: "intermediario", label: "Intermediário", description: "Sei executar os principais exercícios" },
+      { value: "avancado", label: "Avançado", description: "Tenho boa técnica na maioria dos exercícios" },
     ],
   },
   {
