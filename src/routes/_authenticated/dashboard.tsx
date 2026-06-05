@@ -6,6 +6,7 @@ import { ArrowRight, Zap, LogOut, Lock, Dumbbell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
+import { WelcomeModal, useWelcomeModal } from "@/components/WelcomeModal";
 import { getLatestState } from "@/lib/assessment.functions";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,8 +40,12 @@ function DashboardPage() {
   const s = Math.floor((diff % 60_000) / 1000);
   const pad = (n: number) => String(n).padStart(2, "0");
 
+  const { show, dismiss } = useWelcomeModal();
+
   return (
-    <main className="min-h-screen bg-background pb-24">
+    <>
+      <WelcomeModal show={show} onDismiss={dismiss} />
+      <main className="min-h-screen bg-background pb-24">
       <div className="mx-auto max-w-md px-6 pt-12">
         <div className="flex items-start justify-between">
           <div>
@@ -176,6 +181,7 @@ function DashboardPage() {
       </div>
       <BottomNav />
     </main>
+    </>
   );
 }
 
