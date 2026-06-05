@@ -128,3 +128,17 @@
 @utility gold-border {
   border: 1px solid oklch(0.78 0.14 85 / 0.4);
 }
+
+@keyframes gold-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-gold-sm);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-gold);
+  }
+}
+@utility animate-gold-pulse {
+  animation: gold-pulse 2.4s ease-in-out infinite;
+}
