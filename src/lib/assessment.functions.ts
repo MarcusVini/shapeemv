@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { nextUnlockDate } from "@/lib/assessment-calc";
 import type { Json } from "@/integrations/supabase/types";
 
 const SaveAssessmentInput = z.object({
   respostas: z.record(z.string(), z.unknown()),
-  unlockDateIso: z.string(),
 });
 
 export const saveAssessment = createServerFn({ method: "POST" })
@@ -23,7 +23,13 @@ export const saveAssessment = createServerFn({ method: "POST" })
       })
       .select()
       .single();
-    if (aErr) throw new Error(aErr.message);
+    if (aErr) {
+      console.error("[saveAssessment] assessment insert failed:", aErr);
+      throw new Error("Failed to save assessment. Please try again.");
+    }
+
+    // Compute unlock date server-side — never trust the client.
+    const unlockDateIso = nextUnlockDate().toISOString();
 
     const { data: workout, error: wErr } = await supabase
       .from("workouts")
@@ -31,11 +37,14 @@ export const saveAssessment = createServerFn({ method: "POST" })
         user_id: userId,
         assessment_id: assessment.id,
         treinos_json: {},
-        unlock_date: data.unlockDateIso,
+        unlock_date: unlockDateIso,
       })
       .select()
       .single();
-    if (wErr) throw new Error(wErr.message);
+    if (wErr) {
+      console.error("[saveAssessment] workout insert failed:", wErr);
+      throw new Error("Failed to save assessment. Please try again.");
+    }
 
     return { assessmentId: assessment.id, workoutId: workout.id, unlockDate: workout.unlock_date };
   });
@@ -80,17 +89,4 @@ export const getLatestState = createServerFn({ method: "GET" })
           }
         : null,
     };
-  });
-
-// Dev helper: unlock immediately (no-op in production via NODE_ENV check)
-export const unlockNow = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { supabase, userId } = context;
-    const { error } = await supabase
-      .from("workouts")
-      .update({ unlock_date: new Date().toISOString() })
-      .eq("user_id", userId);
-    if (error) throw new Error(error.message);
-    return { ok: true };
   });
