@@ -181,6 +181,7 @@ function DashboardPage() {
       </div>
       <BottomNav />
     </main>
+    </>
   );
 }
 
