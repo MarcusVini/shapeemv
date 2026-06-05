@@ -122,7 +122,7 @@ function DashboardPage() {
                   Faça sua <span className="text-gold-gradient">avaliação física</span>
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  23 perguntas rápidas para a inteligência Shape em V montar seu protocolo personalizado.
+                  Perguntas rápidas para a inteligência Shape em V montar seu protocolo personalizado.
                 </p>
                 <Link to="/quiz" className="mt-6 block">
                   <Button className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm">
