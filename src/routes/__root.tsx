@@ -72,24 +72,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
-      { title: "Shape em V — Fernando Contarini" },
+      { title: "Shape em V — Fernando Cantarelli" },
       {
         name: "description",
         content:
           "Avaliação física personalizada e protocolo Shape em V, do método de Fernando Contarini.",
       },
       { name: "theme-color", content: "#121212" },
-      { property: "og:title", content: "Shape em V — Fernando Contarini" },
+      { property: "og:title", content: "Shape em V — Fernando Cantarelli" },
       {
         property: "og:description",
         content: "Sua avaliação física personalizada pelo método Shape em V.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:title", content: "Shape em V — Fernando Contarini" },
+      { name: "twitter:title", content: "Shape em V — Fernando Cantarelli" },
       { name: "description", content: "Shape in V is a web app for physical assessment and workout prescription." },
       { property: "og:description", content: "Shape in V is a web app for physical assessment and workout prescription." },
       { name: "twitter:description", content: "Shape in V is a web app for physical assessment and workout prescription." },
       { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/07b07908-d80d-46ed-ad0d-d2151e9cba3c/id-preview-bb7c6bf8--d71bcb53-49c9-4981-b785-07dc72a29676.lovable.app-1780681616387.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/07b07908-d80d-46ed-ad0d-d2151e9cba3c/id-preview-bb7c6bf8--d71bcb53-49c9-4981-b785-07dc72a29676.lovable.app-1780681616387.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
