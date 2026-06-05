@@ -13,12 +13,12 @@ import { saveAssessment } from "@/lib/assessment.functions";
 import { nextUnlockDate } from "@/lib/assessment-calc";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import t1 from "@/assets/transformacao-1.jpg.asset.json";
-import t2 from "@/assets/transformacao-2.jpg.asset.json";
-import t3 from "@/assets/transformacao-3.jpg.asset.json";
-import t4 from "@/assets/transformacao-4.jpg.asset.json";
-import t5 from "@/assets/transformacao-5.jpg.asset.json";
-import t6 from "@/assets/transformacao-6.jpg.asset.json";
+import transformacao1 from "@/assets/transformacao-1.jpg.asset.json";
+import transformacao2 from "@/assets/transformacao-2.jpg.asset.json";
+import transformacao3 from "@/assets/transformacao-3.jpg.asset.json";
+import transformacao4 from "@/assets/transformacao-4.jpg.asset.json";
+import transformacao5 from "@/assets/transformacao-5.jpg.asset.json";
+import transformacao6 from "@/assets/transformacao-6.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/quiz")({
   component: QuizPage,
@@ -377,10 +377,25 @@ function YesNoConditional({
   );
 }
 
-const TRANSFORMACOES = [t1, t2, t3, t4, t5, t6];
+const TRANSFORMACOES = [transformacao1, transformacao2, transformacao3, transformacao4, transformacao5, transformacao6];
 
 function Intersticial({ step }: { step: QuizStep }) {
   const isMotivacao = step.id === "motivacao_intersticial";
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [selected, setSelected] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!isMotivacao || !emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    intervalRef.current = setInterval(() => emblaApi.scrollNext(), 3500);
+    return () => {
+      emblaApi.off("select", onSelect);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [emblaApi, isMotivacao]);
 
   if (!isMotivacao) {
     return (
@@ -403,22 +418,6 @@ function Intersticial({ step }: { step: QuizStep }) {
       </div>
     );
   }
-
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
-  const [selected, setSelected] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
-    emblaApi.on("select", onSelect);
-    onSelect();
-    intervalRef.current = setInterval(() => emblaApi.scrollNext(), 3500);
-    return () => {
-      emblaApi.off("select", onSelect);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [emblaApi]);
 
   return (
     <div>
