@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dumbbell, Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, type Treino } from "@/lib/protocol-data";
+import { getLatestState } from "@/lib/assessment.functions";
 import { cn } from "@/lib/utils";
 import welcomeCover from "@/assets/welcome-cover.jpg";
 
@@ -22,6 +25,29 @@ const TABS: { key: TabKey; label: string }[] = [
 
 function ProtocolPage() {
   const [tab, setTab] = useState<TabKey>("instrucoes");
+  const navigate = useNavigate();
+  const fetchState = useServerFn(getLatestState);
+  const { data: state, isLoading } = useQuery({
+    queryKey: ["state"],
+    queryFn: () => fetchState(),
+  });
+
+  useEffect(() => {
+    if (!state) return;
+    if (!state.assessment) {
+      navigate({ to: "/dashboard", replace: true });
+      return;
+    }
+    const unlockTs = state.workout ? new Date(state.workout.unlock_date).getTime() : null;
+    if (!unlockTs || Date.now() < unlockTs) {
+      navigate({ to: "/waiting", replace: true });
+    }
+  }, [state, navigate]);
+
+  if (isLoading || !state || !state.assessment || !state.workout || Date.now() < new Date(state.workout.unlock_date).getTime()) {
+    return <main className="min-h-screen bg-background" />;
+  }
+
 
   return (
     <main className="min-h-screen bg-background pb-28">

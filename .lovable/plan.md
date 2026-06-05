@@ -1,42 +1,34 @@
-# Etapa "Você não está sozinho" — carrossel + CTA fixo pulsante
+## Problema
 
-## Estrutura nova da tela (ordem vertical)
+Na tela inicial pós-cadastro, a aba **Protocolo** (BottomNav) está clicável e dá acesso direto ao protocolo, mesmo quando o usuário ainda não respondeu a avaliação ou ainda está dentro do prazo de espera de 24h.
 
-1. **Carrossel de antes/depois** (topo) — 6 imagens anexadas
-2. **Headline** — "Você não está sozinho!"
-3. **Texto** — "Mais de 12.000 alunos já transformaram seus corpos com o método Shape em V. A jornada começa agora."
-4. **Botão fixo** no rodapé (já existe), com pulse leve
+## Comportamento esperado
 
-## Passos
+A aba Protocolo deve funcionar como um "cadeado" com 3 estados:
 
-### 1. Upload das 6 imagens como Lovable Assets
-Subir cada uma via `lovable-assets create` a partir de `/mnt/user-uploads/`:
-- `sm-aAiIU-...jpg` → `src/assets/transformacao-1.jpg.asset.json`
-- `sm-0F4au-rafael-coltro.jpg` → `transformacao-2`
-- `sm-aK3WS-dep-05.jpg` → `transformacao-3`
-- `sm-yYkWA-...jpg` → `transformacao-4`
-- `sm-DFSK9-...jpg` → `transformacao-5`
-- `sm-kBBM0-...jpg` → `transformacao-6`
+1. **Sem avaliação respondida** → ícone com cadeado. Ao clicar, mostra aviso "Responda primeiro sua avaliação física para liberar o protocolo." e leva para `/dashboard`.
+2. **Avaliação respondida, mas dentro do prazo de 24h** → ícone com cadeado. Ao clicar, leva para `/waiting`, que já exibe o cronômetro "Liberação em HH:MM:SS" (mesma tela usada após enviar o quiz).
+3. **Prazo cumprido** → ícone normal de Protocolo, navegação livre para `/protocol`.
 
-### 2. Componente do intersticial em `src/routes/_authenticated/quiz.tsx`
-Reescrever `<Intersticial />` para suportar conteúdo customizado (carrossel + headline + texto), apenas quando `step.id === "motivacao_intersticial"`. Demais intersticiais mantêm o layout atual.
+## Mudanças
 
-Layout:
-- Carrossel: usar `embla-carousel-react` (já presente via shadcn `components/ui/carousel`) com autoplay leve (`setInterval` 3.5s) e dots dourados abaixo. Cada slide: imagem `aspect-square` com borda dourada sutil `gold-border` e `rounded-2xl`.
-- Headline: `text-3xl font-black` (já no `StepView`, então a `question` continua sendo "Você não está sozinho!" e o componente só renderiza carrossel + parágrafo extra).
-- Parágrafo: texto curto em `text-muted-foreground`.
+### 1. `src/components/BottomNav.tsx`
+- Adicionar `useQuery` chamando `getLatestState` (já existe em `assessment.functions.ts` e retorna `assessment` + `workout.unlock_date`).
+- Calcular `protocolUnlocked = !!workout && Date.now() >= new Date(workout.unlock_date).getTime()` e `hasAssessment = !!assessment`.
+- Trocar o `<Link to="/protocol">` por um `<button>` quando bloqueado:
+  - Sem avaliação: `toast` "Responda primeiro sua avaliação física." e `navigate({ to: "/dashboard" })`.
+  - Com avaliação mas ainda travado: `navigate({ to: "/waiting" })`.
+- Ícone: usar `Lock` (lucide) sobreposto ou substituindo o `Dumbbell` quando bloqueado, com cor `text-muted-foreground` em vez do dourado ativo.
+- Label "Protocolo" mantida.
 
-### 3. Botão fixo pulsante
-O botão "Continuar" já é fixo (footer). Adicionar uma animação de pulse muito sutil:
-- Nova classe utilitária `animate-gold-pulse` em `src/styles.css`:
-  - escala `1 → 1.02 → 1` em 2.4s, `ease-in-out`, infinito
-  - acompanhada de variação leve no `box-shadow` dourado
-- Aplicar a classe ao `<Button>` do footer **apenas** quando `step.type === "intersticial"` (mantém estática nas demais etapas para não distrair).
+### 2. `src/routes/_authenticated/protocol.tsx`
+- Adicionar guarda no componente: ler `getLatestState`; se `!assessment` redireciona para `/dashboard`; se `assessment` mas `Date.now() < unlock_date`, redireciona para `/waiting`. Isso impede acesso direto pela URL.
 
-## Arquivos afetados
-- `src/assets/transformacao-{1..6}.jpg.asset.json` (novos, 6 arquivos)
-- `src/routes/_authenticated/quiz.tsx` (editar `Intersticial` + footer)
-- `src/styles.css` (nova keyframe `gold-pulse`)
+### 3. Sem mudanças de schema/banco
+A coluna `workout.unlock_date` já é definida no servidor por `saveAssessment` usando `nextUnlockDate()` (24h). O `/waiting` já consome esse valor e mostra o timer.
 
-## Sem mudanças
-- Sem alterações de schema, dados do quiz ou lógica de avanço.
+## Resultado
+
+- Usuário recém-cadastrado: vê cadeado na aba Protocolo; clique alerta para fazer a avaliação.
+- Após enviar quiz: cadeado permanece; clique abre tela com cronômetro até a liberação.
+- Após o tempo: cadeado some, acesso liberado normalmente.
