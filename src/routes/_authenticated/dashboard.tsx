@@ -196,7 +196,7 @@ function DashboardPage() {
                     rel="noopener noreferrer"
                     className="underline-offset-2 hover:underline"
                   >
-                    @shapeemv
+                    @fernandocantarelli_
                   </a>
                 </p>
                 <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
