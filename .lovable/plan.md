@@ -1,68 +1,128 @@
-## 1. Nova barra inferior (5 itens)
+# Revisão do fluxo + Avaliação personalizada
 
-Ordem da esquerda para a direita:
+Objetivo: coletar mais sinais relevantes no quiz, transformar isso em uma avaliação realmente personalizada (texto + números) e polir pontos fracos do fluxo atual.
 
-1. **Início** — `/dashboard` (a nova home com os 3 cards)
-2. **Avaliação** — `/results` (tela completa de resultados, gráficos, IMC etc.)
-3. **Protocolo** — `/protocol` (treino)
-4. **Suporte** — WhatsApp (mantém igual)
-5. **Perfil** — `/profile`
+---
 
-Estados de bloqueio (mantém regra atual):
-- Sem avaliação respondida → **Avaliação** e **Protocolo** ficam com ícone de cadeado. Ao tocar, mostra toast "Responda primeiro sua avaliação física…" e leva para `/dashboard`.
-- Avaliação respondida mas antes da liberação → cadeado nos dois e ao tocar vai para a tela de espera com o cronômetro.
-- Depois da liberação → ambos liberados.
+## 1) Quiz — novas perguntas para personalizar a avaliação
 
-## 2. Home (`/dashboard`) redesenhada
+Hoje o quiz tem 23 passos, mas falta dado para calcular nutrição, recuperação e prescrição realista. Vou **adicionar 9 perguntas** (agrupadas por bloco) e ajustar 2 existentes.
 
-Cabeçalho:
-- "Olá, **{primeiro_nome}** 👋"
-- Subtítulo: "Bem-vindo ao **Shape em V**" (mantém branding)
-- Botão de sair no canto (igual hoje)
+### Bloco "Corpo" (adicionar)
+- `peso_meta` (slider, kg) — peso que quer atingir
+- `circunferencia_cintura` (slider, cm, opcional) — refina cálculo de risco metabólico (melhor que IMC sozinho)
 
-Conteúdo muda conforme o estado:
+### Bloco "Rotina & Recuperação" (novo bloco)
+- `dias_treino_semana` (cards: 2, 3, 4, 5, 6) — base de prescrição
+- `tempo_treino` (cards: 30min / 45min / 60min / 75min+)
+- `local_treino` (cards: Academia completa / Academia básica / Casa com equipamentos / Casa sem equipamentos)
+- `horas_sono` (slider 4–10h) — entra em Recuperação
+- `nivel_estresse` (slider 1–10) — entra em Recuperação
+- `agua_dia` (cards: <1L / 1–2L / 2–3L / 3L+)
 
-**(a) Ainda não fez a avaliação** — mantém o card atual "Faça sua avaliação física" + estatísticas (23 perguntas / ~5 min). Cards de Avaliação Trinca e Protocolo aparecem visíveis porém **bloqueados** (cadeado + "Disponível após sua avaliação"), sem ação ao clicar (ou com toast informativo).
+### Bloco "Nutrição"
+- `refeicoes_dia` (cards: 2 / 3 / 4 / 5+)
+- `qualidade_alimentacao` (cards: Ruim / Regular / Boa / Excelente) — substitui parte do que hoje é só "gasto"
+- `alcool_semana` (cards: Não bebo / 1–2x / 3–5x / Quase todo dia)
+- `suplementacao` (checkbox-multi: Whey, Creatina, Multivitamínico, Pré-treino, Nenhum)
 
-**(b) Já respondeu, antes da liberação (timer rodando)** — 3 cards, todos com cadeado:
-- "Sua Avaliação Trinca" — ícone de check, descrição "Confira a sua avaliação física completa". Bloqueado.
-- "Seu Protocolo está Pronto" — ícone de halter. Bloqueado.
-- Card grande de countdown "Liberação em HH:MM:SS" (mesmo bloco que já existe hoje).
-- "Compartilhe sua Jornada" (sempre visível, ver item c).
+### Ajustes em existentes
+- `composicao`: alinhar as keys com o que `assessment-calc.ts` espera (hoje há mismatch: quiz usa `muito_magro`, `magro_barriga`, `muito_acima_peso`, `musculoso` que nem entram no `scoreFromMap` → todos caem no fallback 50). Vou expandir o map.
+- `areas_incomodam`: adicionar "abdômen definido" e "postura".
 
-**(c) Liberado** — 3 cards ativos, layout da imagem 1:
-- **Sua Avaliação Trinca** → navega para `/results`. Ícone check, copy "Confira a sua avaliação física completa."
-- **Seu Protocolo está Pronto** → navega para `/protocol`. Ícone halter, copy "Acesse seu treino personalizado."
-- **Compartilhe sua Jornada** — bloco maior, ícone raio. Texto:
-  > "Agora você faz parte de um grupo de pessoas diferenciadas… Que estão construindo a melhor versão de si mesmas.
-  > A sua evolução merece ser vista! Inspire pessoas e fortaleça o nosso movimento!"
-  > 
-  > Sub-bloco dourado: **"Poste stories do seu treino marcando @shapeemv"** — "Vou gostar de ver, vou repostar e você ainda ganhará seguidores! ⚡"
+### Reorganização visual
+- Inserir 2 telas intersticiais novas para quebrar a percepção de "quiz longo": após bloco Corpo e após bloco Rotina.
+- Barra de progresso já existe; passar a mostrar **categoria atual** ("Corpo • 4/6") em vez de só número global.
 
-Rodapé do conteúdo (acima da bottom nav): "© Todos os direitos reservados · Shape em V" e link "sair da conta".
+---
 
-Observação: o handle `@shapeemv` é uma suposição. Se for outro (ex.: `@fernandocantarelli`), me diga e troco em 1 linha.
+## 2) Avaliação personalizada — `/results`
 
-## 3. Tela "Avaliação" completa (`/results`)
+### 2.1 Hero "Diagnóstico personalizado" (novo, topo da página)
+Bloco em destaque com:
+- Saudação pelo primeiro nome
+- **Parágrafo gerado** a partir das respostas (template determinístico, sem IA), ex.:
+  > "Marcos, 34 anos. Seu perfil indica **sobrepeso leve** (IMC 27.3) com **baixa recuperação** (dormindo 5h e estresse 8/10) e **execução intermediária**. Sua maior alavanca nos próximos 28 dias é **ajustar sono + reduzir gordura visceral**, mantendo treino 4x/semana de 45min."
+- 3 **tags de perfil** auto-geradas (ex.: "Estressado crônico", "Tempo curto", "Foco em definição")
 
-Hoje a tela já tem: Dados pessoais, IMC, Score geral, Objetivo, Perfil de performance (radar), Áreas de foco e Progresso físico projetado. Vou **adicionar as seções que faltam** para bater com a imagem 2:
+### 2.2 Novos scores no Perfil de Performance (radar)
+Hoje: Força, Resistência, Execução. Vai virar 5 eixos:
+- Força (já existe)
+- Resistência (já existe)
+- Execução (já existe)
+- **Recuperação** = f(horas_sono, nivel_estresse)
+- **Nutrição** = f(qualidade_alimentacao, refeicoes_dia, agua_dia, alcool_semana)
 
-1. **Indicadores de estilo de vida** — gráfico de barras verticais (Treino, Técnica, Composição) usando os scores já calculados.
-2. **Mentalidade** — bloco de texto puxando as respostas do quiz:
-   - "O que te motiva a mudar" → resposta do campo motivação
-   - "Seu Sonho" → resposta do campo sonho
-3. **Seu progresso — Bem-estar** — gráfico de linha com 3 séries projetadas em 28 dias: **Testosterona +40%**, **Autoestima +80%**, **Saúde geral +65%** (mesmo padrão de cálculo do progresso físico, só que para indicadores subjetivos).
-4. Ajuste o gráfico físico atual para o eixo X "Hoje / Dia 7 / Dia 14 / Dia 21 / Dia 28" e labels da legenda "Ganho muscular / Queima de gordura / Disposição" (matching a imagem).
-5. Manter o CTA flutuante "Seu protocolo está pronto" no final (já existe).
+### 2.3 Novo bloco "Metabolismo & Calorias"
+Calcula via Mifflin-St Jeor + fator de atividade (dias_treino_semana):
+- TMB (kcal/dia em repouso)
+- Gasto total estimado (kcal/dia)
+- Meta calórica sugerida (déficit/superávit conforme `objetivo`)
+- Proteína-alvo em g (1.8–2.2 g/kg conforme objetivo)
 
-A entrada nessa tela passa a ser tanto pelo card "Sua Avaliação Trinca" da home quanto pelo item **Avaliação** do menu inferior.
+### 2.4 Projeções 28 dias **personalizadas** (não mais hardcoded)
+Hoje `project28DaysPhysical` só olha `objetivo`. Vai considerar:
+- `dias_treino_semana` e `tempo_treino` (volume → multiplicador)
+- `horas_sono` + `nivel_estresse` (recuperação → multiplicador)
+- `experiencia` (iniciante ganha mais rápido — "newbie gains")
+- `peso` e `peso_meta` (calibra o delta projetado)
 
-## Detalhes técnicos (referência interna)
+Idem `project28DaysWellbeing` (testosterona/autoestima/saúde): muda conforme sono/estresse/álcool.
 
-- `src/components/BottomNav.tsx`: adicionar item **Início** apontando para `/dashboard`, mudar **Avaliação** para `/results` (com lógica de cadeado idêntica à do Protocolo: travada até `workout.unlock_date`).
-- `src/routes/_authenticated/dashboard.tsx`: refatorar para o novo hub com 3 cards + bloco "Compartilhe sua Jornada" + rodapé. Reaproveitar lógica de `useQuery(state)` e timer já existentes.
-- `src/routes/_authenticated/results.tsx`: adicionar seções "Indicadores de estilo de vida" (BarChart recharts), "Mentalidade" (texto puro com respostas), "Seu progresso — Bem-estar" (LineChart 28 dias). Ajustar eixo do gráfico físico para 28 dias.
-- `src/lib/assessment-calc.ts`: adicionar `projectWellbeing(...)` retornando série de 5 pontos para testosterona/autoestima/saúde.
-- Cards bloqueados: componente reutilizável `LockedCard` com overlay escuro + ícone de cadeado e copy "Disponível em HH:MM:SS".
+### 2.5 Novo bloco "Suas 3 alavancas" (recomendações)
+Top 3 ações priorizadas pela maior fraqueza detectada, ex.:
+- "Dormir 7h+ (hoje: 5h) → +20% recuperação"
+- "Aumentar proteína para 150g/dia"
+- "3L de água/dia"
 
-Sem mudanças de banco/SQL.
+### 2.6 IMC mais inteligente
+Hoje IMC só usa peso/altura. Vou adicionar nota contextual quando `composicao = musculoso` (IMC alto não significa gordura) e quando idade > 60 (faixas ajustadas).
+
+---
+
+## 3) Pontos de melhoria do fluxo
+
+### 3.1 Quiz
+- **Auto-save** a cada step (localStorage) para não perder respostas se recarregar
+- **Tela de revisão** antes do submit final (lista compacta com botão "editar" por pergunta)
+- Botão "Voltar" em todos os steps (verificar se está consistente)
+
+### 3.2 Processing / Waiting
+- Mensagens do processing referenciarem nome + objetivo do usuário
+- Waiting: além do countdown, mostrar preview borrado da avaliação ("desbloqueia em…")
+
+### 3.3 Dashboard
+- Card "Sua Avaliação Trinca" hoje é genérico → mostrar **1 insight chave** (ex.: "Score 72/100 · IMC 27.3 · Foco: definição")
+- Quando assessment incompleto, CTA mais forte indicando quantas perguntas faltam
+
+### 3.4 Profile
+- Botão **"Refazer avaliação"** (sobrescreve `assessments`)
+- Botão **"Atualizar peso"** (rápido, sem refazer quiz inteiro)
+
+### 3.5 Bugs/inconsistências detectadas
+- `calcComposicaoScore` não cobre 4 das 7 opções do quiz → todos caem no fallback 50. **Corrigir.**
+- `projectProgress` calculada mas nunca usada (`void projection;`) → remover.
+- Strings de `LABEL.composicao` em `results.tsx` não batem com novos values do quiz → atualizar.
+
+---
+
+## Arquivos afetados
+
+- `src/lib/quiz-data.ts` — +9 perguntas, +2 intersticiais, ajustes composicao/areas
+- `src/lib/assessment-calc.ts` — corrigir composicaoScore, novos scores (recuperação, nutrição), Mifflin-St Jeor, projeções personalizadas, gerador de diagnóstico textual, gerador de tags, gerador de "3 alavancas"
+- `src/routes/_authenticated/quiz.tsx` — auto-save localStorage, tela de revisão, barra com categoria
+- `src/routes/_authenticated/results.tsx` — hero diagnóstico, radar 5 eixos, bloco metabolismo, bloco alavancas, nota IMC, atualizar labels
+- `src/routes/_authenticated/dashboard.tsx` — insight chave no card de avaliação
+- `src/routes/_authenticated/profile.tsx` — botões refazer avaliação / atualizar peso
+- `src/routes/_authenticated/processing.tsx` e `waiting.tsx` — copy personalizada + preview
+
+**Sem mudanças de schema do banco** — `respostas_json` é JSONB livre, então novos campos entram naturalmente. Avaliações antigas continuam funcionando (todos os novos campos têm fallback).
+
+---
+
+## Pergunta antes de implementar
+
+Posso seguir com **tudo** acima ou prefere que eu faça em fases? Sugestão de fase 1 (maior impacto):
+1. Corrigir bugs + adicionar perguntas de **Rotina/Recuperação/Nutrição** + Hero diagnóstico + radar 5 eixos + bloco metabolismo + 3 alavancas.
+
+E deixar para fase 2: tela de revisão do quiz, refazer avaliação, preview no waiting.
