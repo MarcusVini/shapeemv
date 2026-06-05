@@ -126,7 +126,6 @@ function LandingPage() {
           {[
             "Diagnóstico em 23 etapas",
             "Score físico e projeção em 4 meses",
-            "Protocolo liberado em 24h",
           ].map((t) => (
             <li
               key={t}
