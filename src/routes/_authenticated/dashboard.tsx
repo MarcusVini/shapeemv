@@ -52,6 +52,22 @@ function DashboardPage() {
   const pad = (n: number) => String(n).padStart(2, "0");
   const countdown = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
+  // Insight chave da avaliação (mostrado no card quando disponível)
+  const respostas = (data?.assessment?.respostas ?? {}) as Record<string, unknown>;
+  const peso = typeof respostas.peso === "number" ? respostas.peso : 0;
+  const altura = typeof respostas.altura === "number" ? respostas.altura : 0;
+  const imc = peso && altura ? calcIMC(peso, altura) : 0;
+  const scoreGeral = hasAssessment ? calcScoreGeral(respostas) : 0;
+  const objetivo = String(respostas.objetivo ?? "");
+  const objetivoTxt =
+    objetivo === "secar" ? "Definição" : objetivo === "crescer" ? "Hipertrofia" : "Recomposição";
+  const insightAvaliacao = hasAssessment && imc
+    ? `Score ${scoreGeral}/100 · IMC ${imc} · ${imcLabel(imc).label}`
+    : null;
+  const insightProtocolo = hasAssessment && objetivo
+    ? `Foco: ${objetivoTxt}`
+    : null;
+
   const { show, dismiss } = useWelcomeModal();
 
   const handleLockedTap = () => {
