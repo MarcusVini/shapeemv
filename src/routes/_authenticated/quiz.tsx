@@ -90,6 +90,7 @@ function QuizPage() {
 
   function canAdvance(): boolean {
     if (step.type === "intersticial") return true;
+    if (step.optional) return true;
     const v = answers[step.id];
     if (step.type === "slider") return typeof v === "number";
     if (step.type === "cards") return typeof v === "string";
@@ -115,6 +116,11 @@ function QuizPage() {
       await submitFn({
         data: { respostas: answers },
       });
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // ignore
+      }
       navigate({ to: "/processing", replace: true });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao salvar");
@@ -142,6 +148,13 @@ function QuizPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
+          <div className="flex-1">
+            {step.category && catProgress && (
+              <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                {CATEGORY_LABEL[step.category]} · {catProgress.current}/{catProgress.total}
+              </p>
+            )}
+          </div>
           <p className="text-xs font-medium text-muted-foreground tabular-nums">
             {stepIdx + 1} <span className="opacity-50">/ {TOTAL_STEPS}</span>
           </p>
