@@ -21,7 +21,15 @@ function WaitingPage() {
     queryFn: () => fetchState(),
   });
 
-  const unlockTs = data?.workout ? new Date(data.workout.unlock_date).getTime() : null;
+  const computeNext10am = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(10, 0, 0, 0);
+    return d.getTime();
+  };
+  const unlockTs = data?.workout
+    ? new Date(data.workout.unlock_date).getTime()
+    : computeNext10am();
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
