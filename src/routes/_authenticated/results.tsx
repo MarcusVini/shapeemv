@@ -15,6 +15,8 @@ import {
   Radar,
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -35,6 +37,8 @@ import {
   calcScoreGeral,
   getInitials,
   imcLabel,
+  project28DaysPhysical,
+  project28DaysWellbeing,
   projectProgress,
   type ConditionalAnswer,
 } from "@/lib/assessment-calc";
