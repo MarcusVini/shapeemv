@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
-import { Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Lock, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 
 export const Route = createFileRoute("/_authenticated/waiting")({
   component: WaitingPage,
 });
+
 
 function WaitingPage() {
   const fetchState = useServerFn(getLatestState);
