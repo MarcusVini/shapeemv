@@ -3,9 +3,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dumbbell, Flame, Scale } from "lucide-react";
+import { Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { TREINOS, type Treino } from "@/lib/protocol-data";
+import { TREINOS, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { cn } from "@/lib/utils";
 import welcomeCover from "@/assets/welcome-cover.jpg";
@@ -14,13 +14,14 @@ export const Route = createFileRoute("/_authenticated/protocol")({
   component: ProtocolPage,
 });
 
-type TabKey = "instrucoes" | "t1" | "t2" | "t3";
+type TabKey = "instrucoes" | "t1" | "t2" | "t3" | "t4";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "instrucoes", label: "Instruções" },
   { key: "t1", label: "Treino 1" },
   { key: "t2", label: "Treino 2" },
   { key: "t3", label: "Treino 3" },
+  { key: "t4", label: "Treino 4" },
 ];
 
 function ProtocolPage() {
@@ -93,6 +94,7 @@ function ProtocolPage() {
             {tab === "t1" && <TreinoTab treino={TREINOS[0]} />}
             {tab === "t2" && <TreinoTab treino={TREINOS[1]} />}
             {tab === "t3" && <TreinoTab treino={TREINOS[2]} />}
+            {tab === "t4" && <TreinoTab treino={TREINOS[3]} />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -246,7 +248,7 @@ function TreinoTab({ treino }: { treino: Treino }) {
           {treino.nome}
         </p>
         <p className="mt-1 text-lg font-black text-foreground">
-          Foco: <span className="text-gold-gradient">{treino.foco}</span>
+          <span className="text-gold-gradient">{treino.foco}</span>
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
           {treino.exercicios.length} exercícios programados
@@ -254,19 +256,35 @@ function TreinoTab({ treino }: { treino: Treino }) {
       </div>
 
       {treino.exercicios.map((ex, i) => (
-        <ExercicioCard key={ex.nome} index={i + 1} ex={ex} />
+        <ExercicioCard key={`${treino.id}-${ex.id}`} index={i + 1} ex={ex} />
+      ))}
+
+      <AbdomenSection />
+    </div>
+  );
+}
+
+function AbdomenSection() {
+  return (
+    <div className="mt-8 space-y-4">
+      <div className="relative overflow-hidden rounded-2xl gold-border bg-card p-4 shadow-gold-sm">
+        <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-primary/20 blur-3xl" />
+        <p className="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+          Bônus
+        </p>
+        <p className="relative mt-1 text-base font-black leading-tight text-gold-gradient">
+          ABDÔMEN: FAZER DE 1 A 2 VEZES NA SEMANA
+        </p>
+      </div>
+      {ABDOMEN.map((ex, i) => (
+        <ExercicioCard key={`abd-${ex.id}`} index={i + 1} ex={ex} />
       ))}
     </div>
   );
 }
 
-function ExercicioCard({
-  index,
-  ex,
-}: {
-  index: number;
-  ex: { nome: string; subtitulo: string; series: string; reps: string; descanso: string };
-}) {
+function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
+  const emBreve = ex.videoUrl === "EM BREVE";
   return (
     <article className="rounded-2xl bg-[#18181B] p-5 shadow-card-premium">
       <header className="flex items-start gap-3">
@@ -275,13 +293,27 @@ function ExercicioCard({
         </div>
         <div className="flex-1">
           <h4 className="text-base font-bold leading-tight text-foreground">{ex.nome}</h4>
-          <p className="mt-0.5 text-xs text-muted-foreground">{ex.subtitulo}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{ex.foco}</p>
         </div>
       </header>
 
-      <div className="relative mt-4 flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#1f1f23] to-[#0f0f12]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,oklch(0.78_0.14_85/0.08),transparent_60%)]" />
-        <Dumbbell className="relative h-10 w-10 text-primary/60" />
+      <div className="mt-4 overflow-hidden rounded-lg">
+        {emBreve ? (
+          <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-[#1E1E1E]">
+            <span className="text-sm font-black uppercase tracking-[0.2em] text-gold-gradient">
+              Vídeo em breve
+            </span>
+          </div>
+        ) : (
+          <iframe
+            src={ex.videoUrl}
+            title={ex.nome}
+            loading="lazy"
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            className="aspect-video w-full rounded-lg shadow-md"
+          />
+        )}
       </div>
 
       <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -305,3 +337,4 @@ function Badge({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
