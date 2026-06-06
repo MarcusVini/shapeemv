@@ -1,9 +1,11 @@
 export interface Exercicio {
+  id: number;
   nome: string;
-  subtitulo: string;
+  foco: string;
   series: string;
   reps: string;
   descanso: string;
+  videoUrl: string;
 }
 
 export interface Treino {
@@ -17,42 +19,62 @@ export const TREINOS: Treino[] = [
   {
     id: 1,
     nome: "Treino 1",
-    foco: "Peito e Tríceps",
+    foco: "Ênfase em Costas (Dorsais / Bíceps / Deltoide Posterior)",
     exercicios: [
-      { nome: "Aquecimento — Esteira", subtitulo: "Preparação cardiovascular", series: "1", reps: "5 min", descanso: "—" },
-      { nome: "Supino Reto com Barra", subtitulo: "Foco no peitoral médio", series: "4", reps: "10 a 12", descanso: "60s" },
-      { nome: "Supino Inclinado com Halteres", subtitulo: "Peitoral superior", series: "4", reps: "10 a 12", descanso: "60s" },
-      { nome: "Crucifixo", subtitulo: "Isolamento do peitoral", series: "3", reps: "12 a 15", descanso: "45s" },
-      { nome: "Tríceps Pulley", subtitulo: "Cabeça lateral do tríceps", series: "4", reps: "12", descanso: "45s" },
-      { nome: "Tríceps Francês", subtitulo: "Alongamento do tríceps", series: "3", reps: "10 a 12", descanso: "60s" },
+      { id: 1, nome: "Rotação Ext. Polia Unilateral", foco: "Manguito", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uUo-Ri4_vFQ" },
+      { id: 2, nome: "Puxada Alta Frente", foco: "Dorsais", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/mPmfwbc_svw" },
+      { id: 3, nome: "Remada Baixa", foco: "Dorsais Espessura", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Lh_NpUyMegw" },
+      { id: 4, nome: "Pulldown", foco: "Dorsais Expansão", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/7KNy6aij2p0" },
+      { id: 5, nome: "Crucifixo Inverso Máquina", foco: "Deltóide Posterior", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/YWxL4qBQEJk" },
+      { id: 6, nome: "Rosca Direta Barra W", foco: "Bíceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/CxsSfJb3ucA" },
+      { id: 7, nome: "Rosca com Halteres Banco Inclinado", foco: "Bíceps Alongado", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/6C5y_02RrfM" },
     ],
   },
   {
     id: 2,
     nome: "Treino 2",
-    foco: "Costas e Bíceps (A base do V)",
+    foco: "Ênfase em Peitoral (Peitoral / Deltoide / Tríceps)",
     exercicios: [
-      { nome: "Aquecimento — Remo", subtitulo: "Ativação dorsal", series: "1", reps: "5 min", descanso: "—" },
-      { nome: "Puxada Frontal", subtitulo: "Largura do dorsal", series: "4", reps: "10 a 12", descanso: "60s" },
-      { nome: "Remada Curvada com Barra", subtitulo: "Espessura das costas", series: "4", reps: "8 a 10", descanso: "75s" },
-      { nome: "Pulldown na Polia", subtitulo: "Ênfase no V superior", series: "3", reps: "12", descanso: "60s" },
-      { nome: "Remada Baixa", subtitulo: "Meio das costas", series: "3", reps: "10 a 12", descanso: "60s" },
-      { nome: "Rosca Direta", subtitulo: "Bíceps braquial", series: "4", reps: "10 a 12", descanso: "45s" },
-      { nome: "Rosca Martelo", subtitulo: "Braquial e antebraço", series: "3", reps: "12", descanso: "45s" },
+      { id: 1, nome: "Rotação Ext. Polia Unilateral", foco: "Manguito", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uUo-Ri4_vFQ" },
+      { id: 2, nome: "Desenvolvimento", foco: "Deltóide Frontal/Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/9Dk2URiYUgI" },
+      { id: 3, nome: "Voador", foco: "Peitoral Isolado", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 4, nome: "Supino Inclinado Halteres", foco: "Peitoral Superior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ZhWgcCY2lqs" },
+      { id: 5, nome: "Cross Over", foco: "Peitoral Inferior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/mccQrInfjBs" },
+      { id: 6, nome: "Elevação Lateral com Halteres", foco: "Deltóide Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/9y3Kz4vFE8k" },
+      { id: 7, nome: "Tríceps Testa", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/B0sXjBDyuiQ" },
+      { id: 8, nome: "Tríceps Corda", foco: "Tríceps Isolado", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/Qyd7_FaxoLs" },
     ],
   },
   {
     id: 3,
     nome: "Treino 3",
-    foco: "Pernas e Ombros (Alargamento de deltoides)",
+    foco: "Ênfase em Pernas (Inferiores Completo)",
     exercicios: [
-      { nome: "Aquecimento — Bike", subtitulo: "Preparação articular", series: "1", reps: "5 min", descanso: "—" },
-      { nome: "Agachamento Livre", subtitulo: "Base de força em pernas", series: "4", reps: "8 a 10", descanso: "90s" },
-      { nome: "Leg Press 45°", subtitulo: "Quadríceps e glúteos", series: "4", reps: "10 a 12", descanso: "75s" },
-      { nome: "Cadeira Extensora", subtitulo: "Isolamento de quadríceps", series: "3", reps: "12 a 15", descanso: "45s" },
-      { nome: "Elevação Lateral", subtitulo: "Deltoide medial — o V", series: "4", reps: "12 a 15", descanso: "45s" },
-      { nome: "Desenvolvimento com Halteres", subtitulo: "Ombro completo", series: "4", reps: "10 a 12", descanso: "60s" },
-      { nome: "Elevação Frontal", subtitulo: "Deltoide anterior", series: "3", reps: "12", descanso: "45s" },
+      { id: 1, nome: "Agachamento Peso Corporal", foco: "Aquecimento", series: "2", reps: "15 a 20", descanso: "40s", videoUrl: "EM BREVE" },
+      { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDIR7k" },
+      { id: 3, nome: "Mesa Flexora", foco: "Posterior de Coxa", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Z7Yj5ajNA0E" },
+      { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_18" },
+      { id: 5, nome: "Cadeira Abdutora", foco: "Glúteo Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/1BdeEx18sec" },
+      { id: 6, nome: "Gêmeos em Pé", foco: "Panturrilhas", series: "4", reps: "15 a 20", descanso: "45s", videoUrl: "https://www.youtube.com/embed/5laQ9RG_6gY" },
     ],
   },
+  {
+    id: 4,
+    nome: "Treino 4",
+    foco: "Ênfase em Ombros (Deltóides e Complementar)",
+    exercicios: [
+      { id: 1, nome: "Supino Reto Halteres", foco: "Peitoral Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 2, nome: "Remada Curvada", foco: "Dorsais Espessura", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/FUZ8sowWDcE" },
+      { id: 3, nome: "Crucifixo Inclinado", foco: "Peitoral Superior", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 4, nome: "Elevação Frontal", foco: "Deltóide Frontal", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/UTAhAhA1gSA" },
+      { id: 5, nome: "Rosca Martelo", foco: "Braquial", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/0-_yC5le2i4" },
+      { id: 6, nome: "Tríceps Pulley Barra Reta", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/4LQY13QIM2k" },
+    ],
+  },
+];
+
+export const ABDOMEN: Exercicio[] = [
+  { id: 1, nome: "Abdomen Corda", foco: "Abdômen Superior", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/Dn_PIBI41nc" },
+  { id: 2, nome: "Abdomen Infra ao Chão", foco: "Abdômen Inferior", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.instagram.com/p/CoqANw_jGNa/embed" },
+  { id: 3, nome: "Isometria Prancha", foco: "Core / Estabilidade", series: "2", reps: "40s", descanso: "40s", videoUrl: "EM BREVE" },
 ];
