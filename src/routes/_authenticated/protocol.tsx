@@ -3,9 +3,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dumbbell, Flame, Scale } from "lucide-react";
+import { Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { TREINOS, type Treino } from "@/lib/protocol-data";
+import { TREINOS, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { cn } from "@/lib/utils";
 import welcomeCover from "@/assets/welcome-cover.jpg";
@@ -14,13 +14,14 @@ export const Route = createFileRoute("/_authenticated/protocol")({
   component: ProtocolPage,
 });
 
-type TabKey = "instrucoes" | "t1" | "t2" | "t3";
+type TabKey = "instrucoes" | "t1" | "t2" | "t3" | "t4";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "instrucoes", label: "Instruções" },
   { key: "t1", label: "Treino 1" },
   { key: "t2", label: "Treino 2" },
   { key: "t3", label: "Treino 3" },
+  { key: "t4", label: "Treino 4" },
 ];
 
 function ProtocolPage() {
