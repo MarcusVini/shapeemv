@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/upsell")({
   component: UpsellPage,
 });
 
-declare global {
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "vturb-smartplayer": React.DetailedHTMLProps<
