@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
+import { Route as AuthenticatedUpsellRouteImport } from './routes/_authenticated/upsell'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
 import { Route as AuthenticatedProtocolRouteImport } from './routes/_authenticated/protocol'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
   id: '/waiting',
   path: '/waiting',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUpsellRoute = AuthenticatedUpsellRouteImport.update({
+  id: '/upsell',
+  path: '/upsell',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedResultsRoute = AuthenticatedResultsRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/protocol': typeof AuthenticatedProtocolRoute
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
+  '/upsell': typeof AuthenticatedUpsellRoute
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesByTo {
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/protocol': typeof AuthenticatedProtocolRoute
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
+  '/upsell': typeof AuthenticatedUpsellRoute
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesById {
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/_authenticated/protocol': typeof AuthenticatedProtocolRoute
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/results': typeof AuthenticatedResultsRoute
+  '/_authenticated/upsell': typeof AuthenticatedUpsellRoute
   '/_authenticated/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRouteTypes {
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/quiz'
     | '/results'
+    | '/upsell'
     | '/waiting'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/quiz'
     | '/results'
+    | '/upsell'
     | '/waiting'
   id:
     | '__root__'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/_authenticated/protocol'
     | '/_authenticated/quiz'
     | '/_authenticated/results'
+    | '/_authenticated/upsell'
     | '/_authenticated/waiting'
   fileRoutesById: FileRoutesById
 }
@@ -156,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/waiting'
       fullPath: '/waiting'
       preLoaderRoute: typeof AuthenticatedWaitingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/upsell': {
+      id: '/_authenticated/upsell'
+      path: '/upsell'
+      fullPath: '/upsell'
+      preLoaderRoute: typeof AuthenticatedUpsellRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/results': {
@@ -210,6 +229,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProtocolRoute: typeof AuthenticatedProtocolRoute
   AuthenticatedQuizRoute: typeof AuthenticatedQuizRoute
   AuthenticatedResultsRoute: typeof AuthenticatedResultsRoute
+  AuthenticatedUpsellRoute: typeof AuthenticatedUpsellRoute
   AuthenticatedWaitingRoute: typeof AuthenticatedWaitingRoute
 }
 
@@ -220,6 +240,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProtocolRoute: AuthenticatedProtocolRoute,
   AuthenticatedQuizRoute: AuthenticatedQuizRoute,
   AuthenticatedResultsRoute: AuthenticatedResultsRoute,
+  AuthenticatedUpsellRoute: AuthenticatedUpsellRoute,
   AuthenticatedWaitingRoute: AuthenticatedWaitingRoute,
 }
 
@@ -233,13 +254,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
