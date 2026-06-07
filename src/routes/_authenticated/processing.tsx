@@ -38,7 +38,7 @@ function ProcessingPage() {
 
   useEffect(() => {
     const interval = setInterval(() => setIdx((i) => (i + 1) % MESSAGES.length), 1100);
-    const t = setTimeout(() => navigate({ to: "/waiting", replace: true }), 6500);
+    const t = setTimeout(() => navigate({ to: "/upsell", replace: true }), 6500);
     return () => {
       clearInterval(interval);
       clearTimeout(t);
