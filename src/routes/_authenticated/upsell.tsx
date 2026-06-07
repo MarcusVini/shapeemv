@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/upsell")({
@@ -19,7 +19,6 @@ declare module "react" {
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a2581818e99006cc2b82f9a/v4/player.js";
-const KIWIFY_SRC = "https://snippets.kiwify.com/upsell/upsell.min.js";
 
 function injectScript(src: string, target: HTMLElement) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -31,23 +30,18 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   const [showOffer, setShowOffer] = useState(false);
+  const navigate = useNavigate();
 
   // Inject Vturb script on mount
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
   }, []);
 
-  // 128s delay before showing Kiwify offer block
+  // 128s delay before showing offer block
   useEffect(() => {
     const t = setTimeout(() => setShowOffer(true), 128000);
     return () => clearTimeout(t);
   }, []);
-
-  // Inject Kiwify script after the offer DOM is mounted
-  useEffect(() => {
-    if (!showOffer) return;
-    injectScript(KIWIFY_SRC, document.body);
-  }, [showOffer]);
 
   return (
     <main
@@ -81,45 +75,44 @@ function UpsellPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="mt-8"
+            style={{ textAlign: "center" }}
           >
-            <div
-              style={{ textAlign: "center" }}
-              id="kiwify-upsell-Vj9idar"
-              data-upsell-url="https://shapeemv.lovable.app"
-              data-downsell-url="https://shapeemv.lovable.app"
+            <a
+              href="https://pay.kiwify.com.br/Vj9idar"
+              style={{
+                display: "block",
+                backgroundColor: "#27AF60",
+                padding: "12px 16px",
+                color: "#FFFFFF",
+                fontWeight: 700,
+                borderRadius: "4px",
+                border: "1px solid #27AF60",
+                fontSize: "20px",
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
             >
-              <button
-                id="kiwify-upsell-trigger-Vj9idar"
-                style={{
-                  backgroundColor: "#27AF60",
-                  padding: "12px 16px",
-                  cursor: "pointer",
-                  color: "#FFFFFF",
-                  fontWeight: 600,
-                  borderRadius: "4px",
-                  border: "1px solid #27AF60",
-                  fontSize: "20px",
-                  width: "100%",
-                  maxWidth: "400px",
-                  margin: "0 auto",
-                }}
-              >
-                Sim, eu aceito essa oferta especial!
-              </button>
-              <div
-                id="kiwify-upsell-cancel-trigger-Vj9idar"
-                style={{
-                  marginTop: "1rem",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  textDecoration: "underline",
-                  color: "#A1A1AA",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                Não, eu gostaria de recusar essa oferta
-              </div>
-            </div>
+              Sim, eu aceito essa oferta especial!
+            </a>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/dashboard" })}
+              style={{
+                background: "transparent",
+                border: "none",
+                marginTop: "1rem",
+                cursor: "pointer",
+                fontSize: "16px",
+                textDecoration: "underline",
+                color: "#A1A1AA",
+                fontFamily: "sans-serif",
+              }}
+            >
+              Não, eu gostaria de recusar essa oferta
+            </button>
           </motion.div>
         )}
       </div>
