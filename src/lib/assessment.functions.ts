@@ -1,23 +1,22 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { nextUnlockDate } from "@/lib/assessment-calc";
 import type { Json } from "@/integrations/supabase/types";
 
 const SaveAssessmentInput = z.object({
+  userId: z.string().uuid(),
   respostas: z.record(z.string(), z.unknown()),
 });
 
 export const saveAssessment = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => SaveAssessmentInput.parse(input))
-  .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: assessment, error: aErr } = await supabase
+    const { data: assessment, error: aErr } = await supabaseAdmin
       .from("assessments")
       .insert({
-        user_id: userId,
+        user_id: data.userId,
         respostas_json: data.respostas as Json,
         status: "concluido",
       })
@@ -28,13 +27,12 @@ export const saveAssessment = createServerFn({ method: "POST" })
       throw new Error("Failed to save assessment. Please try again.");
     }
 
-    // Compute unlock date server-side — never trust the client.
     const unlockDateIso = nextUnlockDate().toISOString();
 
-    const { data: workout, error: wErr } = await supabase
+    const { data: workout, error: wErr } = await supabaseAdmin
       .from("workouts")
       .insert({
-        user_id: userId,
+        user_id: data.userId,
         assessment_id: assessment.id,
         treinos_json: {},
         unlock_date: unlockDateIso,
@@ -49,20 +47,26 @@ export const saveAssessment = createServerFn({ method: "POST" })
     return { assessmentId: assessment.id, workoutId: workout.id, unlockDate: workout.unlock_date };
   });
 
-export const getLatestState = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { supabase, userId } = context;
-    const [profileRes, assessmentRes, workoutRes] = await Promise.all([
-      supabase.from("profiles").select("nome_completo, email").eq("id", userId).maybeSingle(),
-      supabase
+const GetLatestStateInput = z.object({
+  userId: z.string().uuid(),
+});
+
+export const getLatestState = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => GetLatestStateInput.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = data.userId;
+
+    const [userRes, assessmentRes, workoutRes] = await Promise.all([
+      supabaseAdmin.from("app_users").select("nome_completo, email").eq("id", userId).maybeSingle(),
+      supabaseAdmin
         .from("assessments")
         .select("id, respostas_json, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle(),
-      supabase
+      supabaseAdmin
         .from("workouts")
         .select("id, unlock_date, created_at")
         .eq("user_id", userId)
@@ -72,8 +76,8 @@ export const getLatestState = createServerFn({ method: "GET" })
     ]);
 
     return {
-      profile: profileRes.data
-        ? { nome_completo: profileRes.data.nome_completo ?? "", email: profileRes.data.email ?? "" }
+      profile: userRes.data
+        ? { nome_completo: userRes.data.nome_completo ?? "", email: userRes.data.email ?? "" }
         : null,
       assessment: assessmentRes.data
         ? {

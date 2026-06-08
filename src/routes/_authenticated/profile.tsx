@@ -6,7 +6,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import { getInitials } from "@/lib/assessment-calc";
-import { supabase } from "@/integrations/supabase/client";
+import { clearSession, useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
@@ -15,9 +15,14 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function ProfilePage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
-  const { data } = useQuery({ queryKey: ["state"], queryFn: () => fetchState() });
-  const nome = data?.profile?.nome_completo ?? "";
-  const email = data?.profile?.email ?? "";
+  const session = useSession();
+  const { data } = useQuery({
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
+  });
+  const nome = session?.nome_completo ?? data?.profile?.nome_completo ?? "";
+  const email = session?.email ?? data?.profile?.email ?? "";
   const hasAssessment = !!data?.assessment;
 
   function redoAssessment() {
@@ -68,8 +73,8 @@ function ProfilePage() {
 
         <Button
           variant="outline"
-          onClick={async () => {
-            await supabase.auth.signOut();
+          onClick={() => {
+            clearSession();
             navigate({ to: "/", replace: true });
           }}
           className="mt-3 h-13 w-full rounded-2xl border-border bg-card py-3 text-sm font-semibold text-foreground hover:bg-secondary"
