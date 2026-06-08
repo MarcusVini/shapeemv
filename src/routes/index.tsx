@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Zap, Sparkles } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getSession, setSession } from "@/lib/session";
+import { loginOrCreateUser } from "@/lib/auth.functions";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -51,29 +53,13 @@ function LandingPage() {
     }
     setLoading(true);
     try {
-      // 1) Tenta encontrar usuário existente
-      const { data: existing, error: selErr } = await supabase
-        .from("app_users")
-        .select("id, email, nome_completo")
-        .eq("email", emailNorm)
-        .maybeSingle();
-      if (selErr) throw selErr;
-
-      let user = existing;
-      if (!user) {
-        const { data: created, error: insErr } = await supabase
-          .from("app_users")
-          .insert({ email: emailNorm, nome_completo: nomeNorm })
-          .select("id, email, nome_completo")
-          .single();
-        if (insErr) throw insErr;
-        user = created;
-      }
-
+      const user = await loginOrCreateUser({
+        data: { email: emailNorm, nome_completo: nomeNorm },
+      });
       setSession({
-        id: user!.id,
-        email: user!.email,
-        nome_completo: user!.nome_completo || nomeNorm,
+        id: user.id,
+        email: user.email,
+        nome_completo: user.nome_completo || nomeNorm,
       });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
@@ -83,6 +69,7 @@ function LandingPage() {
       setLoading(false);
     }
   }
+
 
   return (
     <main className="min-h-screen bg-background overflow-hidden">
