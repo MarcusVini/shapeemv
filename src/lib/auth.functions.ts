@@ -10,38 +10,57 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => LoginInput.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const email = data.email; // already lower+trim from zod
+    const nome = data.nome_completo;
 
-    const { data: existing, error: selErr } = await supabaseAdmin
-      .from("app_users")
-      .select("id, email, nome_completo")
-      .eq("email", data.email)
-      .maybeSingle();
-    if (selErr) {
-      console.error("[loginOrCreateUser] select failed:", selErr);
-      throw new Error("Erro ao acessar. Tente novamente.");
+    async function findByEmail() {
+      const { data: rows, error } = await supabaseAdmin
+        .from("app_users")
+        .select("id, email, nome_completo")
+        .ilike("email", email) // case-insensitive exact match
+        .limit(1);
+      if (error) throw error;
+      return rows && rows.length > 0 ? rows[0] : null;
     }
 
-    if (existing) {
+    try {
+      const existing = await findByEmail();
+      if (existing) {
+        return {
+          id: existing.id,
+          email: existing.email,
+          nome_completo: existing.nome_completo || nome,
+        };
+      }
+
+      const { data: created, error: insErr } = await supabaseAdmin
+        .from("app_users")
+        .insert({ email, nome_completo: nome })
+        .select("id, email, nome_completo")
+        .single();
+
+      if (insErr) {
+        // Likely a race: another request just inserted the same email
+        // (unique index on lower(email)). Re-fetch.
+        const retry = await findByEmail();
+        if (retry) {
+          return {
+            id: retry.id,
+            email: retry.email,
+            nome_completo: retry.nome_completo || nome,
+          };
+        }
+        console.error("[loginOrCreateUser] insert failed:", insErr);
+        throw new Error("Erro ao criar conta. Tente novamente.");
+      }
+
       return {
-        id: existing.id,
-        email: existing.email,
-        nome_completo: existing.nome_completo || data.nome_completo,
+        id: created.id,
+        email: created.email,
+        nome_completo: created.nome_completo,
       };
+    } catch (err) {
+      console.error("[loginOrCreateUser] failed:", err);
+      throw err instanceof Error ? err : new Error("Erro ao acessar.");
     }
-
-    const { data: created, error: insErr } = await supabaseAdmin
-      .from("app_users")
-      .insert({ email: data.email, nome_completo: data.nome_completo })
-      .select("id, email, nome_completo")
-      .single();
-    if (insErr) {
-      console.error("[loginOrCreateUser] insert failed:", insErr);
-      throw new Error("Erro ao criar conta. Tente novamente.");
-    }
-
-    return {
-      id: created.id,
-      email: created.email,
-      nome_completo: created.nome_completo,
-    };
   });
