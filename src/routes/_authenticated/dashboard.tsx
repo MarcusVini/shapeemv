@@ -18,7 +18,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { WelcomeModal, useWelcomeModal } from "@/components/WelcomeModal";
 import { getLatestState } from "@/lib/assessment.functions";
 import { calcIMC, calcScoreGeral, imcLabel } from "@/lib/assessment-calc";
-import { supabase } from "@/integrations/supabase/client";
+import { clearSession, useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -28,10 +28,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function DashboardPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
+  const session = useSession();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["state"],
-    queryFn: () => fetchState(),
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
   });
 
   const [now, setNow] = useState(Date.now());
@@ -40,7 +42,7 @@ function DashboardPage() {
     return () => clearInterval(i);
   }, []);
 
-  const nome = data?.profile?.nome_completo?.split(" ")[0] ?? "atleta";
+  const nome = (session?.nome_completo || data?.profile?.nome_completo || "atleta").split(" ")[0];
   const hasAssessment = !!data?.assessment;
   const unlockTs = data?.workout ? new Date(data.workout.unlock_date).getTime() : null;
   const isUnlocked = !!unlockTs && now >= unlockTs;
@@ -95,8 +97,8 @@ function DashboardPage() {
               </p>
             </div>
             <button
-              onClick={async () => {
-                await supabase.auth.signOut();
+              onClick={() => {
+                clearSession();
                 navigate({ to: "/", replace: true });
               }}
               className="rounded-full p-2 text-muted-foreground hover:text-foreground"
@@ -230,8 +232,8 @@ function DashboardPage() {
               © Todos os direitos reservados · Shape em V
             </p>
             <button
-              onClick={async () => {
-                await supabase.auth.signOut();
+              onClick={() => {
+                clearSession();
                 navigate({ to: "/", replace: true });
               }}
               className="mt-2 text-xs text-muted-foreground/80 underline-offset-2 hover:underline"
