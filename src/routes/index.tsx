@@ -15,6 +15,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { getSession, setSession } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,37 +33,48 @@ export const Route = createFileRoute("/")({
 function LandingPage() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
-    });
+    if (getSession()) navigate({ to: "/dashboard", replace: true });
   }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const emailNorm = email.trim().toLowerCase();
+    const nomeNorm = nome.trim();
+    if (!nomeNorm || !emailNorm) {
+      toast.error("Preencha nome e e-mail.");
+      return;
+    }
     setLoading(true);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { nome_completo: nome },
-            emailRedirectTo: window.location.origin,
-          },
-        });
-        if (error) throw error;
-        toast.success("Conta criada! Entrando…");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+      // 1) Tenta encontrar usuário existente
+      const { data: existing, error: selErr } = await supabase
+        .from("app_users")
+        .select("id, email, nome_completo")
+        .eq("email", emailNorm)
+        .maybeSingle();
+      if (selErr) throw selErr;
+
+      let user = existing;
+      if (!user) {
+        const { data: created, error: insErr } = await supabase
+          .from("app_users")
+          .insert({ email: emailNorm, nome_completo: nomeNorm })
+          .select("id, email, nome_completo")
+          .single();
+        if (insErr) throw insErr;
+        user = created;
       }
+
+      setSession({
+        id: user!.id,
+        email: user!.email,
+        nome_completo: user!.nome_completo || nomeNorm,
+      });
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -74,7 +86,6 @@ function LandingPage() {
 
   return (
     <main className="min-h-screen bg-background overflow-hidden">
-      {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute top-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
       </div>
@@ -139,23 +150,10 @@ function LandingPage() {
 
         <div className="mt-10 space-y-3">
           <Button
-            onClick={() => {
-              setMode("signup");
-              setOpen(true);
-            }}
+            onClick={() => setOpen(true)}
             className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold hover:opacity-95"
           >
-            <Zap className="mr-2 h-5 w-5" /> Começar minha avaliação
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setMode("signin");
-              setOpen(true);
-            }}
-            className="h-12 w-full rounded-2xl text-sm text-muted-foreground hover:text-foreground"
-          >
-            Já tenho conta — entrar
+            <Zap className="mr-2 h-5 w-5" /> Acessar meu treino
           </Button>
         </div>
       </div>
@@ -163,29 +161,23 @@ function LandingPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="rounded-3xl border-border bg-card sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-xl">
-              {mode === "signup" ? "Criar minha conta" : "Entrar"}
-            </DialogTitle>
+            <DialogTitle className="text-xl">Acessar meu treino</DialogTitle>
             <DialogDescription>
-              {mode === "signup"
-                ? "Vamos começar sua avaliação Shape em V."
-                : "Bem-vindo de volta."}
+              Informe seu nome e e-mail para entrar. Se for sua primeira vez, criamos sua conta automaticamente.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-            {mode === "signup" && (
-              <div className="space-y-2">
-                <Label htmlFor="nome">Nome completo</Label>
-                <Input
-                  id="nome"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  required
-                  className="h-12 rounded-xl bg-input"
-                  placeholder="Seu nome"
-                />
-              </div>
-            )}
+            <div className="space-y-2">
+              <Label htmlFor="nome">Nome completo</Label>
+              <Input
+                id="nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                required
+                className="h-12 rounded-xl bg-input"
+                placeholder="Seu nome"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -199,36 +191,13 @@ function LandingPage() {
                 placeholder="voce@email.com"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                className="h-12 rounded-xl bg-input"
-                placeholder="Mínimo 6 caracteres"
-              />
-            </div>
             <Button
               type="submit"
               disabled={loading}
               className="h-12 w-full rounded-2xl gold-gradient font-semibold text-primary-foreground shadow-gold-sm"
             >
-              {loading ? "Carregando…" : mode === "signup" ? "Criar conta" : "Entrar"}
+              {loading ? "Entrando…" : "Entrar"}
             </Button>
-            <button
-              type="button"
-              onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-              className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
-            >
-              {mode === "signup"
-                ? "Já tenho conta — entrar"
-                : "Não tenho conta — criar"}
-            </button>
           </form>
         </DialogContent>
       </Dialog>
