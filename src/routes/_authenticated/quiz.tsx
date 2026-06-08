@@ -15,8 +15,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import { saveAssessment } from "@/lib/assessment.functions";
+import { saveAssessment, saveQuizDraft, getQuizDraft } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -38,30 +39,61 @@ const STORAGE_KEY = "shapeemv:quiz-progress:v2";
 function QuizPage() {
   const navigate = useNavigate();
   const submitFn = useServerFn(saveAssessment);
+  const saveDraftFn = useServerFn(saveQuizDraft);
+  const getDraftFn = useServerFn(getQuizDraft);
   const session = useSession();
   const [stepIdx, setStepIdx] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [submitting, setSubmitting] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Restore from localStorage on mount
+  // Restore from localStorage, then fall back to server draft (cross-device safety).
   useEffect(() => {
-    try {
-      const raw = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
-      if (raw) {
-        const parsed = JSON.parse(raw) as { answers?: Answers; stepIdx?: number };
-        if (parsed.answers && typeof parsed.answers === "object") setAnswers(parsed.answers);
-        if (typeof parsed.stepIdx === "number" && parsed.stepIdx >= 0 && parsed.stepIdx < TOTAL_STEPS) {
-          setStepIdx(parsed.stepIdx);
+    let cancelled = false;
+    (async () => {
+      let restored = false;
+      try {
+        const raw = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
+        if (raw) {
+          const parsed = JSON.parse(raw) as { answers?: Answers; stepIdx?: number };
+          if (parsed.answers && typeof parsed.answers === "object" && Object.keys(parsed.answers).length > 0) {
+            setAnswers(parsed.answers);
+            restored = true;
+          }
+          if (typeof parsed.stepIdx === "number" && parsed.stepIdx >= 0 && parsed.stepIdx < TOTAL_STEPS) {
+            setStepIdx(parsed.stepIdx);
+            restored = true;
+          }
+        }
+      } catch {
+        // ignore corrupted storage
+      }
+
+      if (!restored && session?.id) {
+        try {
+          const res = await getDraftFn({ data: { userId: session.id } });
+          if (!cancelled && res?.draft) {
+            const d = res.draft;
+            if (d.respostas && typeof d.respostas === "object") {
+              setAnswers(d.respostas as Answers);
+            }
+            if (typeof d.stepIdx === "number" && d.stepIdx >= 0 && d.stepIdx < TOTAL_STEPS) {
+              setStepIdx(d.stepIdx);
+            }
+          }
+        } catch {
+          // best-effort; ignore
         }
       }
-    } catch {
-      // ignore corrupted storage
-    }
-    setHydrated(true);
-  }, []);
+      if (!cancelled) setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.id]);
 
-  // Persist on every change
+  // Persist on every change (localStorage immediate + server debounced)
   useEffect(() => {
     if (!hydrated) return;
     try {
@@ -69,7 +101,15 @@ function QuizPage() {
     } catch {
       // ignore quota
     }
-  }, [answers, stepIdx, hydrated]);
+    if (!session?.id) return;
+    const t = setTimeout(() => {
+      saveDraftFn({ data: { userId: session.id, respostas: answers, stepIdx } }).catch(() => {
+        // best-effort autosave; localStorage already covers this user
+      });
+    }, 800);
+    return () => clearTimeout(t);
+  }, [answers, stepIdx, hydrated, session?.id, saveDraftFn]);
+
 
   const step = QUIZ_STEPS[stepIdx];
   const progress = ((stepIdx + 1) / TOTAL_STEPS) * 100;
