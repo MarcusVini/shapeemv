@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getSession, setSession } from "@/lib/session";
+import { loginOrCreateUser } from "@/lib/auth.functions";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
