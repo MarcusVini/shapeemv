@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment } from "@/lib/assessment.functions";
+import { useSession } from "@/lib/session";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ const STORAGE_KEY = "shapeemv:quiz-progress:v2";
 function QuizPage() {
   const navigate = useNavigate();
   const submitFn = useServerFn(saveAssessment);
+  const session = useSession();
   const [stepIdx, setStepIdx] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [submitting, setSubmitting] = useState(false);
@@ -113,8 +115,9 @@ function QuizPage() {
     // Submit
     setSubmitting(true);
     try {
+      if (!session?.id) throw new Error("Sessão expirada. Entre novamente.");
       await submitFn({
-        data: { respostas: answers },
+        data: { userId: session.id, respostas: answers },
       });
       try {
         window.localStorage.removeItem(STORAGE_KEY);

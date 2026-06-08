@@ -27,6 +27,7 @@ import { ArrowRight, Flame, Info, Sparkles, Target } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
+import { useSession } from "@/lib/session";
 import {
   buildDiagnostico,
   buildLevers,
@@ -85,9 +86,11 @@ const LABEL = {
 function ResultsPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
+  const session = useSession();
   const { data, isLoading } = useQuery({
-    queryKey: ["state"],
-    queryFn: () => fetchState(),
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
   });
 
   useEffect(() => {
@@ -105,8 +108,8 @@ function ResultsPage() {
   }
 
   const a = data.assessment.respostas as Record<string, unknown>;
-  const nome = data.profile?.nome_completo ?? "";
-  const email = data.profile?.email ?? "";
+  const nome = session?.nome_completo ?? data.profile?.nome_completo ?? "";
+  const email = session?.email ?? data.profile?.email ?? "";
 
   const peso = (a.peso as number) ?? 75;
   const altura = (a.altura as number) ?? 175;

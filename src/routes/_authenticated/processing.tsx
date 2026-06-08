@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 import { getLatestState } from "@/lib/assessment.functions";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/processing")({
   component: ProcessingPage,
@@ -14,9 +15,14 @@ function ProcessingPage() {
   const navigate = useNavigate();
   const [idx, setIdx] = useState(0);
   const fetchState = useServerFn(getLatestState);
-  const { data } = useQuery({ queryKey: ["state"], queryFn: () => fetchState() });
+  const session = useSession();
+  const { data } = useQuery({
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
+  });
 
-  const primeiro = data?.profile?.nome_completo?.trim().split(/\s+/)[0] || "atleta";
+  const primeiro = (session?.nome_completo || data?.profile?.nome_completo || "atleta").trim().split(/\s+/)[0];
   const objetivo = String(
     (data?.assessment?.respostas as Record<string, unknown> | undefined)?.objetivo ?? "",
   );

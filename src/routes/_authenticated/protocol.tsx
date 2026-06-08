@@ -7,6 +7,7 @@ import { Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
+import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import welcomeCover from "@/assets/welcome-cover.jpg";
 
@@ -28,9 +29,11 @@ function ProtocolPage() {
   const [tab, setTab] = useState<TabKey>("instrucoes");
   const navigate = useNavigate();
   const fetchState = useServerFn(getLatestState);
+  const session = useSession();
   const { data: state, isLoading } = useQuery({
-    queryKey: ["state"],
-    queryFn: () => fetchState(),
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
   });
 
   useEffect(() => {

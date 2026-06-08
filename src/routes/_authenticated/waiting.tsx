@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/waiting")({
   component: WaitingPage,
@@ -15,10 +16,12 @@ export const Route = createFileRoute("/_authenticated/waiting")({
 function WaitingPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
+  const session = useSession();
 
   const { data } = useQuery({
-    queryKey: ["state"],
-    queryFn: () => fetchState(),
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
   });
 
   const computeNext10am = () => {
