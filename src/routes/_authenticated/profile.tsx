@@ -73,8 +73,8 @@ function ProfilePage() {
 
         <Button
           variant="outline"
-          onClick={async () => {
-            await supabase.auth.signOut();
+          onClick={() => {
+            clearSession();
             navigate({ to: "/", replace: true });
           }}
           className="mt-3 h-13 w-full rounded-2xl border-border bg-card py-3 text-sm font-semibold text-foreground hover:bg-secondary"
