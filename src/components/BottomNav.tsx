@@ -2,9 +2,8 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ClipboardList, Dumbbell, Home, Lock, MessageCircle, User } from "lucide-react";
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/lib/session";
 import { getLatestState } from "@/lib/assessment.functions";
 import { toast } from "sonner";
 
@@ -13,20 +12,14 @@ const WHATSAPP_NUMBER = "554999557290";
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setEmail(session?.user?.email ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
+  const session = useSession();
+  const email = session?.email ?? null;
 
   const fetchState = useServerFn(getLatestState);
   const { data: state } = useQuery({
-    queryKey: ["state"],
-    queryFn: () => fetchState(),
+    queryKey: ["state", session?.id],
+    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    enabled: !!session?.id,
     refetchInterval: 30_000,
   });
 
