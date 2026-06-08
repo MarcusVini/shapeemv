@@ -137,6 +137,27 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_drafts: {
+        Row: {
+          respostas_json: Json
+          step_idx: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          respostas_json?: Json
+          step_idx?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          respostas_json?: Json
+          step_idx?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workouts: {
         Row: {
           assessment_id: string | null
