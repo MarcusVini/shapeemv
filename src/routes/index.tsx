@@ -122,7 +122,7 @@ function LandingPage() {
           className="mt-8 space-y-3"
         >
           {[
-            "Diagnóstico em 23 etapas",
+            "Avaliação em 2 minutos",
             "Score físico e projeção em 4 meses",
           ].map((t) => (
             <li
