@@ -41,66 +41,66 @@ export function WelcomeModal({ show, onDismiss }: { show: boolean; onDismiss: ()
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-[#18181B] shadow-2xl"
+            className="relative w-full max-w-sm max-h-[95vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#18181B] shadow-2xl"
           >
             {/* Brilho dourado no topo */}
             <div className="absolute top-0 left-0 right-0 h-1 gold-gradient" />
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-primary/10 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-primary/10 to-transparent" />
 
             {/* Botão de fechar */}
             <button
               onClick={onDismiss}
-              className="absolute top-4 right-4 z-10 rounded-full p-1.5 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-colors"
+              className="absolute top-3 right-3 z-10 rounded-full p-1.5 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-colors"
               aria-label="Fechar"
             >
               <X className="h-4 w-4" />
             </button>
 
-            <div className="relative p-6 pt-8">
+            <div className="relative p-4 pt-5">
               {/* Título */}
-              <h2 className="text-center text-xl font-black leading-tight text-gold-gradient">
+              <h2 className="text-center text-base font-black leading-tight text-gold-gradient">
                 BEM-VINDO AO SHAPE EM V!
               </h2>
-              <div className="mx-auto mt-2 flex h-10 w-10 items-center justify-center rounded-full gold-gradient">
-                <span className="text-lg">🏆</span>
+              <div className="mx-auto mt-1.5 flex h-7 w-7 items-center justify-center rounded-full gold-gradient">
+                <span className="text-sm">🏆</span>
               </div>
 
               {/* Texto de introdução */}
-              <p className="mt-4 text-sm leading-relaxed text-center text-muted-foreground">
-                Fala mestre, parabéns por dar o primeiro passo! Para garantir que o seu protocolo seja perfeito para o seu corpo, siga os passos abaixo:
+              <p className="mt-2 text-xs leading-snug text-center text-muted-foreground">
+                Siga os passos abaixo para começar:
               </p>
 
               {/* Lista de passos */}
-              <div className="mt-5 space-y-3">
+              <div className="mt-2.5 space-y-1.5">
                 <StepCard
-                  icon={<ClipboardList className="h-4 w-4 text-primary-foreground" />}
+                  icon={<ClipboardList className="h-3.5 w-3.5 text-primary-foreground" />}
                   title="Passo 1"
-                  text="Responda nossa avaliação física. Seja 100% sincero, é com base nisso que nossa inteligência vai moldar seu treino e sua dieta."
+                  text="Responda a avaliação física com 100% de sinceridade."
                 />
                 <StepCard
-                  icon={<Clock className="h-4 w-4 text-primary-foreground" />}
+                  icon={<Clock className="h-3.5 w-3.5 text-primary-foreground" />}
                   title="Passo 2"
-                  text="Após finalizar, aguarde o cronômetro. Nós precisamos de um tempo para analisar e montar o seu protocolo personalizado."
+                  text="Aguarde o cronômetro enquanto montamos seu protocolo."
                 />
                 <StepCard
-                  icon={<Link2 className="h-4 w-4 text-primary-foreground" />}
+                  icon={<Link2 className="h-3.5 w-3.5 text-primary-foreground" />}
                   title="Passo 3"
-                  text="Salve este link: https://shapeemv.lovable.app/. Seu treino e sua avaliação completa estarão liberados no dia seguinte, exatamente às 10:00 da manhã."
+                  text="Salve: shapeemv.lovable.app. Liberado amanhã às 10h."
                 />
               </div>
 
               {/* Aviso de suporte */}
-              <div className="mt-4 flex items-start gap-2.5 rounded-2xl border border-primary/20 bg-primary/5 p-3">
-                <HelpCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Teve algum problema ou dúvida? Clique no botão de Suporte no menu para falar com a nossa equipe.
+              <div className="mt-2.5 flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/5 p-2">
+                <HelpCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                <p className="text-[11px] leading-snug text-muted-foreground">
+                  Dúvidas? Use o botão de Suporte no menu.
                 </p>
               </div>
 
               {/* Botão de ação */}
               <button
                 onClick={onDismiss}
-                className="mt-5 h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm transition-transform active:scale-[0.98]"
+                className="mt-3 h-11 w-full rounded-2xl gold-gradient text-sm font-bold text-primary-foreground shadow-gold-sm transition-transform active:scale-[0.98]"
               >
                 Entendi, vamos começar!
               </button>
@@ -114,13 +114,13 @@ export function WelcomeModal({ show, onDismiss }: { show: boolean; onDismiss: ()
 
 function StepCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-white/5 bg-[#1E1E1E] p-3.5">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg gold-gradient">
+    <div className="flex items-start gap-2.5 rounded-xl border border-white/5 bg-[#1E1E1E] p-2.5">
+      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg gold-gradient">
         {icon}
       </div>
       <div>
-        <p className="text-xs font-bold text-gold-gradient">{title}</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{text}</p>
+        <p className="text-[11px] font-bold text-gold-gradient">{title}</p>
+        <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{text}</p>
       </div>
     </div>
   );
