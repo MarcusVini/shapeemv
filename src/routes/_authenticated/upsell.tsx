@@ -18,7 +18,7 @@ declare module "react" {
 }
 
 const VTURB_SRC =
-  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a2581818e99006cc2b82f9a/v4/player.js";
+  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a280947135e043f2b702184/v4/player.js";
 
 function injectScript(src: string, target: HTMLElement) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -37,9 +37,9 @@ function UpsellPage() {
     injectScript(VTURB_SRC, document.head);
   }, []);
 
-  // 128s delay before showing offer block
+  // 148s delay before showing offer block
   useEffect(() => {
-    const t = setTimeout(() => setShowOffer(true), 128000);
+    const t = setTimeout(() => setShowOffer(true), 148000);
     return () => clearTimeout(t);
   }, []);
 
@@ -59,7 +59,7 @@ function UpsellPage() {
 
         <div className="mt-8 flex justify-center">
           <vturb-smartplayer
-            id="vid-6a2581818e99006cc2b82f9a"
+            id="vid-6a280947135e043f2b702184"
             style={{
               display: "block",
               margin: "0 auto",
@@ -78,7 +78,7 @@ function UpsellPage() {
             style={{ textAlign: "center" }}
           >
             <a
-              href="https://pay.kiwify.com.br/Vj9idar"
+              href="https://pay.kiwify.com.br/zByOXHf"
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
