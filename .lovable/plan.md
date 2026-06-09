@@ -1,11 +1,6 @@
-## Alterações na página de upsell (`src/routes/_authenticated/upsell.tsx`)
+Fiz uma busca completa (case-insensitive) por "trinca" em todo o repositório e não há mais nenhuma ocorrência. As duas que existiam foram corrigidas na mensagem anterior:
 
-1. **Trocar o vídeo Vturb** — atualizar `VTURB_SRC` e o `id` do elemento `<vturb-smartplayer>` para o novo player:
-   - Script: `.../players/6a280947135e043f2b702184/v4/player.js`
-   - Elemento: `id="vid-6a280947135e043f2b702184"`
+- `src/routes/_authenticated/dashboard.tsx` — "Sua Avaliação Trinca" → "Sua Avaliação Shape em V"
+- `src/routes/_authenticated/protocol.tsx` — "físicos trincados" → "físicos definidos"
 
-2. **Ajustar delay do botão de compra** — mudar o `setTimeout` de `128000` ms (2m08s) para `148000` ms (2m28s).
-
-3. **Atualizar link do botão de compra** — trocar o `href` do CTA de `https://pay.kiwify.com.br/Vj9idar` para `https://pay.kiwify.com.br/zByOXHf`.
-
-Nenhuma outra página ou tabela será alterada.
+Não há ação necessária. Se você ainda vê a palavra "Trinca" em algum lugar do app, me diga em qual tela/print que eu investigo (pode ser cache do navegador — tente recarregar com Ctrl+Shift+R).
