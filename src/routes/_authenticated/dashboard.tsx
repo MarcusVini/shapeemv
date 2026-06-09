@@ -139,7 +139,7 @@ function DashboardPage() {
           <div className="mt-8 space-y-4">
             <HubCard
               icon={<CheckCircle2 className="h-6 w-6" />}
-              title="Sua Avaliação Trinca"
+              title="Sua Avaliação Shape em V"
               description={insightAvaliacao ?? "Confira a sua avaliação física completa."}
               to="/results"
               locked={!isUnlocked}
