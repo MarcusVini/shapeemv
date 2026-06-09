@@ -160,7 +160,7 @@ function InstrucoesTab() {
       <TextBlock title="O método exclusivo">
         Esse é o mesmo método de treino focado em hipertrofia e proporção estética
         usado nos bastidores para construir físicos de respeito. O mesmo que os modelos
-        aplicam para chegar aos físicos trincados e largos em tempo recorde... E que
+        aplicam para chegar aos físicos definidos e largos em tempo recorde... E que
         hoje, pela primeira vez, está sendo entregue de forma 100% personalizada para
         você.
       </TextBlock>
