@@ -14,63 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      _backup_assessments_user_id_20260608: {
-        Row: {
-          assessment_id: string | null
-          backed_up_at: string | null
-          old_user_id: string | null
-        }
-        Insert: {
-          assessment_id?: string | null
-          backed_up_at?: string | null
-          old_user_id?: string | null
-        }
-        Update: {
-          assessment_id?: string | null
-          backed_up_at?: string | null
-          old_user_id?: string | null
-        }
-        Relationships: []
-      }
-      _backup_profiles_20260608: {
-        Row: {
-          created_at: string | null
-          email: string | null
-          id: string | null
-          nome_completo: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          id?: string | null
-          nome_completo?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          id?: string | null
-          nome_completo?: string | null
-        }
-        Relationships: []
-      }
-      _backup_workouts_user_id_20260608: {
-        Row: {
-          backed_up_at: string | null
-          old_user_id: string | null
-          workout_id: string | null
-        }
-        Insert: {
-          backed_up_at?: string | null
-          old_user_id?: string | null
-          workout_id?: string | null
-        }
-        Update: {
-          backed_up_at?: string | null
-          old_user_id?: string | null
-          workout_id?: string | null
-        }
-        Relationships: []
-      }
       app_users: {
         Row: {
           created_at: string
