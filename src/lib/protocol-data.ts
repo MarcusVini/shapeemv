@@ -37,7 +37,7 @@ export const TREINOS: Treino[] = [
     exercicios: [
       { id: 1, nome: "Rotação Ext. Polia Unilateral", foco: "Manguito", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uUo-Ri4_vFQ" },
       { id: 2, nome: "Desenvolvimento", foco: "Deltóide Frontal/Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/9Dk2URiYUgI" },
-      { id: 3, nome: "Voador", foco: "Peitoral Isolado", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 3, nome: "Voador", foco: "Peitoral Isolado", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Ozot1-lhaBo" },
       { id: 4, nome: "Supino Inclinado Halteres", foco: "Peitoral Superior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ZhWgcCY2lqs" },
       { id: 5, nome: "Cross Over", foco: "Peitoral Inferior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/mccQrInfjBs" },
       { id: 6, nome: "Elevação Lateral com Halteres", foco: "Deltóide Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/9y3Kz4vFE8k" },
@@ -51,9 +51,9 @@ export const TREINOS: Treino[] = [
     foco: "Ênfase em Pernas (Inferiores Completo)",
     exercicios: [
       { id: 1, nome: "Agachamento Peso Corporal", foco: "Aquecimento", series: "2", reps: "15 a 20", descanso: "40s", videoUrl: "EM BREVE" },
-      { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDIR7k" },
+      { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDlR7k" },
       { id: 3, nome: "Mesa Flexora", foco: "Posterior de Coxa", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Z7Yj5ajNA0E" },
-      { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_18" },
+      { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_I8" },
       { id: 5, nome: "Cadeira Abdutora", foco: "Glúteo Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/1BdeEx18sec" },
       { id: 6, nome: "Gêmeos em Pé", foco: "Panturrilhas", series: "4", reps: "15 a 20", descanso: "45s", videoUrl: "https://www.youtube.com/embed/5laQ9RG_6gY" },
     ],
@@ -63,12 +63,12 @@ export const TREINOS: Treino[] = [
     nome: "Treino 4",
     foco: "Ênfase em Ombros (Deltóides e Complementar)",
     exercicios: [
-      { id: 1, nome: "Supino Reto Halteres", foco: "Peitoral Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 1, nome: "Supino Reto Halteres", foco: "Peitoral Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/30jKgYuAXIM" },
       { id: 2, nome: "Remada Curvada", foco: "Dorsais Espessura", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/FUZ8sowWDcE" },
-      { id: 3, nome: "Crucifixo Inclinado", foco: "Peitoral Superior", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 3, nome: "Crucifixo Inclinado", foco: "Peitoral Superior", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Giy7FAPf8oA" },
       { id: 4, nome: "Elevação Frontal", foco: "Deltóide Frontal", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/UTAhAhA1gSA" },
       { id: 5, nome: "Rosca Martelo", foco: "Braquial", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/0-_yC5le2i4" },
-      { id: 6, nome: "Tríceps Pulley Barra Reta", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/4LQY13QIM2k" },
+      { id: 6, nome: "Tríceps Pulley Barra Reta", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/4LQYl3QIM2k" },
     ],
   },
 ];

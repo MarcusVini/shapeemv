@@ -1,20 +1,19 @@
-Reduzir o tamanho do modal de boas-vindas (`src/components/WelcomeModal.tsx`) para caber inteiro na tela mobile sem rolagem, mantendo o botão "Entendi, vamos começar!" sempre visível.
+## Atualizar vídeos dos exercícios em `src/lib/protocol-data.ts`
 
-## Mudanças
+### Vídeos a adicionar (estão como "EM BREVE")
+- **Voador** (Treino 2) → `https://www.youtube.com/embed/Ozot1-lhaBo`
+- **Supino Reto Halteres** (Treino 4) → `https://www.youtube.com/embed/30jKgYuAXIM`
+- **Crucifixo Inclinado** (Treino 4) → `https://www.youtube.com/embed/Giy7FAPf8oA`
 
-**Arquivo:** `src/components/WelcomeModal.tsx`
+### Vídeos a corrigir (IDs com caracteres trocados)
+Os links atuais usam caracteres parecidos errados (`I` vs `l`, `1` vs `I`), o que pode estar quebrando o embed:
+- **Agachamento Livre**: `9h_VvLDIR7k` → `9h_VvLDlR7k`
+- **Leg Press**: `qeNHff6-_18` → `qeNHff6-_I8`
+- **Tríceps Pulley Barra Reta**: `4LQY13QIM2k` → `4LQYl3QIM2k`
 
-1. **Container do modal**: adicionar `max-h-[95vh]` e `flex flex-col` para limitar altura à viewport.
-2. **Padding**: reduzir de `p-6 pt-8` para `p-4 pt-6`.
-3. **Título**: de `text-xl` para `text-lg`, margem do troféu menor.
-4. **Troféu**: reduzir de `h-10 w-10` para `h-8 w-8`.
-5. **Texto de introdução**: encurtar para uma frase mais direta ("Siga os passos abaixo para começar:") e reduzir margem superior.
-6. **StepCards**: 
-   - Reduzir padding de `p-3.5` para `p-2.5`
-   - Espaçamento entre cards de `space-y-3` para `space-y-2`
-   - Texto de cada passo encurtado (manter essência mas mais conciso)
-   - Ícone menor: `h-6 w-6` em vez de `h-7 w-7`
-7. **Aviso de suporte**: padding menor `p-2.5`, texto mais curto.
-8. **Botão**: reduzir altura de `h-14` para `h-12`, margem superior `mt-4`.
+### Permanecem como "EM BREVE" (usuário informou que não temos)
+- Abdomen Infra ao Chão
+- Isometria Prancha
+- Agachamento Peso Corporal
 
-Resultado: modal compacto que cabe em uma tela mobile padrão (~700px de altura) sem necessidade de scroll, com o botão sempre visível.
+Nenhuma outra mudança no app.
