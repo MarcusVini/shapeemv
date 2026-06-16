@@ -51,9 +51,9 @@ export const TREINOS: Treino[] = [
     foco: "Ênfase em Pernas (Inferiores Completo)",
     exercicios: [
       { id: 1, nome: "Agachamento Peso Corporal", foco: "Aquecimento", series: "2", reps: "15 a 20", descanso: "40s", videoUrl: "EM BREVE" },
-      { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDIR7k" },
+      { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDlR7k" },
       { id: 3, nome: "Mesa Flexora", foco: "Posterior de Coxa", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Z7Yj5ajNA0E" },
-      { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_18" },
+      { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_I8" },
       { id: 5, nome: "Cadeira Abdutora", foco: "Glúteo Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/1BdeEx18sec" },
       { id: 6, nome: "Gêmeos em Pé", foco: "Panturrilhas", series: "4", reps: "15 a 20", descanso: "45s", videoUrl: "https://www.youtube.com/embed/5laQ9RG_6gY" },
     ],
