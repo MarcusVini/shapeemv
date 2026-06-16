@@ -50,7 +50,7 @@ export const TREINOS: Treino[] = [
     nome: "Treino 3",
     foco: "Ênfase em Pernas (Inferiores Completo)",
     exercicios: [
-      { id: 1, nome: "Agachamento Peso Corporal", foco: "Aquecimento", series: "2", reps: "15 a 20", descanso: "40s", videoUrl: "EM BREVE" },
+      { id: 1, nome: "Agachamento Peso Corporal", foco: "Aquecimento", series: "2", reps: "15 a 20", descanso: "40s", videoUrl: "https://www.youtube.com/embed/4PbHkCEUI6I" },
       { id: 2, nome: "Agachamento Livre", foco: "Quadríceps e Glúteos", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/9h_VvLDlR7k" },
       { id: 3, nome: "Mesa Flexora", foco: "Posterior de Coxa", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Z7Yj5ajNA0E" },
       { id: 4, nome: "Leg Press", foco: "Quadríceps", series: "4", reps: "10 a 12", descanso: "90s", videoUrl: "https://www.youtube.com/embed/qeNHff6-_I8" },
@@ -76,5 +76,5 @@ export const TREINOS: Treino[] = [
 export const ABDOMEN: Exercicio[] = [
   { id: 1, nome: "Abdomen Corda", foco: "Abdômen Superior", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/Dn_PIBI41nc" },
   { id: 2, nome: "Abdomen Infra ao Chão", foco: "Abdômen Inferior", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.instagram.com/p/CoqANw_jGNa/embed" },
-  { id: 3, nome: "Isometria Prancha", foco: "Core / Estabilidade", series: "2", reps: "40s", descanso: "40s", videoUrl: "EM BREVE" },
+  { id: 3, nome: "Isometria Prancha", foco: "Core / Estabilidade", series: "2", reps: "40s", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uxPlAbWFUDs" },
 ];
