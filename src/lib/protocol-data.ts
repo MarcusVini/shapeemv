@@ -37,7 +37,7 @@ export const TREINOS: Treino[] = [
     exercicios: [
       { id: 1, nome: "Rotação Ext. Polia Unilateral", foco: "Manguito", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uUo-Ri4_vFQ" },
       { id: 2, nome: "Desenvolvimento", foco: "Deltóide Frontal/Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/9Dk2URiYUgI" },
-      { id: 3, nome: "Voador", foco: "Peitoral Isolado", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 3, nome: "Voador", foco: "Peitoral Isolado", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Ozot1-lhaBo" },
       { id: 4, nome: "Supino Inclinado Halteres", foco: "Peitoral Superior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ZhWgcCY2lqs" },
       { id: 5, nome: "Cross Over", foco: "Peitoral Inferior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/mccQrInfjBs" },
       { id: 6, nome: "Elevação Lateral com Halteres", foco: "Deltóide Médio", series: "4", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/9y3Kz4vFE8k" },
