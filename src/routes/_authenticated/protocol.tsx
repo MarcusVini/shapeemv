@@ -288,6 +288,33 @@ function AbdomenSection() {
 
 function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
   const emBreve = ex.videoUrl === "EM BREVE";
+  const storageKey = `carga:${ex.nome}`;
+  const [carga, setCarga] = useState<string>("");
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) setCarga(saved);
+    } catch {}
+  }, [storageKey]);
+
+  const openEditor = () => {
+    setDraft(carga);
+    setEditing(true);
+  };
+
+  const saveCarga = () => {
+    const value = draft.trim();
+    setCarga(value);
+    try {
+      if (value) localStorage.setItem(storageKey, value);
+      else localStorage.removeItem(storageKey);
+    } catch {}
+    setEditing(false);
+  };
+
   return (
     <article className="rounded-2xl bg-[#18181B] p-5 shadow-card-premium">
       <header className="flex items-start gap-3">
@@ -323,11 +350,47 @@ function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
         <Badge label="Séries" value={ex.series} />
         <Badge label="Reps" value={ex.reps} />
         <Badge label="Descanso" value={ex.descanso} />
+        {carga && <Badge label="Carga" value={carga} />}
       </div>
 
-      <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/60 bg-primary/5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10">
-        Adicionar Carga <Scale className="h-4 w-4" />
-      </button>
+      {editing ? (
+        <div className="mt-5 space-y-2">
+          <input
+            type="text"
+            inputMode="decimal"
+            autoFocus
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") saveCarga();
+              if (e.key === "Escape") setEditing(false);
+            }}
+            placeholder="Ex: 20kg"
+            className="w-full rounded-xl border border-primary/60 bg-background px-4 py-3 text-sm font-bold text-foreground outline-none focus:border-primary"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={saveCarga}
+              className="flex-1 rounded-xl gold-gradient py-2.5 text-sm font-bold text-primary-foreground shadow-gold-sm"
+            >
+              Salvar
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground/80"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={openEditor}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/60 bg-primary/5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+        >
+          {carga ? `Atualizar Carga (${carga})` : "Adicionar Carga"} <Scale className="h-4 w-4" />
+        </button>
+      )}
     </article>
   );
 }
