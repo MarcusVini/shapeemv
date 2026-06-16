@@ -63,12 +63,12 @@ export const TREINOS: Treino[] = [
     nome: "Treino 4",
     foco: "Ênfase em Ombros (Deltóides e Complementar)",
     exercicios: [
-      { id: 1, nome: "Supino Reto Halteres", foco: "Peitoral Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 1, nome: "Supino Reto Halteres", foco: "Peitoral Médio", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/30jKgYuAXIM" },
       { id: 2, nome: "Remada Curvada", foco: "Dorsais Espessura", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/FUZ8sowWDcE" },
-      { id: 3, nome: "Crucifixo Inclinado", foco: "Peitoral Superior", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "EM BREVE" },
+      { id: 3, nome: "Crucifixo Inclinado", foco: "Peitoral Superior", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/Giy7FAPf8oA" },
       { id: 4, nome: "Elevação Frontal", foco: "Deltóide Frontal", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/UTAhAhA1gSA" },
       { id: 5, nome: "Rosca Martelo", foco: "Braquial", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/0-_yC5le2i4" },
-      { id: 6, nome: "Tríceps Pulley Barra Reta", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/4LQY13QIM2k" },
+      { id: 6, nome: "Tríceps Pulley Barra Reta", foco: "Tríceps", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/4LQYl3QIM2k" },
     ],
   },
 ];
