@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/upsell")({
     links: [
       {
         rel: "preload",
-        href: "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a2581818e99006cc2b82f9a/v4/player.js",
+        href: "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a280947135e043f2b702184/v4/player.js",
         as: "script",
       },
       {
