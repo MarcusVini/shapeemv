@@ -4,6 +4,31 @@ import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/upsell")({
   component: UpsellPage,
+  head: () => ({
+    scripts: [
+      {
+        type: "text/javascript",
+        children:
+          '!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);',
+      },
+    ],
+    links: [
+      {
+        rel: "preload",
+        href: "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a2581818e99006cc2b82f9a/v4/player.js",
+        as: "script",
+      },
+      {
+        rel: "preload",
+        href: "https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js",
+        as: "script",
+      },
+      { rel: "dns-prefetch", href: "https://m3u8.vturb.net" },
+      { rel: "dns-prefetch", href: "https://scripts.converteai.net" },
+      { rel: "dns-prefetch", href: "https://images.converteai.net" },
+      { rel: "dns-prefetch", href: "https://license.vturb.com" },
+    ],
+  }),
 });
 
 declare module "react" {
