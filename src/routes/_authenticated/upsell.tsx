@@ -103,7 +103,7 @@ function UpsellPage() {
             style={{ textAlign: "center" }}
           >
             <a
-              href="https://pay.kiwify.com.br/YQg1R83"
+              href="https://pay.kiwify.com.br/9citKno"
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
