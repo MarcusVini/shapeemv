@@ -64,7 +64,7 @@ function UpsellPage() {
 
   // 11min58s delay before showing offer block (adjusted for 1.2x video speed)
   useEffect(() => {
-    const t = setTimeout(() => setShowOffer(true), 862000);
+    const t = setTimeout(() => setShowOffer(true), 718300);
     return () => clearTimeout(t);
   }, []);
 
