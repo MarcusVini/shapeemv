@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/upsell")({
     links: [
       {
         rel: "preload",
-        href: "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a280947135e043f2b702184/v4/player.js",
+        href: "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js",
         as: "script",
       },
       {
@@ -43,7 +43,7 @@ declare module "react" {
 }
 
 const VTURB_SRC =
-  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a280947135e043f2b702184/v4/player.js";
+  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js";
 
 function injectScript(src: string, target: HTMLElement) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -64,7 +64,7 @@ function UpsellPage() {
 
   // 148s delay before showing offer block
   useEffect(() => {
-    const t = setTimeout(() => setShowOffer(true), 148000);
+    const t = setTimeout(() => setShowOffer(true), 862000);
     return () => clearTimeout(t);
   }, []);
 
@@ -84,7 +84,7 @@ function UpsellPage() {
 
         <div className="mt-8 flex justify-center">
           <vturb-smartplayer
-            id="vid-6a280947135e043f2b702184"
+            id="vid-6a43902140698aa96bc8797c"
             style={{
               display: "block",
               margin: "0 auto",
@@ -103,7 +103,7 @@ function UpsellPage() {
             style={{ textAlign: "center" }}
           >
             <a
-              href="https://pay.kiwify.com.br/zByOXHf"
+              href="https://pay.kiwify.com.br/YQg1R83"
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
