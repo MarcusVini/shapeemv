@@ -62,7 +62,7 @@ function UpsellPage() {
     injectScript(VTURB_SRC, document.head);
   }, []);
 
-  // 148s delay before showing offer block
+  // 11min58s delay before showing offer block (adjusted for 1.2x video speed)
   useEffect(() => {
     const t = setTimeout(() => setShowOffer(true), 862000);
     return () => clearTimeout(t);
