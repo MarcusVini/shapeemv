@@ -122,10 +122,10 @@ function UpsellPage() {
             >
               Sim, eu aceito essa oferta especial!
             </a>
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/dashboard" })}
+            <a
+              href="https://fernandocantarelli.com.br/upsell-shapeemv"
               style={{
+                display: "block",
                 background: "transparent",
                 border: "none",
                 marginTop: "1rem",
@@ -134,10 +134,11 @@ function UpsellPage() {
                 textDecoration: "underline",
                 color: "#A1A1AA",
                 fontFamily: "sans-serif",
+                textAlign: "center",
               }}
             >
               Não, eu gostaria de recusar essa oferta
-            </button>
+            </a>
           </motion.div>
         )}
       </div>
