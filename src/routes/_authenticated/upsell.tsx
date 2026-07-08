@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/upsell")({
@@ -55,7 +55,7 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   const [showOffer, setShowOffer] = useState(false);
-  const navigate = useNavigate();
+
 
   // Inject Vturb script on mount
   useEffect(() => {
