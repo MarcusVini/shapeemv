@@ -166,6 +166,18 @@ export const QUIZ_STEPS: QuizStep[] = [
     ],
   },
   {
+    id: "treino_local",
+    type: "cards",
+    category: "rotina",
+    question: "Onde você prefere treinar?",
+    subtitle:
+      "Essa resposta vai direcionar o tipo de treino que será liberado para você, com exercícios adequados para casa ou academia.",
+    options: [
+      { value: "casa", label: "Em casa", emoji: "🏠" },
+      { value: "academia", label: "Na academia", emoji: "🏋️" },
+    ],
+  },
+  {
     id: "local_treino",
     type: "cards",
     category: "rotina",
@@ -177,6 +189,7 @@ export const QUIZ_STEPS: QuizStep[] = [
       { value: "casa_basica", label: "Casa sem equipamentos", description: "Só peso do corpo" },
     ],
   },
+
   {
     id: "execucao",
     type: "cards",
