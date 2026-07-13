@@ -13,7 +13,10 @@ export interface Treino {
   nome: string;
   foco: string;
   exercicios: Exercicio[];
+  off?: boolean;
+  offMessage?: string;
 }
+
 
 export const TREINOS: Treino[] = [
   {
