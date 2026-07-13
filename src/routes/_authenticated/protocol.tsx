@@ -256,7 +256,22 @@ function TextBlock({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-function TreinoTab({ treino }: { treino: Treino }) {
+function TreinoTab({ treino, showAbdomen = true }: { treino: Treino; showAbdomen?: boolean }) {
+  if (treino.off) {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl gold-border bg-card p-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+            {treino.nome}
+          </p>
+          <p className="mt-2 text-2xl font-black text-gold-gradient">Descanso</p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+            {treino.offMessage}
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-4">
       <div className="rounded-2xl gold-border bg-card p-4">
@@ -275,10 +290,11 @@ function TreinoTab({ treino }: { treino: Treino }) {
         <ExercicioCard key={`${treino.id}-${ex.id}`} index={i + 1} ex={ex} />
       ))}
 
-      <AbdomenSection />
+      {showAbdomen && <AbdomenSection />}
     </div>
   );
 }
+
 
 function AbdomenSection() {
   return (
