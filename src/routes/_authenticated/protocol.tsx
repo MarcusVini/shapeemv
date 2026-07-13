@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { TREINOS, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
+import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
