@@ -13,7 +13,10 @@ export interface Treino {
   nome: string;
   foco: string;
   exercicios: Exercicio[];
+  off?: boolean;
+  offMessage?: string;
 }
+
 
 export const TREINOS: Treino[] = [
   {
@@ -78,3 +81,72 @@ export const ABDOMEN: Exercicio[] = [
   { id: 2, nome: "Abdomen Infra ao Chão", foco: "Abdômen Inferior", series: "3", reps: "10 a 12", descanso: "40s", videoUrl: "https://www.instagram.com/p/CoqANw_jGNa/embed" },
   { id: 3, nome: "Isometria Prancha", foco: "Core / Estabilidade", series: "2", reps: "40s", descanso: "40s", videoUrl: "https://www.youtube.com/embed/uxPlAbWFUDs" },
 ];
+
+export const TREINOS_CASA: Treino[] = [
+  {
+    id: 1,
+    nome: "Treino 1",
+    foco: "Peito, Ombros e Tríceps",
+    exercicios: [
+      { id: 1, nome: "Flexão de Braços", foco: "Peitoral (adaptada ou tradicional)", series: "3 a 4", reps: "até próximo da falha", descanso: "60s", videoUrl: "https://www.youtube.com/embed/6T3o7m5ZU6w" },
+      { id: 2, nome: "Supino com Halteres no Chão (Floor Press)", foco: "Peitoral Médio", series: "3", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/30jKgYuAXIM" },
+      { id: 3, nome: "Crucifixo com Halteres", foco: "Peitoral Isolado", series: "3", reps: "10 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/4W2ugeqmygI" },
+      { id: 4, nome: "Desenvolvimento de Ombros com Halteres", foco: "Deltóide Frontal/Médio", series: "3", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/9Dk2URiYUgI" },
+      { id: 5, nome: "Elevação Lateral", foco: "Deltóide Médio", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/9y3Kz4vFE8k" },
+      { id: 6, nome: "Tríceps Francês com Halter", foco: "Tríceps", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/DNatlgNFU28" },
+      { id: 7, nome: "Tríceps Coice", foco: "Tríceps Isolado", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/IkB040VfrVI" },
+    ],
+  },
+  {
+    id: 2,
+    nome: "Treino 2",
+    foco: "Costas, Bíceps e Ombros",
+    exercicios: [
+      { id: 1, nome: "Remada Curvada com Halteres", foco: "Dorsais Espessura", series: "4", reps: "8 a 10", descanso: "60s", videoUrl: "https://www.youtube.com/embed/IkB040VfrVI" },
+      { id: 2, nome: "Remada Unilateral com Halter", foco: "Dorsais", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/jDteHfWsNB0" },
+      { id: 3, nome: "Crucifixo Inverso com Halteres", foco: "Deltóide Posterior", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/e4CIbF2qBJs" },
+      { id: 4, nome: "Desenvolvimento de Ombros com Halteres", foco: "Deltóide Frontal/Médio", series: "3", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/9Dk2URiYUgI" },
+      { id: 5, nome: "Elevação Lateral com Halteres", foco: "Deltóide Médio", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/9y3Kz4vFE8k" },
+      { id: 6, nome: "Rosca Direta com Barra", foco: "Bíceps", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/CxsSfJb3ucA" },
+      { id: 7, nome: "Rosca Martelo", foco: "Braquial", series: "3", reps: "10 a 12", descanso: "45s", videoUrl: "https://www.youtube.com/embed/0-_yC5le2i4" },
+    ],
+  },
+  {
+    id: 3,
+    nome: "Treino 3",
+    foco: "Pernas e Core",
+    exercicios: [
+      { id: 1, nome: "Agachamento com Halteres (Goblet Squat)", foco: "Quadríceps e Glúteos", series: "4", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ccLGfT51WHw" },
+      { id: 2, nome: "Afundo/Avanço com Halteres", foco: "Pernas Unilateral", series: "3", reps: "10 a 12 por perna", descanso: "60s", videoUrl: "https://www.youtube.com/embed/jkHMRIkOIaA" },
+      { id: 3, nome: "Agachamento com Halteres", foco: "Quadríceps", series: "3", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/fXtRvuIeovc" },
+      { id: 4, nome: "Elevação Pélvica", foco: "Glúteos", series: "3", reps: "12 a 15", descanso: "45s", videoUrl: "https://www.youtube.com/embed/YI6eWs4Q6J8" },
+      { id: 5, nome: "Stiff", foco: "Posterior de Coxa", series: "3", reps: "8 a 10", descanso: "60s", videoUrl: "https://www.youtube.com/embed/3yFCpC_c4P8" },
+      { id: 6, nome: "Panturrilha em Pé com Halteres", foco: "Panturrilhas", series: "4", reps: "15 a 20", descanso: "45s", videoUrl: "https://www.youtube.com/embed/DQCgU3vx_IY" },
+      { id: 7, nome: "Prancha", foco: "Core / Estabilidade", series: "3", reps: "30 a 60s", descanso: "45s", videoUrl: "https://www.youtube.com/embed/uxPlAbWFUDs" },
+      { id: 8, nome: "Abdominal Remador", foco: "Abdômen", series: "3", reps: "15 a 20", descanso: "40s", videoUrl: "https://www.youtube.com/embed/ckc49ccGnf4" },
+    ],
+  },
+  {
+    id: 4,
+    nome: "Treino 4",
+    foco: "Descanso",
+    off: true,
+    offMessage:
+      "Hoje é dia de recuperação. Use esse dia para descansar, dormir melhor, se alimentar bem e preparar o corpo para o próximo treino. O descanso também faz parte da evolução.",
+    exercicios: [],
+  },
+  {
+    id: 5,
+    nome: "Treino 5",
+    foco: "Full Body — Força e Volume",
+    exercicios: [
+      { id: 1, nome: "Pullover", foco: "Dorsais / Peitoral", series: "3", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/R-udpCBf60I" },
+      { id: 2, nome: "Remada Curvada com Halteres", foco: "Dorsais Espessura", series: "4", reps: "8 a 10", descanso: "60s", videoUrl: "https://www.youtube.com/embed/FUZ8sowWDcE" },
+      { id: 3, nome: "Supino Inclinado com Halteres", foco: "Peitoral Superior", series: "4", reps: "10 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ZhWgcCY2lqs" },
+      { id: 4, nome: "Stiff", foco: "Posterior de Coxa", series: "3", reps: "8 a 10", descanso: "60s", videoUrl: "https://www.youtube.com/embed/3yFCpC_c4P8" },
+      { id: 5, nome: "Agachamento Búlgaro", foco: "Pernas Unilateral", series: "3", reps: "10 a 12 por perna", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ESDKaKRqVLo" },
+      { id: 6, nome: "Agachamento com Halteres (Goblet Squat)", foco: "Quadríceps e Glúteos", series: "4", reps: "8 a 12", descanso: "60s", videoUrl: "https://www.youtube.com/embed/ccLGfT51WHw" },
+    ],
+  },
+];
+

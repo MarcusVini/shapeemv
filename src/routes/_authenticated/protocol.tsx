@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flame, Scale } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { TREINOS, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
+import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -15,18 +15,9 @@ export const Route = createFileRoute("/_authenticated/protocol")({
   component: ProtocolPage,
 });
 
-type TabKey = "instrucoes" | "t1" | "t2" | "t3" | "t4";
-
-const TABS: { key: TabKey; label: string }[] = [
-  { key: "instrucoes", label: "Instruções" },
-  { key: "t1", label: "Treino 1" },
-  { key: "t2", label: "Treino 2" },
-  { key: "t3", label: "Treino 3" },
-  { key: "t4", label: "Treino 4" },
-];
+type TabKey = string;
 
 function ProtocolPage() {
-  const [tab, setTab] = useState<TabKey>("instrucoes");
   const navigate = useNavigate();
   const fetchState = useServerFn(getLatestState);
   const session = useSession();
@@ -35,6 +26,17 @@ function ProtocolPage() {
     queryFn: () => fetchState({ data: { userId: session!.id } }),
     enabled: !!session?.id,
   });
+
+  const respostas = (state?.assessment?.respostas ?? {}) as Record<string, unknown>;
+  const isCasa = respostas.treino_local === "casa";
+  const treinos = isCasa ? TREINOS_CASA : TREINOS;
+
+  const TABS: { key: TabKey; label: string }[] = [
+    { key: "instrucoes", label: "Instruções" },
+    ...treinos.map((t) => ({ key: `t${t.id}`, label: t.nome })),
+  ];
+
+  const [tab, setTab] = useState<TabKey>("instrucoes");
 
   useEffect(() => {
     if (!state) return;
@@ -58,8 +60,17 @@ function ProtocolPage() {
       <div className="mx-auto max-w-md px-6 pt-10">
         <p className="text-xs uppercase tracking-[0.3em] text-primary/80">Seu protocolo</p>
         <h1 className="mt-1 text-3xl font-black text-foreground">
-          Shape em V <span className="text-gold-gradient">Personalizado</span>
+          {isCasa ? (
+            <>Seu Treino <span className="text-gold-gradient">para Casa</span></>
+          ) : (
+            <>Shape em V <span className="text-gold-gradient">Personalizado</span></>
+          )}
         </h1>
+        {isCasa && (
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Esse protocolo foi organizado para você treinar em casa com halteres, peso corporal e exercícios simples, mantendo direção, constância e progressão.
+          </p>
+        )}
       </div>
 
       <div className="mt-6 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -94,10 +105,11 @@ function ProtocolPage() {
             transition={{ duration: 0.25 }}
           >
             {tab === "instrucoes" && <InstrucoesTab />}
-            {tab === "t1" && <TreinoTab treino={TREINOS[0]} />}
-            {tab === "t2" && <TreinoTab treino={TREINOS[1]} />}
-            {tab === "t3" && <TreinoTab treino={TREINOS[2]} />}
-            {tab === "t4" && <TreinoTab treino={TREINOS[3]} />}
+            {tab !== "instrucoes" && (() => {
+              const t = treinos.find((tr) => `t${tr.id}` === tab);
+              if (!t) return null;
+              return <TreinoTab treino={t} showAbdomen={!isCasa} />;
+            })()}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -106,6 +118,7 @@ function ProtocolPage() {
     </main>
   );
 }
+
 
 function InstrucoesTab() {
   return (
@@ -243,7 +256,22 @@ function TextBlock({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-function TreinoTab({ treino }: { treino: Treino }) {
+function TreinoTab({ treino, showAbdomen = true }: { treino: Treino; showAbdomen?: boolean }) {
+  if (treino.off) {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl gold-border bg-card p-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+            {treino.nome}
+          </p>
+          <p className="mt-2 text-2xl font-black text-gold-gradient">Descanso</p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+            {treino.offMessage}
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-4">
       <div className="rounded-2xl gold-border bg-card p-4">
@@ -262,10 +290,11 @@ function TreinoTab({ treino }: { treino: Treino }) {
         <ExercicioCard key={`${treino.id}-${ex.id}`} index={i + 1} ex={ex} />
       ))}
 
-      <AbdomenSection />
+      {showAbdomen && <AbdomenSection />}
     </div>
   );
 }
+
 
 function AbdomenSection() {
   return (
