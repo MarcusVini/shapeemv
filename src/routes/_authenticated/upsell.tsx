@@ -130,7 +130,7 @@ function UpsellPage() {
               Sim, eu aceito essa oferta especial!
             </a>
             <a
-              href="https://fernandocantarelli.com.br/upsell-shapeemv"
+              href="/upsell-2"
               style={{
                 display: "block",
                 background: "transparent",
