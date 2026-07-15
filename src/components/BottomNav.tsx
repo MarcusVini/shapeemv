@@ -58,7 +58,7 @@ export function BottomNav() {
           <Home
             className={cn("h-5 w-5", homeActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
           />
-          Início
+          Jornada
         </Link>
 
         {unlocked ? (
@@ -66,7 +66,7 @@ export function BottomNav() {
             <ClipboardList
               className={cn("h-5 w-5", avaliacaoActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
             />
-            Avaliação
+              Diagnóstico
           </Link>
         ) : (
           <button type="button" onClick={handleLockedClick} className={linkClasses(false)}>
@@ -74,7 +74,7 @@ export function BottomNav() {
               <ClipboardList className="h-5 w-5 opacity-50" />
               <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-primary" />
             </div>
-            Avaliação
+            Diagnóstico
           </button>
         )}
 
@@ -83,7 +83,7 @@ export function BottomNav() {
             <Dumbbell
               className={cn("h-5 w-5", protocoloActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
             />
-            Protocolo
+            Treinos
           </Link>
         ) : (
           <button type="button" onClick={handleLockedClick} className={linkClasses(false)}>
@@ -91,7 +91,7 @@ export function BottomNav() {
               <Dumbbell className="h-5 w-5 opacity-50" />
               <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-primary" />
             </div>
-            Protocolo
+            Treinos
           </button>
         )}
 
