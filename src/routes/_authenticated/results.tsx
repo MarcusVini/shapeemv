@@ -8,46 +8,30 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Legend,
 } from "recharts";
-import { ArrowRight, Flame, Info, Target } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  BadgeCheck,
+  CalendarDays,
+  Compass,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
 import {
-  buildDiagnostico,
   buildLevers,
-  buildTags,
   calcComposicaoScore,
   calcExecucaoScore,
   calcExperienciaScore,
-  calcForcaScore,
-  calcIMC,
-  calcMetabolism,
   calcNutricaoScore,
   calcRecuperacaoScore,
-  calcResistenciaScore,
   calcScoreGeral,
   getInitials,
-  imcContextNote,
-  imcLabel,
-  project28DaysPhysical,
-  project28DaysWellbeing,
-  type ConditionalAnswer,
 } from "@/lib/assessment-calc";
 
 export const Route = createFileRoute("/_authenticated/results")({
@@ -55,7 +39,11 @@ export const Route = createFileRoute("/_authenticated/results")({
 });
 
 const LABEL = {
-  genero: { masculino: "Masculino", feminino: "Feminino" },
+  objetivo: {
+    crescer: "Hipertrofia",
+    crescer_secar: "Recomposição",
+    secar: "Definição",
+  },
   composicao: {
     muito_magro: "Muito magro",
     magro: "Magro",
@@ -65,21 +53,14 @@ const LABEL = {
     muito_acima_peso: "Muito acima do peso",
     musculoso: "Musculoso",
   },
-  objetivo: {
-    crescer: "Crescer (hipertrofia)",
-    crescer_secar: "Crescer e secar",
-    secar: "Secar (emagrecer)",
+  local: {
+    casa: "Em casa",
+    academia: "Na academia",
   },
-  areas: {
-    barriga: "Barriga",
-    abdomen_definido: "Abdômen definido",
-    bracos: "Braços",
-    peito: "Peito",
-    costas: "Costas",
-    pernas: "Pernas",
-    gluteos: "Glúteos",
-    ombros: "Ombros",
-    postura: "Postura",
+  execucao: {
+    iniciante: "Iniciante",
+    intermediario: "Intermediário",
+    avancado: "Avançado",
   },
 } as const;
 
@@ -111,534 +92,252 @@ function ResultsPage() {
   const nome = session?.nome_completo ?? data.profile?.nome_completo ?? "";
   const email = session?.email ?? data.profile?.email ?? "";
 
-  const peso = (a.peso as number) ?? 75;
-  const altura = (a.altura as number) ?? 175;
-  const idade = (a.idade as number) ?? 30;
-  const genero = (a.genero as keyof typeof LABEL.genero) ?? "masculino";
-  const composicao = (a.composicao as keyof typeof LABEL.composicao) ?? "medio";
   const objetivo = (a.objetivo as keyof typeof LABEL.objetivo) ?? "crescer_secar";
-  const areas = ((a.areas_incomodam as string[]) ?? []) as (keyof typeof LABEL.areas)[];
-  const dor = a.dor_lesao as ConditionalAnswer | undefined;
-  const dificuldade = (a.dificuldade as string) ?? "";
-  const motivacao = (a.motivacao_atual as string) ?? "";
-  const sonho = (a.vida_dos_sonhos as string) ?? "";
+  const composicao = (a.composicao as keyof typeof LABEL.composicao) ?? "medio";
+  const local = (a.treino_local as keyof typeof LABEL.local) ?? "academia";
+  const execucao = (a.execucao as keyof typeof LABEL.execucao) ?? "iniciante";
+  const idade = (a.idade as number) ?? 30;
 
-  const imc = calcIMC(peso, altura);
-  const imcInfo = imcLabel(imc);
-  const imcNote = imcContextNote(a, imc);
-  const score = calcScoreGeral(a);
-  const sExp = calcExperienciaScore(a);
+  // --------- Percentuais derivados para os donuts ---------
+  const scoreGeral = calcScoreGeral(a);
   const sExec = calcExecucaoScore(a);
-  const sComp = calcComposicaoScore(a);
-  const sForca = calcForcaScore(a);
-  const sResist = calcResistenciaScore(a);
   const sRec = calcRecuperacaoScore(a);
   const sNut = calcNutricaoScore(a);
+  const sExp = calcExperienciaScore(a);
+  const sComp = calcComposicaoScore(a);
 
-  const diagnostico = buildDiagnostico(a, nome);
-  const tags = buildTags(a);
+  // Foco no objetivo: quão claro é o alvo (execução + composição definida)
+  const focoObjetivo = Math.min(100, Math.round(sExec * 0.5 + sComp * 0.5 + 15));
+  // Consistência estimada: recuperação + nutrição
+  const consistencia = Math.min(100, Math.round(sRec * 0.55 + sNut * 0.45));
+  // Potencial de evolução: quanto mais baixo o score atual, maior o potencial
+  const potencial = Math.min(100, Math.max(55, 100 - Math.round(scoreGeral * 0.55) + 20));
+  // Aderência ao protocolo: experiência + execução
+  const aderencia = Math.min(100, Math.round(sExp * 0.4 + sExec * 0.6));
+
   const levers = buildLevers(a);
-  const metab = calcMetabolism(a);
+  const primeiro = (nome || "atleta").trim().split(/\s+/)[0];
 
-  const radarData = [
-    { axis: "Força", value: sForca, full: 100 },
-    { axis: "Resistência", value: sResist, full: 100 },
-    { axis: "Execução", value: sExec, full: 100 },
-    { axis: "Recuperação", value: sRec, full: 100 },
-    { axis: "Nutrição", value: sNut, full: 100 },
-  ];
+  // Pontos de atenção — 2 primeiros levers
+  const atencao = levers.slice(0, 2);
 
-  const physical28 = project28DaysPhysical(a);
-  const wellbeing28 = project28DaysWellbeing(a);
-  const lifestyleData = [
-    { name: "Treino", value: sExp, fill: "oklch(0.7 0.18 145)" },
-    { name: "Técnica", value: sExec, fill: "oklch(0.78 0.17 75)" },
-    { name: "Composição", value: sComp, fill: "oklch(0.65 0.2 295)" },
-    { name: "Recuperação", value: sRec, fill: "oklch(0.7 0.18 220)" },
-    { name: "Nutrição", value: sNut, fill: "oklch(0.78 0.14 85)" },
-  ];
-
-  const donutData = [
-    { name: "Score", value: score },
-    { name: "Resto", value: 100 - score },
+  const proximoPassoAcoes = [
+    "Abra os treinos e comece pela primeira etapa do protocolo.",
+    "Registre a carga a cada treino para acompanhar sua evolução.",
+    "Mantenha a sequência por 30 dias antes de mudar qualquer coisa.",
   ];
 
   return (
-    <main className="min-h-screen bg-background pb-40">
-      {/* Header — nova identidade */}
-      <header className="relative overflow-hidden border-b border-border">
-        <div className="pointer-events-none absolute -top-24 right-[-15%] h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
-        <div className="relative mx-auto max-w-md px-6 pt-12 pb-8">
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
-              Etapa 03 · Diagnóstico
-            </p>
-            <span className="rounded-full border border-border bg-card/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Liberado
-            </span>
-          </div>
-          <div className="mt-5 flex items-center gap-4">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl gold-gradient text-xl font-black text-primary-foreground shadow-gold-sm">
-              {getInitials(nome, email)}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-base font-black text-foreground">{nome || "Atleta"}</p>
-              <p className="truncate text-xs text-muted-foreground">{email}</p>
-            </div>
-          </div>
-          <h1 className="mt-6 text-2xl font-black leading-tight text-foreground">
-            Seu <span className="text-gold-gradient">diagnóstico Shape em V</span>
-          </h1>
-          <p className="mt-2 text-[13px] text-muted-foreground">
-            Cruzamos suas respostas com o método Cantarelli para desenhar o próximo passo.
+    <main className="min-h-screen bg-background pb-16 pt-24">
+      {/* Header */}
+      <header className="mx-auto max-w-md px-6">
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+            Etapa 03 · Diagnóstico
           </p>
+          <span className="inline-flex items-center gap-1 rounded-full gold-border bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+            <BadgeCheck className="h-3 w-3" /> Liberado
+          </span>
+        </div>
+        <div className="mt-5 flex items-center gap-4">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl gold-gradient text-xl font-black text-primary-foreground shadow-gold-sm">
+            {getInitials(nome, email)}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-base font-black text-foreground">{nome || "Atleta"}</p>
+            <p className="truncate text-xs text-muted-foreground">{email}</p>
+          </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-md space-y-6 px-6 pt-8">
-        {/* HERO - Diagnóstico personalizado */}
-        <motion.div
+      <div className="mx-auto max-w-md space-y-5 px-6 pt-8">
+        {/* 1. Card resumo — Diagnóstico gerado */}
+        <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative overflow-hidden rounded-3xl gold-border bg-card p-6 shadow-gold"
         >
-          <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
+          <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
-              <Target className="h-3 w-3" /> Diagnóstico
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+              <Sparkles className="h-3 w-3" /> Análise inteligente
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-foreground">{diagnostico}</p>
-            {tags.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full bg-background px-3 py-1 text-[11px] font-semibold text-foreground border border-border"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Section 1 - Dados Pessoais */}
-        <Section title="Dados pessoais">
-          <div className="grid grid-cols-2 gap-3">
-            <DataCell label="Gênero" value={LABEL.genero[genero]} />
-            <DataCell label="Idade" value={`${idade} anos`} />
-            <DataCell label="Altura" value={`${altura} cm`} />
-            <DataCell label="Peso" value={`${peso} kg`} />
-            <DataCell
-              label="Composição"
-              value={LABEL.composicao[composicao] ?? composicao}
-              className="col-span-2"
-            />
-          </div>
-        </Section>
-
-        {/* Section 2 - IMC */}
-        <Section title="Índice de massa corporal">
-          <div className="text-center">
-            <p className="text-6xl font-black text-gold-gradient tabular-nums">{imc}</p>
-            <p className="mt-1 text-sm font-semibold" style={{ color: imcInfo.color }}>
-              {imcInfo.label}
+            <h1 className="mt-4 text-2xl font-black leading-tight text-foreground">
+              Seu diagnóstico foi <span className="text-gold-gradient">gerado</span>
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              A análise foi criada com base nas respostas da sua avaliação. Identificamos seu ponto
+              de partida, seu objetivo principal e os fatores que mais podem influenciar sua
+              evolução.
             </p>
           </div>
-          <div className="mt-6 space-y-2">
-            <div
-              className="relative h-3 overflow-hidden rounded-full"
-              style={{ background: "var(--gradient-imc)" }}
-            >
-              <motion.div
-                initial={{ left: "0%" }}
-                animate={{ left: `${imcInfo.pct}%` }}
-                transition={{ type: "spring", duration: 1, bounce: 0.3 }}
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
-              >
-                <div className="h-5 w-5 rounded-full border-2 border-background bg-foreground shadow-lg" />
-              </motion.div>
-            </div>
-            <div className="flex justify-between text-[10px] font-medium text-muted-foreground">
-              <span>Baixo</span>
-              <span>Normal</span>
-              <span>Sobrep.</span>
-              <span>Obeso</span>
+        </motion.section>
+
+        {/* 2. Perfil identificado */}
+        <Card icon={<Target className="h-4 w-4" />} eyebrow="Análise" title="Perfil identificado">
+          <p className="text-sm leading-relaxed text-foreground/90">
+            <span className="font-bold text-foreground">{primeiro}</span>, seu perfil aponta para{" "}
+            <span className="font-bold text-primary">{LABEL.objetivo[objetivo]}</span>, partindo de
+            um shape{" "}
+            <span className="font-bold text-primary">
+              {(LABEL.composicao[composicao] ?? composicao).toLowerCase()}
+            </span>{" "}
+            e treinando <span className="font-bold text-primary">{LABEL.local[local].toLowerCase()}</span>.
+          </p>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <MiniCard label="Objetivo principal" value={LABEL.objetivo[objetivo]} />
+            <MiniCard label="Nível atual" value={LABEL.execucao[execucao] ?? String(execucao)} />
+            <MiniCard label="Frequência recomendada" value="3 a 4x / semana" />
+            <MiniCard label="Faixa etária" value={`${idade} anos`} />
+          </div>
+        </Card>
+
+        {/* 3. Gráficos circulares */}
+        <Card
+          icon={<Activity className="h-4 w-4" />}
+          eyebrow="Indicadores"
+          title="Sua leitura em números"
+          subtitle="Percentuais gerados a partir das suas respostas."
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <DonutCard
+              label="Foco no objetivo"
+              value={focoObjetivo}
+              color="oklch(0.78 0.14 85)"
+            />
+            <DonutCard
+              label="Consistência estimada"
+              value={consistencia}
+              color="oklch(0.7 0.18 145)"
+            />
+            <DonutCard
+              label="Potencial de evolução"
+              value={potencial}
+              color="oklch(0.65 0.2 295)"
+            />
+            <DonutCard
+              label="Aderência ao protocolo"
+              value={aderencia}
+              color="oklch(0.7 0.18 220)"
+            />
+          </div>
+
+          {/* Score geral em destaque como donut grande */}
+          <div className="mt-5 rounded-2xl border border-border bg-background p-5">
+            <div className="flex items-center gap-5">
+              <div className="relative h-28 w-28 shrink-0">
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={[{ value: scoreGeral }, { value: 100 - scoreGeral }]}
+                      innerRadius={38}
+                      outerRadius={54}
+                      startAngle={90}
+                      endAngle={-270}
+                      dataKey="value"
+                      stroke="none"
+                      isAnimationActive
+                    >
+                      <Cell fill="oklch(0.78 0.14 85)" />
+                      <Cell fill="oklch(0.24 0.006 60)" />
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-2xl font-black tabular-nums text-foreground">{scoreGeral}</p>
+                  <p className="text-[9px] uppercase tracking-wider text-muted-foreground">/ 100</p>
+                </div>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-primary/80">
+                  Score físico geral
+                </p>
+                <p className="mt-1 text-sm font-bold text-foreground">
+                  Ponto de partida da sua jornada.
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Esse número reflete o seu momento atual. A evolução aparece na consistência.
+                </p>
+              </div>
             </div>
           </div>
-          {imcNote && (
-            <div className="mt-4 flex items-start gap-2 rounded-2xl bg-background p-3">
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-xs leading-relaxed text-muted-foreground">{imcNote}</p>
-            </div>
-          )}
-        </Section>
+        </Card>
 
-        {/* Section - Alavancas (top 3 ações) */}
-        <Section title="Suas 3 alavancas" subtitle="Onde mexer primeiro para o maior salto em 28 dias">
+        {/* 4. Pontos de atenção */}
+        <Card
+          icon={<AlertTriangle className="h-4 w-4" />}
+          eyebrow="Cuidados"
+          title="Pontos de atenção"
+        >
           <div className="space-y-3">
-            {levers.map((l, i) => (
+            {atencao.map((l, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 rounded-2xl bg-background p-4"
+                className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background p-4"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full gold-gradient text-sm font-black text-primary-foreground">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/15 text-sm font-black text-primary">
                   {i + 1}
-                </div>
-                <div className="min-w-0 flex-1">
+                </span>
+                <div className="min-w-0">
                   <p className="text-sm font-bold text-foreground">{l.title}</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{l.detail}</p>
-                  <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                    <Flame className="h-3 w-3" /> {l.impact}
-                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{l.detail}</p>
                 </div>
               </div>
             ))}
           </div>
-        </Section>
+        </Card>
 
-        {/* Section - Metabolismo & Calorias */}
-        <Section title="Metabolismo & calorias" subtitle="Estimativa pelo método Mifflin-St Jeor">
-          <div className="grid grid-cols-2 gap-3">
-            <DataCell label="Gasto em repouso" value={`${metab.tmb} kcal`} />
-            <DataCell label="Gasto total/dia" value={`${metab.gastoTotal} kcal`} />
-            <DataCell
-              label="Meta calórica"
-              value={`${metab.metaCalorica} kcal`}
-              className="col-span-2"
-            />
-          </div>
-          <div className="mt-4 rounded-2xl bg-background p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Macronutrientes alvo
+        {/* 5. O que fazer agora */}
+        <Card
+          icon={<Compass className="h-4 w-4" />}
+          eyebrow="Direção"
+          title="O que fazer agora"
+        >
+          <ul className="space-y-2">
+            {proximoPassoAcoes.map((txt) => (
+              <li
+                key={txt}
+                className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background p-3.5"
+              >
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                <p className="text-sm leading-relaxed text-foreground/90">{txt}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-border/60 bg-background p-3.5">
+            <CalendarDays className="h-4 w-4 shrink-0 text-primary" />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              O foco agora é executar o treino com consistência, acompanhar sua evolução e ajustar
+              sua rotina com mais direção.
             </p>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-              <div>
-                <p className="text-xl font-black text-gold-gradient tabular-nums">
-                  {metab.proteinaG}g
-                </p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Proteína
-                </p>
-              </div>
-              <div>
-                <p className="text-xl font-black text-foreground tabular-nums">{metab.carboG}g</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Carbo
-                </p>
-              </div>
-              <div>
-                <p className="text-xl font-black text-foreground tabular-nums">
-                  {metab.gorduraG}g
-                </p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Gordura
-                </p>
-              </div>
-            </div>
           </div>
-        </Section>
+        </Card>
 
-        {/* Section 3 - Score Geral */}
-        <Section title="Score geral">
-          <div className="flex items-center gap-6">
-            <div className="relative h-32 w-32 shrink-0">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    innerRadius={42}
-                    outerRadius={60}
-                    startAngle={90}
-                    endAngle={-270}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    <Cell fill="oklch(0.78 0.14 85)" />
-                    <Cell fill="oklch(0.24 0.006 60)" />
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <p className="text-3xl font-black tabular-nums text-foreground">{score}</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">/ 100</p>
-              </div>
-            </div>
-            <div className="flex-1 space-y-3">
-              <ScoreBar label="Recuperação" value={sRec} />
-              <ScoreBar label="Nutrição" value={sNut} />
-              <ScoreBar label="Composição" value={sComp} />
-            </div>
-          </div>
-        </Section>
-
-        {/* Section 4 - Objetivo & Protocolo */}
-        <Section title="Seu objetivo">
-          <div className="space-y-3">
-            <Row label="Objetivo" value={LABEL.objetivo[objetivo]} />
-            <Row label="Nível" value={(a.execucao as string) ?? "—"} />
-            <Row
-              label="Dor / lesão"
-              value={dor?.resposta === "sim" ? (dor.detalhe ?? "sim") : "Nenhuma"}
-            />
-            {dificuldade && (
-              <div className="rounded-xl bg-background p-3">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Maior dificuldade
-                </p>
-                <p className="mt-1 text-sm text-foreground">{dificuldade}</p>
-              </div>
-            )}
-          </div>
-          <Link to="/protocol" className="mt-5 block">
-            <Button className="h-13 w-full rounded-2xl gold-gradient py-4 text-base font-bold text-primary-foreground shadow-gold-sm">
-              Ver protocolo personalizado <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </Section>
-
-        {/* Section 5 - Perfil de Performance (5 eixos) */}
-        <Section title="Perfil de performance">
-          <div className="h-72">
-            <ResponsiveContainer>
-              <RadarChart data={radarData} outerRadius="75%">
-                <PolarGrid stroke="oklch(0.26 0.006 60)" />
-                <PolarAngleAxis
-                  dataKey="axis"
-                  tick={{ fill: "oklch(0.98 0.005 80)", fontSize: 11, fontWeight: 600 }}
-                />
-                <PolarRadiusAxis
-                  angle={90}
-                  domain={[0, 100]}
-                  tick={{ fill: "oklch(0.55 0.01 70)", fontSize: 10 }}
-                  axisLine={false}
-                />
-                <Radar
-                  dataKey="value"
-                  stroke="oklch(0.78 0.14 85)"
-                  fill="oklch(0.78 0.14 85)"
-                  fillOpacity={0.35}
-                  strokeWidth={2}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-
-        {/* Section 6 - Áreas de foco */}
-        {areas.length > 0 && (
-          <Section title="Áreas de foco">
-            <div className="flex flex-wrap gap-2">
-              {areas.map((k) => (
-                <span
-                  key={k}
-                  className="inline-flex items-center rounded-full gold-border bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary"
-                >
-                  {LABEL.areas[k] ?? k}
-                </span>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {/* Section 7 - Indicadores de estilo de vida */}
-        <Section title="Indicadores de estilo de vida">
-          <div className="h-56">
-            <ResponsiveContainer>
-              <BarChart data={lifestyleData} margin={{ top: 16, right: 8, left: -16, bottom: 0 }}>
-                <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fill: "oklch(0.85 0.01 70)", fontSize: 10, fontWeight: 600 }}
-                  stroke="oklch(0.26 0.006 60)"
-                />
-                <YAxis hide domain={[0, 100]} />
-                <Tooltip
-                  cursor={{ fill: "oklch(0.22 0.006 60)" }}
-                  contentStyle={{
-                    background: "oklch(0.18 0.006 60)",
-                    border: "1px solid oklch(0.26 0.006 60)",
-                    borderRadius: 12,
-                    color: "oklch(0.98 0.005 80)",
-                    fontSize: 12,
-                  }}
-                />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={42} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-
-        {/* Section 8 - Mentalidade */}
-        {(motivacao || sonho) && (
-          <Section title="Mentalidade">
-            <div className="space-y-5">
-              {motivacao && (
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    O que te motiva a mudar
-                  </p>
-                  <p className="mt-1.5 text-sm italic text-foreground">"{motivacao}"</p>
-                </div>
-              )}
-              {sonho && (
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Seu sonho
-                  </p>
-                  <p className="mt-1.5 text-sm italic text-foreground">"{sonho}"</p>
-                </div>
-              )}
-            </div>
-          </Section>
-        )}
-
-        {/* Section 9 - Seu Progresso Físico (28 dias) */}
-        <Section
-          title="Seu progresso — Físico"
-          subtitle="Projeção estimada nos próximos 28 dias seguindo o protocolo"
+        {/* 6. Seu próximo passo */}
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-3xl gold-border bg-card p-6 shadow-gold"
         >
-          <div className="h-64">
-            <ResponsiveContainer>
-              <LineChart data={physical28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
-                <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis
-                  dataKey="dia"
-                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
-                  stroke="oklch(0.26 0.006 60)"
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tickFormatter={(v) => `${v}%`}
-                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
-                  stroke="oklch(0.26 0.006 60)"
-                />
-                <Tooltip
-                  formatter={(v: number) => `${v}%`}
-                  contentStyle={{
-                    background: "oklch(0.18 0.006 60)",
-                    border: "1px solid oklch(0.26 0.006 60)",
-                    borderRadius: 12,
-                    color: "oklch(0.98 0.005 80)",
-                    fontSize: 12,
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
-                <Line
-                  type="monotone"
-                  dataKey="ganhoMuscular"
-                  name="Ganho muscular"
-                  stroke="oklch(0.7 0.18 220)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="queimaGordura"
-                  name="Queima de gordura"
-                  stroke="oklch(0.65 0.2 295)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="disposicao"
-                  name="Disposição"
-                  stroke="oklch(0.78 0.14 85)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
+          <div className="relative">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+              Seu próximo passo
+            </p>
+            <h2 className="mt-2 text-xl font-black leading-tight text-foreground">
+              Agora que seu diagnóstico foi <span className="text-gold-gradient">liberado</span>
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Siga para os treinos e comece pela primeira etapa. A evolução vem da sequência, não
+              de treinos soltos.
+            </p>
+            <Link to="/protocol" className="mt-5 block">
+              <Button className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm">
+                Ir para meus treinos <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
-        </Section>
-
-        {/* Section 10 - Seu Progresso Bem-Estar */}
-        <Section
-          title="Seu progresso — Bem-estar"
-          subtitle="Impacto estimado no bem-estar geral nos próximos 28 dias"
-        >
-          <div className="h-64">
-            <ResponsiveContainer>
-              <LineChart data={wellbeing28} margin={{ top: 10, right: 8, left: -10, bottom: 0 }}>
-                <CartesianGrid stroke="oklch(0.26 0.006 60)" vertical={false} />
-                <XAxis
-                  dataKey="dia"
-                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
-                  stroke="oklch(0.26 0.006 60)"
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tickFormatter={(v) => `${v}%`}
-                  tick={{ fill: "oklch(0.72 0.01 70)", fontSize: 11 }}
-                  stroke="oklch(0.26 0.006 60)"
-                />
-                <Tooltip
-                  formatter={(v: number) => `${v}%`}
-                  contentStyle={{
-                    background: "oklch(0.18 0.006 60)",
-                    border: "1px solid oklch(0.26 0.006 60)",
-                    borderRadius: 12,
-                    color: "oklch(0.98 0.005 80)",
-                    fontSize: 12,
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 11, color: "oklch(0.72 0.01 70)" }} />
-                <Line
-                  type="monotone"
-                  dataKey="testosterona"
-                  name="Testosterona"
-                  stroke="oklch(0.65 0.2 295)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="autoestima"
-                  name="Autoestima"
-                  stroke="oklch(0.7 0.18 220)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="saude"
-                  name="Saúde geral"
-                  stroke="oklch(0.7 0.18 145)"
-                  strokeWidth={3}
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Section>
-      </div>
-
-      {/* Floating CTA above bottom nav */}
-      <div className="fixed inset-x-0 bottom-[68px] z-40 px-4 pb-2">
-        <div className="mx-auto max-w-md">
-          <Link to="/protocol">
-            <motion.div
-              animate={{
-                boxShadow: [
-                  "0 0 0 0 oklch(0.78 0.14 85 / 0.5)",
-                  "0 0 0 12px oklch(0.78 0.14 85 / 0)",
-                ],
-              }}
-              transition={{ duration: 1.6, repeat: Infinity }}
-              className="flex items-center justify-between gap-3 rounded-2xl gold-gradient px-5 py-4 text-primary-foreground shadow-gold"
-            >
-              <div className="text-left">
-                <p className="text-[10px] font-bold uppercase tracking-wider opacity-80">
-                  Seu protocolo está pronto
-                </p>
-                <p className="text-sm font-black">Toque para acessar</p>
-              </div>
-              <ArrowRight className="h-5 w-5" />
-            </motion.div>
-          </Link>
-        </div>
+        </motion.section>
       </div>
 
       <BottomNav />
@@ -646,67 +345,88 @@ function ResultsPage() {
   );
 }
 
-function Section({
+// ============ helpers ============
+
+function Card({
+  icon,
+  eyebrow,
   title,
   subtitle,
   children,
 }: {
+  icon: React.ReactNode;
+  eyebrow: string;
   title: string;
   subtitle?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="rounded-3xl border border-border bg-card p-6 shadow-card-premium">
-      <div className="mb-5">
-        <h2 className="text-base font-black uppercase tracking-wider text-foreground">{title}</h2>
-        {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
+      <div className="flex items-start gap-3">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/70">
+            {eyebrow}
+          </p>
+          <h2 className="mt-0.5 text-lg font-black leading-tight text-foreground">{title}</h2>
+          {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
+        </div>
       </div>
-      {children}
+      <div className="mt-5">{children}</div>
     </section>
   );
 }
 
-function DataCell({
+function MiniCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border/60 bg-background p-3">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-bold text-foreground">{value}</p>
+    </div>
+  );
+}
+
+function DonutCard({
   label,
   value,
-  className,
+  color,
 }: {
   label: string;
-  value: string;
-  className?: string;
+  value: number;
+  color: string;
 }) {
+  const data = [{ value }, { value: 100 - value }];
   return (
-    <div className={`rounded-xl bg-background p-3 ${className ?? ""}`}>
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between rounded-xl bg-background p-3">
-      <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
-      <span className="text-sm font-semibold text-foreground">{value}</span>
-    </div>
-  );
-}
-
-function ScoreBar({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between text-[11px] font-semibold">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="tabular-nums text-foreground">{value}</span>
+    <div className="rounded-2xl border border-border/60 bg-background p-4">
+      <div className="relative mx-auto h-24 w-24">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              innerRadius={30}
+              outerRadius={44}
+              startAngle={90}
+              endAngle={-270}
+              dataKey="value"
+              stroke="none"
+              isAnimationActive
+            >
+              <Cell fill={color} />
+              <Cell fill="oklch(0.22 0.006 60)" />
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <p className="text-lg font-black tabular-nums text-foreground">{value}%</p>
+        </div>
       </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-full gold-gradient"
-        />
-      </div>
+      <p className="mt-2 text-center text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
     </div>
   );
 }

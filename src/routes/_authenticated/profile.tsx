@@ -49,8 +49,9 @@ function ProfilePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background pb-28">
-      <div className="mx-auto max-w-md px-6 pt-12">
+    <main className="min-h-screen bg-background pb-10">
+      <div className="mx-auto max-w-md px-6 pt-24">
+
         <div className="flex items-center justify-between">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Conta</p>
           <span className="rounded-full border border-border bg-card/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

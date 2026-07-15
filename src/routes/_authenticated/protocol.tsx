@@ -3,7 +3,20 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, ChevronRight, Flame, PlayCircle, Scale, Target } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  ChevronRight,
+  Flame,
+  ListChecks,
+  Moon,
+  PlayCircle,
+  Scale,
+  Target,
+  Timer,
+} from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
@@ -14,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/protocol")({
   component: ProtocolPage,
 });
 
-type TabKey = string;
+type ViewKey = "index" | "instrucoes" | string; // "t{id}"
 
 function ProtocolPage() {
   const navigate = useNavigate();
@@ -30,12 +43,7 @@ function ProtocolPage() {
   const isCasa = respostas.treino_local === "casa";
   const treinos = isCasa ? TREINOS_CASA : TREINOS;
 
-  const TABS: { key: TabKey; label: string }[] = [
-    { key: "instrucoes", label: "Comece por aqui" },
-    ...treinos.map((t) => ({ key: `t${t.id}`, label: t.nome })),
-  ];
-
-  const [tab, setTab] = useState<TabKey>("instrucoes");
+  const [view, setView] = useState<ViewKey>("index");
 
   useEffect(() => {
     if (!state) return;
@@ -49,6 +57,11 @@ function ProtocolPage() {
     }
   }, [state, navigate]);
 
+  useEffect(() => {
+    // Rolar ao topo quando trocar de tela
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [view]);
+
   if (
     isLoading ||
     !state ||
@@ -59,69 +72,104 @@ function ProtocolPage() {
     return <main className="min-h-screen bg-background" />;
   }
 
+  const totalTreinos = treinos.length;
+
   return (
-    <main className="min-h-screen bg-background pb-28">
-      <div className="mx-auto max-w-md px-6 pt-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
-          Protocolo liberado
-        </p>
-        <h1 className="mt-2 text-3xl font-black leading-tight text-foreground">
-          {isCasa ? (
-            <>
-              Seu plano <span className="text-gold-gradient">em casa</span>
-            </>
-          ) : (
-            <>
-              Seu plano <span className="text-gold-gradient">de academia</span>
-            </>
-          )}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          {isCasa
-            ? "Treinos organizados para você executar com halteres, peso do corpo e movimentos simples. Foco em constância e evolução gradual."
-            : "Sequência de treinos organizada por dia. Siga a ordem, respeite o descanso e registre suas cargas para acompanhar a evolução."}
-        </p>
-      </div>
-
-      <div className="mt-6 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="mx-auto flex max-w-md gap-2 pb-1">
-          {TABS.map((t) => {
-            const active = tab === t.key;
-            return (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={cn(
-                  "shrink-0 rounded-full px-5 py-2.5 text-sm font-bold transition-all",
-                  active
-                    ? "gold-gradient text-primary-foreground shadow-gold-sm"
-                    : "bg-[#1E1E1E] text-foreground/90 hover:bg-[#262626]",
-                )}
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mx-auto mt-6 max-w-md px-6">
+    <main className="min-h-screen bg-background pb-16 pt-24">
+      <div className="mx-auto max-w-md px-6">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-          >
-            {tab === "instrucoes" && <InstrucoesTab onStart={() => setTab(`t${treinos[0].id}`)} />}
-            {tab !== "instrucoes" &&
-              (() => {
-                const t = treinos.find((tr) => `t${tr.id}` === tab);
+          {view === "index" && (
+            <motion.div
+              key="index"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+                Protocolo liberado
+              </p>
+              <h1 className="mt-2 text-3xl font-black leading-tight text-foreground">
+                {isCasa ? (
+                  <>Seus <span className="text-gold-gradient">treinos em casa</span></>
+                ) : (
+                  <>Seus <span className="text-gold-gradient">treinos de academia</span></>
+                )}
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {totalTreinos} treinos organizados em sequência. Abra um por vez, siga a ordem e
+                registre a carga.
+              </p>
+
+              {/* Card intro — Comece por aqui */}
+              <button
+                onClick={() => setView("instrucoes")}
+                className="group mt-8 flex w-full items-center gap-4 rounded-3xl border border-primary/40 bg-card p-5 text-left shadow-gold-sm transition-all hover:border-primary hover:shadow-gold"
+              >
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">
+                    Antes de começar
+                  </p>
+                  <p className="mt-0.5 text-base font-black text-foreground">Comece por aqui</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Leia as regras do jogo antes do Treino 1.
+                  </p>
+                </div>
+                <ChevronRight className="h-5 w-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+              </button>
+
+              {/* Cards verticais dos treinos */}
+              <ol className="mt-6 space-y-4">
+                {treinos.map((t, i) => (
+                  <li key={t.id}>
+                    <TreinoCard
+                      treino={t}
+                      index={i + 1}
+                      total={totalTreinos}
+                      onOpen={() => setView(`t${t.id}`)}
+                    />
+                  </li>
+                ))}
+              </ol>
+
+              <p className="mt-8 text-center text-[11px] text-muted-foreground">
+                A evolução vem da sequência, não de treinos soltos.
+              </p>
+            </motion.div>
+          )}
+
+          {view === "instrucoes" && (
+            <motion.div
+              key="instrucoes"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+            >
+              <BackButton onClick={() => setView("index")} label="Voltar aos treinos" />
+              <InstrucoesTab onStart={() => setView(`t${treinos[0].id}`)} />
+            </motion.div>
+          )}
+
+          {view !== "index" && view !== "instrucoes" && (
+            <motion.div
+              key={view}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+            >
+              <BackButton onClick={() => setView("index")} label="Voltar aos treinos" />
+              {(() => {
+                const t = treinos.find((tr) => `t${tr.id}` === view);
                 if (!t) return null;
                 return <TreinoTab treino={t} showAbdomen={!isCasa} />;
               })()}
-          </motion.div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -129,6 +177,93 @@ function ProtocolPage() {
     </main>
   );
 }
+
+function BackButton({ onClick, label }: { onClick: () => void; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+    >
+      <ArrowLeft className="h-3.5 w-3.5" /> {label}
+    </button>
+  );
+}
+
+function TreinoCard({
+  treino,
+  index,
+  total,
+  onOpen,
+}: {
+  treino: Treino;
+  index: number;
+  total: number;
+  onOpen: () => void;
+}) {
+  const isOff = !!treino.off;
+  const qtd = treino.exercicios.length;
+  // Estimativa simples de duração (em minutos): 5 min por exercício
+  const duracaoEst = qtd > 0 ? `${qtd * 5} min` : "";
+
+  return (
+    <button
+      onClick={onOpen}
+      className={cn(
+        "group relative flex w-full flex-col items-center gap-3 overflow-hidden rounded-3xl border bg-card p-6 text-center shadow-card-premium transition-all",
+        isOff
+          ? "border-border/70 opacity-90"
+          : "border-primary/40 hover:border-primary hover:shadow-gold",
+      )}
+    >
+      <div className="pointer-events-none absolute -top-16 -right-16 h-32 w-32 rounded-full bg-primary/15 blur-3xl" />
+      <div className="relative flex w-full items-center justify-between text-[10px] font-black uppercase tracking-[0.25em]">
+        <span className="rounded-full gold-border bg-primary/10 px-3 py-1 text-primary">
+          {treino.nome}
+        </span>
+        <span className="text-muted-foreground tabular-nums">
+          {index}/{total}
+        </span>
+      </div>
+
+      <div className="relative mt-2 grid h-12 w-12 place-items-center rounded-2xl gold-gradient text-lg font-black text-primary-foreground shadow-gold-sm">
+        {isOff ? <Moon className="h-5 w-5" /> : index}
+      </div>
+
+      <h3 className="relative text-lg font-black leading-tight text-foreground">
+        {isOff ? "Dia OFF" : treino.foco}
+      </h3>
+
+      <p className="relative text-xs leading-relaxed text-muted-foreground">
+        {isOff
+          ? "Descanso planejado. Volte com tudo no próximo."
+          : "Siga a ordem dos exercícios. Cada posição foi pensada para o estímulo certo."}
+      </p>
+
+      {!isOff && (
+        <div className="relative mt-1 flex flex-wrap justify-center gap-2">
+          <Chip icon={<ListChecks className="h-3 w-3" />} label={`${qtd} exercícios`} />
+          <Chip icon={<Timer className="h-3 w-3" />} label={duracaoEst} />
+          <Chip icon={<Target className="h-3 w-3" />} label="Nível indicado" />
+        </div>
+      )}
+
+      <span className="relative mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl gold-gradient py-3 text-sm font-bold text-primary-foreground shadow-gold-sm">
+        {isOff ? "Ver mensagem" : "Acessar treino"}
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </span>
+    </button>
+  );
+}
+
+function Chip({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground/80">
+      {icon}
+      {label}
+    </span>
+  );
+}
+
 
 function InstrucoesTab({ onStart }: { onStart: () => void }) {
   return (
