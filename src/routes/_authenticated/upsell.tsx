@@ -5,13 +5,6 @@ import { motion } from "framer-motion";
 export const Route = createFileRoute("/_authenticated/upsell")({
   component: UpsellPage,
   head: () => ({
-    scripts: [
-      {
-        type: "text/javascript",
-        children:
-          '!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);',
-      },
-    ],
     links: [
       {
         rel: "preload",
