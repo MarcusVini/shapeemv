@@ -19,6 +19,7 @@ import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/q
 import { Route as AuthenticatedProtocolRouteImport } from './routes/_authenticated/protocol'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProcessingRouteImport } from './routes/_authenticated/processing'
+import { Route as AuthenticatedDownsell2RouteImport } from './routes/_authenticated/downsell-2'
 import { Route as AuthenticatedDownsellRouteImport } from './routes/_authenticated/downsell'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
@@ -71,6 +72,11 @@ const AuthenticatedProcessingRoute = AuthenticatedProcessingRouteImport.update({
   path: '/processing',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDownsell2Route = AuthenticatedDownsell2RouteImport.update({
+  id: '/downsell-2',
+  path: '/downsell-2',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDownsellRoute = AuthenticatedDownsellRouteImport.update({
   id: '/downsell',
   path: '/downsell',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/downsell': typeof AuthenticatedDownsellRoute
+  '/downsell-2': typeof AuthenticatedDownsell2Route
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/protocol': typeof AuthenticatedProtocolRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/downsell': typeof AuthenticatedDownsellRoute
+  '/downsell-2': typeof AuthenticatedDownsell2Route
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/protocol': typeof AuthenticatedProtocolRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/downsell': typeof AuthenticatedDownsellRoute
+  '/_authenticated/downsell-2': typeof AuthenticatedDownsell2Route
   '/_authenticated/processing': typeof AuthenticatedProcessingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/protocol': typeof AuthenticatedProtocolRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/downsell'
+    | '/downsell-2'
     | '/processing'
     | '/profile'
     | '/protocol'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/downsell'
+    | '/downsell-2'
     | '/processing'
     | '/profile'
     | '/protocol'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_authenticated/dashboard'
     | '/_authenticated/downsell'
+    | '/_authenticated/downsell-2'
     | '/_authenticated/processing'
     | '/_authenticated/profile'
     | '/_authenticated/protocol'
@@ -243,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProcessingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/downsell-2': {
+      id: '/_authenticated/downsell-2'
+      path: '/downsell-2'
+      fullPath: '/downsell-2'
+      preLoaderRoute: typeof AuthenticatedDownsell2RouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/downsell': {
       id: '/_authenticated/downsell'
       path: '/downsell'
@@ -263,6 +282,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDownsellRoute: typeof AuthenticatedDownsellRoute
+  AuthenticatedDownsell2Route: typeof AuthenticatedDownsell2Route
   AuthenticatedProcessingRoute: typeof AuthenticatedProcessingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProtocolRoute: typeof AuthenticatedProtocolRoute
@@ -276,6 +296,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDownsellRoute: AuthenticatedDownsellRoute,
+  AuthenticatedDownsell2Route: AuthenticatedDownsell2Route,
   AuthenticatedProcessingRoute: AuthenticatedProcessingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProtocolRoute: AuthenticatedProtocolRoute,
