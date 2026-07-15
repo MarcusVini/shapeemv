@@ -3,13 +3,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
-import { Flame, Scale } from "lucide-react";
+import { CheckCircle2, ChevronRight, Flame, PlayCircle, Scale, Target } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
-import welcomeCover from "@/assets/welcome-cover.jpg";
 
 export const Route = createFileRoute("/_authenticated/protocol")({
   component: ProtocolPage,
@@ -32,7 +31,7 @@ function ProtocolPage() {
   const treinos = isCasa ? TREINOS_CASA : TREINOS;
 
   const TABS: { key: TabKey; label: string }[] = [
-    { key: "instrucoes", label: "Instruções" },
+    { key: "instrucoes", label: "Comece por aqui" },
     ...treinos.map((t) => ({ key: `t${t.id}`, label: t.nome })),
   ];
 
@@ -50,27 +49,38 @@ function ProtocolPage() {
     }
   }, [state, navigate]);
 
-  if (isLoading || !state || !state.assessment || !state.workout || Date.now() < new Date(state.workout.unlock_date).getTime()) {
+  if (
+    isLoading ||
+    !state ||
+    !state.assessment ||
+    !state.workout ||
+    Date.now() < new Date(state.workout.unlock_date).getTime()
+  ) {
     return <main className="min-h-screen bg-background" />;
   }
-
 
   return (
     <main className="min-h-screen bg-background pb-28">
       <div className="mx-auto max-w-md px-6 pt-10">
-        <p className="text-xs uppercase tracking-[0.3em] text-primary/80">Seu protocolo</p>
-        <h1 className="mt-1 text-3xl font-black text-foreground">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+          Protocolo liberado
+        </p>
+        <h1 className="mt-2 text-3xl font-black leading-tight text-foreground">
           {isCasa ? (
-            <>Seu Treino <span className="text-gold-gradient">para Casa</span></>
+            <>
+              Seu plano <span className="text-gold-gradient">em casa</span>
+            </>
           ) : (
-            <>Shape em V <span className="text-gold-gradient">Personalizado</span></>
+            <>
+              Seu plano <span className="text-gold-gradient">de academia</span>
+            </>
           )}
         </h1>
-        {isCasa && (
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Esse protocolo foi organizado para você treinar em casa com halteres, peso corporal e exercícios simples, mantendo direção, constância e progressão.
-          </p>
-        )}
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          {isCasa
+            ? "Treinos organizados para você executar com halteres, peso do corpo e movimentos simples. Foco em constância e evolução gradual."
+            : "Sequência de treinos organizada por dia. Siga a ordem, respeite o descanso e registre suas cargas para acompanhar a evolução."}
+        </p>
       </div>
 
       <div className="mt-6 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -104,12 +114,13 @@ function ProtocolPage() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
           >
-            {tab === "instrucoes" && <InstrucoesTab />}
-            {tab !== "instrucoes" && (() => {
-              const t = treinos.find((tr) => `t${tr.id}` === tab);
-              if (!t) return null;
-              return <TreinoTab treino={t} showAbdomen={!isCasa} />;
-            })()}
+            {tab === "instrucoes" && <InstrucoesTab onStart={() => setTab(`t${treinos[0].id}`)} />}
+            {tab !== "instrucoes" &&
+              (() => {
+                const t = treinos.find((tr) => `t${tr.id}` === tab);
+                if (!t) return null;
+                return <TreinoTab treino={t} showAbdomen={!isCasa} />;
+              })()}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -119,154 +130,132 @@ function ProtocolPage() {
   );
 }
 
-
-function InstrucoesTab() {
+function InstrucoesTab({ onStart }: { onStart: () => void }) {
   return (
     <div className="space-y-5">
-      <div className="relative overflow-hidden rounded-3xl gold-border shadow-gold">
-        <img
-          src={welcomeCover}
-          alt="Shape em V"
-          className="h-64 w-full object-cover"
-          width={1280}
-          height={832}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute bottom-5 left-5 right-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
-            Protocolo
-          </p>
-          <p className="mt-1 text-4xl font-black leading-none text-gold-gradient">
-            SHAPE EM V
-          </p>
+      {/* CTA topo */}
+      <div className="rounded-3xl gold-border bg-card p-6 shadow-gold-sm">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+          Protocolo Shape em V
+        </p>
+        <h2 className="mt-2 text-2xl font-black leading-tight text-foreground">
+          Leia com <span className="text-gold-gradient">calma</span>, depois abra o Treino 1
+        </h2>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Esse é o mesmo método que uso com os alunos que buscam ombros largos, costas
+          em V e cintura fina. Aqui a ordem importa — siga o passo a passo abaixo.
+        </p>
+        <button
+          onClick={onStart}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl gold-gradient py-3.5 text-sm font-bold text-primary-foreground shadow-gold-sm"
+        >
+          Ir para o Treino 1 <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Como funciona — checklist vertical */}
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/70">
+          Como funciona
+        </p>
+        <h3 className="mt-1 text-lg font-black text-foreground">Regras do jogo</h3>
+        <div className="mt-4 space-y-3">
+          {COMO_TREINAR.map((item) => (
+            <div
+              key={item.label}
+              className="flex items-start gap-3 rounded-2xl border border-border bg-card/60 p-4"
+            >
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <div>
+                <p className="text-sm font-black text-foreground">{item.label}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {item.text}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div>
-        <h2 className="text-xl font-black leading-tight text-foreground">
-          SEJA BEM-VINDO AO SEU PROTOCOLO PERSONALIZADO SHAPE EM V
-        </h2>
-        <p className="mt-3 text-sm font-bold text-gold-gradient">
-          FERNANDO CANTARELLI{" "}
-          <span className="font-medium text-primary/80">(@fernandocantarelli_)</span>
-        </p>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Fala mestre, seja muito bem-vindo ao seu Protocolo Personalizado do Shape em V.
-        </p>
-      </div>
-
-      <TextBlock title="Quem sou eu">
-        Muito prazer, meu nome é Fernando Cantarelli. Minha missão é ajudar você a
-        construir o corpo que sempre sonhou, focado na verdadeira estética masculina:
-        ombros largos, costas em V e cintura fina. Já ajudei milhares de alunos a
-        transformarem seus físicos, e agora é a sua vez de conquistar o corpo que sempre
-        quis!
-      </TextBlock>
-
-      <TextBlock title="Parabéns por estar aqui">
-        Primeiramente, quero te parabenizar e te agradecer por ter confiado em nosso
-        trabalho e vir fazer parte do Shape em V! Antes de começar, preciso que você
-        leia isso com atenção: o que você está prestes a receber não é uma ficha de
-        treino comum...
-      </TextBlock>
-
-      <TextBlock title="O método exclusivo">
-        Esse é o mesmo método de treino focado em hipertrofia e proporção estética
-        usado nos bastidores para construir físicos de respeito. O mesmo que os modelos
-        aplicam para chegar aos físicos definidos e largos em tempo recorde... E que
-        hoje, pela primeira vez, está sendo entregue de forma 100% personalizada para
-        você.
-      </TextBlock>
-
-      <TextBlock title="Por que o Shape em V funciona">
-        Treinos tradicionais fazem você treinar com volume excessivo e sem estratégia.
-        Dessa forma seu músculo não se desenvolve. Aqui, o estímulo correto e o
-        descanso são os segredos do crescimento. É esforço máximo com resultado
-        estético real!
-      </TextBlock>
-
+      {/* Recado do Fernando */}
       <div className="relative overflow-hidden rounded-3xl gold-border bg-background p-6 shadow-gold">
         <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-        <div className="relative flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gold-gradient">
-            <Flame className="h-5 w-5 text-primary-foreground" />
+        <div className="relative">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gold-gradient">
+              <Flame className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+                Recado do Fernando
+              </p>
+              <p className="text-sm font-black text-foreground">
+                @fernandocantarelli_
+              </p>
+            </div>
           </div>
-          <p className="text-sm leading-relaxed text-foreground/95">
-            <span className="font-black text-gold-gradient">
-              No Shape em V é outro jogo!
-            </span>{" "}
-            Você vai treinar apenas de 3 a 4 vezes na semana, mas vai trabalhar todos
-            os grupos musculares dentro da janela de crescimento, e sua gordura na
-            janela de queima. Nos próximos 30 dias você vai ver seu esforço sendo
-            recompensado na frente do espelho! Você vai se sentir mais largo, mais
-            forte e com um shape que vai deixar claro pra todo mundo que você treina de
-            verdade.
+          <p className="mt-4 text-sm leading-relaxed text-foreground/90">
+            <span className="font-black text-gold-gradient">Aqui é outro jogo.</span>{" "}
+            Você treina de 3 a 4 vezes por semana, mas dentro da janela certa de
+            crescimento. Nos próximos 30 dias você vai sentir o corpo mais largo,
+            mais denso e com mais controle. Não pule etapas — a evolução vem da
+            sequência.
           </p>
         </div>
-      </div>
-
-      <TextBlock title="Instruções">
-        Nós preparamos este protocolo especificamente para você. Cada exercício, cada
-        série, cada repetição foram estruturados milimetricamente para fazer o Shape em
-        V funcionar no seu corpo. Te garanto o máximo de resultados para a sua
-        dedicação! Não menospreze nenhum dos exercícios, cada um foi detalhadamente
-        colocado na sequência e posição exata. É fundamental você seguir 100% as
-        instruções.
-      </TextBlock>
-
-      <div className="rounded-3xl border border-border bg-card p-6 shadow-card-premium">
-        <h3 className="text-lg font-black text-foreground">
-          Como <span className="text-gold-gradient">Treinar</span>
-        </h3>
-        <ul className="mt-4 space-y-3 text-sm leading-relaxed">
-          {COMO_TREINAR.map((item) => (
-            <li key={item.label} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-              <span>
-                <span className="font-bold text-gold-gradient">{item.label}:</span>{" "}
-                <span className="text-foreground/80">{item.text}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
 }
 
 const COMO_TREINAR = [
-  { label: "Frequência", text: "3 a 4x por semana com pelo menos um dia de repouso entre os treinos mais intensos." },
-  { label: "Repouso", text: "Nos dias de repouso, você pode fazer cardio ou outro esporte (se quiser, não é obrigatório)." },
-  { label: "Aquecimento", text: "Sempre comece com 3-5 minutos de aquecimento leve ou mobilidade para preparar o corpo." },
-  { label: "Execução", text: "Priorize a qualidade de execução dos exercícios. Uma repetição bem feita é melhor que várias mal executadas." },
-  { label: "Progressão", text: "A cada semana, busque aumentar a carga de forma gradual. Evolua 1% a cada dia." },
-  { label: "Descanso", text: "Respeite os tempos de descanso entre as séries conforme indicado em cada exercício." },
-  { label: "Alimentação", text: "Para melhores resultados, combine o treino com uma alimentação adequada ao seu objetivo." },
-  { label: "Consistência", text: "O segredo do sucesso é a consistência. Faça este protocolo por pelo menos 30 dias para ver resultados significativos." },
+  {
+    label: "Frequência",
+    text: "3 a 4 treinos por semana, com pelo menos um dia leve entre os mais intensos.",
+  },
+  {
+    label: "Aquecimento",
+    text: "Comece com 3-5 minutos de mobilidade ou cardio leve antes de puxar carga.",
+  },
+  {
+    label: "Ordem dos exercícios",
+    text: "Execute na sequência exata. Cada posição foi pensada para o estímulo certo.",
+  },
+  {
+    label: "Execução",
+    text: "Qualidade acima de tudo. Uma repetição controlada vale mais que três apressadas.",
+  },
+  {
+    label: "Carga",
+    text: "Anote a carga a cada treino e busque evoluir 1% por vez. Sem pressa, sem estagnar.",
+  },
+  {
+    label: "Descanso",
+    text: "Respeite os tempos entre séries. O descanso é parte do estímulo, não pausa perdida.",
+  },
+  {
+    label: "Alimentação",
+    text: "Combine com uma alimentação alinhada ao seu objetivo para colher o resultado real.",
+  },
+  {
+    label: "Constância",
+    text: "Faça o protocolo por 30 dias sem quebrar a sequência. É aí que o shape muda.",
+  },
 ];
-
-function TextBlock({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-border bg-[#1E1E1E] p-5">
-      <h3 className="text-sm font-black uppercase tracking-wider text-gold-gradient">
-        {title}
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-foreground/80">{children}</p>
-    </div>
-  );
-}
 
 function TreinoTab({ treino, showAbdomen = true }: { treino: Treino; showAbdomen?: boolean }) {
   if (treino.off) {
     return (
       <div className="space-y-4">
-        <div className="rounded-2xl gold-border bg-card p-6 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+        <div className="rounded-3xl gold-border bg-card p-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
             {treino.nome}
           </p>
-          <p className="mt-2 text-2xl font-black text-gold-gradient">Descanso</p>
-          <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+          <p className="mt-3 text-3xl font-black text-gold-gradient">Dia OFF</p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             {treino.offMessage}
+          </p>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Descanso também é treino. Volte com tudo no próximo.
           </p>
         </div>
       </div>
@@ -274,48 +263,73 @@ function TreinoTab({ treino, showAbdomen = true }: { treino: Treino; showAbdomen
   }
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl gold-border bg-card p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
-          {treino.nome}
-        </p>
-        <p className="mt-1 text-lg font-black text-foreground">
+      {/* Cabeçalho do treino */}
+      <div className="rounded-3xl gold-border bg-card p-5 shadow-gold-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+            {treino.nome}
+          </span>
+          <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+            {treino.exercicios.length} exercícios
+          </span>
+        </div>
+        <h2 className="mt-2 text-xl font-black leading-tight text-foreground">
           <span className="text-gold-gradient">{treino.foco}</span>
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {treino.exercicios.length} exercícios programados
+        </h2>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Siga a ordem abaixo. Não pule, não troque de posição.
         </p>
       </div>
 
-      {treino.exercicios.map((ex, i) => (
-        <ExercicioCard key={`${treino.id}-${ex.id}`} index={i + 1} ex={ex} />
-      ))}
+      {/* Lista vertical de exercícios */}
+      <ol className="space-y-4">
+        {treino.exercicios.map((ex, i) => (
+          <li key={`${treino.id}-${ex.id}`}>
+            <ExercicioCard index={i + 1} total={treino.exercicios.length} ex={ex} />
+          </li>
+        ))}
+      </ol>
 
       {showAbdomen && <AbdomenSection />}
     </div>
   );
 }
 
-
 function AbdomenSection() {
   return (
     <div className="mt-8 space-y-4">
-      <div className="relative overflow-hidden rounded-2xl gold-border bg-card p-4 shadow-gold-sm">
+      <div className="relative overflow-hidden rounded-3xl gold-border bg-card p-5 shadow-gold-sm">
         <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-primary/20 blur-3xl" />
-        <p className="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
-          Bônus
+        <p className="relative text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+          Bônus semanal
         </p>
-        <p className="relative mt-1 text-base font-black leading-tight text-gold-gradient">
-          ABDÔMEN: FAZER DE 1 A 2 VEZES NA SEMANA
+        <p className="relative mt-1 text-lg font-black leading-tight text-gold-gradient">
+          Abdômen — 1 a 2x por semana
+        </p>
+        <p className="relative mt-2 text-xs text-muted-foreground">
+          Encaixe no final de qualquer treino da semana.
         </p>
       </div>
-      {ABDOMEN.map((ex, i) => (
-        <ExercicioCard key={`abd-${ex.id}`} index={i + 1} ex={ex} />
-      ))}
+      <ol className="space-y-4">
+        {ABDOMEN.map((ex, i) => (
+          <li key={`abd-${ex.id}`}>
+            <ExercicioCard index={i + 1} total={ABDOMEN.length} ex={ex} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
 
-function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
+function ExercicioCard({
+  index,
+  total,
+  ex,
+}: {
+  index: number;
+  total: number;
+  ex: Exercicio;
+}) {
   const emBreve = ex.videoUrl === "EM BREVE";
   const storageKey = `carga:${ex.nome}`;
   const [carga, setCarga] = useState<string>("");
@@ -345,23 +359,17 @@ function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
   };
 
   return (
-    <article className="rounded-2xl bg-[#18181B] p-5 shadow-card-premium">
-      <header className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full gold-gradient text-sm font-black text-primary-foreground shadow-gold-sm">
-          {index}
-        </div>
-        <div className="flex-1">
-          <h4 className="text-base font-bold leading-tight text-foreground">{ex.nome}</h4>
-          <p className="mt-0.5 text-xs text-muted-foreground">{ex.foco}</p>
-        </div>
-      </header>
-
-      <div className="mt-4 overflow-hidden rounded-lg">
+    <article className="overflow-hidden rounded-3xl border border-border bg-[#18181B] shadow-card-premium">
+      {/* Vídeo primeiro */}
+      <div className="relative">
         {emBreve ? (
-          <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-[#1E1E1E]">
-            <span className="text-sm font-black uppercase tracking-[0.2em] text-gold-gradient">
-              Vídeo em breve
-            </span>
+          <div className="flex aspect-video w-full items-center justify-center bg-[#1E1E1E]">
+            <div className="flex flex-col items-center gap-2 text-primary/80">
+              <PlayCircle className="h-8 w-8" />
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-gold-gradient">
+                Vídeo em breve
+              </span>
+            </div>
           </div>
         ) : (
           <iframe
@@ -370,66 +378,90 @@ function ExercicioCard({ index, ex }: { index: number; ex: Exercicio }) {
             loading="lazy"
             allowFullScreen
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            className="aspect-video w-full rounded-lg shadow-md"
+            className="aspect-video w-full"
           />
         )}
-      </div>
-
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
-        <Badge label="Séries" value={ex.series} />
-        <Badge label="Reps" value={ex.reps} />
-        <Badge label="Descanso" value={ex.descanso} />
-        {carga && <Badge label="Carga" value={carga} />}
-      </div>
-
-      {editing ? (
-        <div className="mt-5 space-y-2">
-          <input
-            type="text"
-            inputMode="decimal"
-            autoFocus
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") saveCarga();
-              if (e.key === "Escape") setEditing(false);
-            }}
-            placeholder="Ex: 20kg"
-            className="w-full rounded-xl border border-primary/60 bg-background px-4 py-3 text-sm font-bold text-foreground outline-none focus:border-primary"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={saveCarga}
-              className="flex-1 rounded-xl gold-gradient py-2.5 text-sm font-bold text-primary-foreground shadow-gold-sm"
-            >
-              Salvar
-            </button>
-            <button
-              onClick={() => setEditing(false)}
-              className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground/80"
-            >
-              Cancelar
-            </button>
-          </div>
+        <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white backdrop-blur">
+          <span className="text-primary">{String(index).padStart(2, "0")}</span>
+          <span className="text-white/60">/ {String(total).padStart(2, "0")}</span>
         </div>
-      ) : (
-        <button
-          onClick={openEditor}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/60 bg-primary/5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
-        >
-          {carga ? `Atualizar Carga (${carga})` : "Adicionar Carga"} <Scale className="h-4 w-4" />
-        </button>
-      )}
+      </div>
+
+      <div className="p-5">
+        {/* Nome + foco */}
+        <h4 className="text-base font-black leading-tight text-foreground">{ex.nome}</h4>
+        <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Target className="h-3 w-3 text-primary/80" />
+          <span>{ex.foco}</span>
+        </div>
+
+        {/* Divisor sutil */}
+        <div className="my-4 h-px w-full bg-border/60" />
+
+        {/* Séries / Reps / Descanso — grade vertical clara */}
+        <div className="grid grid-cols-3 gap-2">
+          <Stat label="Séries" value={ex.series} />
+          <Stat label="Reps" value={ex.reps} />
+          <Stat label="Descanso" value={ex.descanso} />
+        </div>
+
+        {/* Observação curta */}
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          Foco em execução controlada. Se a carga travar a técnica, reduza sem culpa.
+        </p>
+
+        {/* Carga */}
+        {editing ? (
+          <div className="mt-4 space-y-2">
+            <input
+              type="text"
+              inputMode="decimal"
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveCarga();
+                if (e.key === "Escape") setEditing(false);
+              }}
+              placeholder="Ex: 20kg"
+              className="w-full rounded-xl border border-primary/60 bg-background px-4 py-3 text-sm font-bold text-foreground outline-none focus:border-primary"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={saveCarga}
+                className="flex-1 rounded-xl gold-gradient py-2.5 text-sm font-bold text-primary-foreground shadow-gold-sm"
+              >
+                Salvar carga
+              </button>
+              <button
+                onClick={() => setEditing(false)}
+                className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold text-foreground/80"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={openEditor}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/60 bg-primary/5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+          >
+            <Scale className="h-4 w-4" />
+            {carga ? `Atualizar carga (${carga})` : "Anotar minha carga"}
+          </button>
+        )}
+      </div>
     </article>
   );
 }
 
-function Badge({ label, value }: { label: string; value: string }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-full border border-border bg-background/60 px-3 py-1.5 text-[11px]">
-      <span className="text-muted-foreground">{label}:</span>{" "}
-      <span className="font-bold text-foreground">{value}</span>
+    <div className="rounded-xl border border-border bg-background/60 px-2 py-2.5 text-center">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-black text-foreground">{value}</p>
     </div>
   );
 }
-
