@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Zap, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,15 +22,21 @@ import { loginOrCreateUser } from "@/lib/auth.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Shape em V — Fernando Contarini" },
+      { title: "Shape em V — Método Fernando Cantarelli" },
       {
         name: "description",
-        content: "Avaliação física personalizada pelo método Shape em V.",
+        content: "Avaliação física guiada pelo método Shape em V. Protocolo, treinos e projeção em 4 meses.",
       },
     ],
   }),
   component: LandingPage,
 });
+
+const HIGHLIGHTS = [
+  { n: "01", title: "Avaliação em 2 minutos", desc: "Diagnóstico direto sobre corpo e rotina." },
+  { n: "02", title: "Score físico e projeção 4 meses", desc: "Onde você está e onde pode chegar." },
+  { n: "03", title: "Protocolo do seu objetivo", desc: "Treinos organizados para seguir com direção." },
+];
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -72,76 +78,98 @@ function LandingPage() {
 
 
   return (
-    <main className="min-h-screen bg-background overflow-hidden">
+    <main className="relative min-h-screen bg-background overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute -top-32 right-[-20%] h-[520px] w-[520px] rounded-full bg-primary/10 blur-[130px]" />
+        <div className="absolute bottom-[-10%] left-[-20%] h-[420px] w-[420px] rounded-full bg-primary/5 blur-[120px]" />
       </div>
 
-      <div className="mx-auto flex min-h-screen max-w-md flex-col px-6 pt-10 pb-12">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col px-6 pt-8 pb-10">
         <motion.header
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
+          className="flex items-center justify-between"
         >
-          <p className="text-xs uppercase tracking-[0.3em] text-primary/80">Método</p>
-          <h2 className="mt-1 text-2xl font-black text-gold-gradient">Shape em V</h2>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-primary/80">Método</p>
+            <h2 className="mt-1 text-xl font-black text-gold-gradient">Shape em V</h2>
+          </div>
+          <span className="rounded-full border border-border bg-card/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            v.2026
+          </span>
         </motion.header>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mt-10"
+        >
+          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-primary/80">
+            Avaliação · Protocolo · Treinos
+          </p>
+          <h1 className="mt-3 text-[2.5rem] font-black leading-[1.05] text-foreground">
+            Construa o seu{" "}
+            <span className="text-gold-gradient">Shape em V</span>
+          </h1>
+          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+            Comece pela avaliação e descubra qual caminho faz mais sentido para o seu físico atual.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="relative mx-auto mb-8 aspect-square w-72 max-w-full overflow-hidden rounded-2xl gold-border shadow-gold"
+          transition={{ delay: 0.25 }}
+          className="relative mx-auto mt-8 aspect-[4/3] w-full overflow-hidden rounded-[28px] gold-border shadow-gold"
         >
           <img
             src={beforeAfterAsset.url}
             alt="Transformação Shape em V"
             className="h-full w-full object-cover"
           />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-center"
-        >
-          <h1 className="text-4xl font-black leading-tight text-foreground">
-            Construa o seu <span className="text-gold-gradient">Shape em V</span>
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            A avaliação inteligente do Fernando Contarini analisa seu corpo, seus
-            objetivos e libera um protocolo 100% personalizado.
-          </p>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-2xl border border-white/10 bg-black/40 px-3 py-2 backdrop-blur-md">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-white/90">
+              Antes · Depois
+            </p>
+            <span className="text-[10px] font-bold text-primary">Método Cantarelli</span>
+          </div>
         </motion.div>
 
         <motion.ul
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
           className="mt-8 space-y-3"
         >
-          {[
-            "Avaliação em 2 minutos",
-            "Score físico e projeção em 4 meses",
-          ].map((t) => (
+          {HIGHLIGHTS.map((h) => (
             <li
-              key={t}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-card/60 px-4 py-3"
+              key={h.n}
+              className="flex items-start gap-4 rounded-2xl border border-border bg-card/60 p-4"
             >
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm text-foreground">{t}</span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 font-black text-primary">
+                {h.n}
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-foreground">{h.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{h.desc}</p>
+              </div>
             </li>
           ))}
         </motion.ul>
 
-        <div className="mt-10 space-y-3">
+        <div className="mt-10">
           <Button
             onClick={() => setOpen(true)}
-            className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold hover:opacity-95"
+            className="group h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold hover:opacity-95"
           >
-            <Zap className="mr-2 h-5 w-5" /> Acessar meu treino
+            Acessar meu treino
+            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
           </Button>
+          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+            Leva menos de 2 minutos · Sem cartão de crédito
+          </p>
         </div>
       </div>
 
