@@ -4,12 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  CheckCircle2,
+  ClipboardCheck,
+  Compass,
   Dumbbell,
+  Instagram,
   Lock,
   LogOut,
-  Sparkles,
-  Zap,
+  Timer,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -54,7 +55,6 @@ function DashboardPage() {
   const pad = (n: number) => String(n).padStart(2, "0");
   const countdown = `${pad(h)}:${pad(m)}:${pad(s)}`;
 
-  // Insight chave da avaliação (mostrado no card quando disponível)
   const respostas = (data?.assessment?.respostas ?? {}) as Record<string, unknown>;
   const peso = typeof respostas.peso === "number" ? respostas.peso : 0;
   const altura = typeof respostas.altura === "number" ? respostas.altura : 0;
@@ -63,18 +63,38 @@ function DashboardPage() {
   const objetivo = String(respostas.objetivo ?? "");
   const objetivoTxt =
     objetivo === "secar" ? "Definição" : objetivo === "crescer" ? "Hipertrofia" : "Recomposição";
+  const local = respostas.treino_local === "casa" ? "em casa" : "na academia";
+
   const insightAvaliacao = hasAssessment && imc
     ? `Score ${scoreGeral}/100 · IMC ${imc} · ${imcLabel(imc).label}`
     : null;
   const insightProtocolo = hasAssessment && objetivo
-    ? `Foco: ${objetivoTxt}`
+    ? `Foco em ${objetivoTxt} · treino ${local}`
     : null;
 
   const { show, dismiss } = useWelcomeModal();
 
+  // Etapa atual da jornada
+  const currentStep = !hasAssessment ? 1 : !isUnlocked ? 2 : 3;
+
+  const nextStep = !hasAssessment
+    ? {
+        title: "Responda sua avaliação",
+        hint: "Menos de 3 minutos para destravar tudo.",
+      }
+    : !isUnlocked
+      ? {
+          title: "Aguardando liberação",
+          hint: `Seu protocolo abre em ${countdown}.`,
+        }
+      : {
+          title: "Abra o treino de hoje",
+          hint: "Execute na ordem e registre a carga.",
+        };
+
   const handleLockedTap = () => {
     if (!hasAssessment) {
-      toast.info("Responda primeiro sua avaliação física para liberar.");
+      toast.info("Responda primeiro sua avaliação para destravar essa etapa.");
       return;
     }
     toast.info(`Liberação em ${countdown}`);
@@ -85,15 +105,18 @@ function DashboardPage() {
     <>
       <WelcomeModal show={show} onDismiss={dismiss} />
       <main className="min-h-screen bg-background pb-28">
-        <div className="mx-auto max-w-md px-6 pt-12">
-          {/* Header */}
+        <div className="mx-auto max-w-md px-6 pt-10">
+          {/* Boas-vindas */}
           <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-black text-foreground">
-                Olá, {isLoading ? "…" : nome} <span className="inline-block">👋</span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/80">
+                Shape em V
+              </p>
+              <h1 className="mt-2 truncate text-3xl font-black text-foreground">
+                E aí, {isLoading ? "…" : nome}.
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Bem-vindo ao <span className="font-semibold text-foreground">Shape em V</span>
+                Sua jornada continua abaixo. Um passo por vez.
               </p>
             </div>
             <button
@@ -101,130 +124,161 @@ function DashboardPage() {
                 clearSession();
                 navigate({ to: "/", replace: true });
               }}
-              className="rounded-full p-2 text-muted-foreground hover:text-foreground"
+              className="ml-2 shrink-0 rounded-full p-2 text-muted-foreground hover:text-foreground"
               aria-label="Sair"
             >
               <LogOut className="h-5 w-5" />
             </button>
           </div>
 
-          {/* CTA quiz quando ainda não preencheu */}
-          {!hasAssessment && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative mt-8 overflow-hidden rounded-3xl gold-border bg-card p-7 shadow-gold"
-            >
-              <div className="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
-              <div className="relative">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
-                  <Zap className="h-3 w-3" /> Próximo passo
-                </div>
-                <h2 className="mt-4 text-2xl font-black leading-tight">
-                  Faça sua <span className="text-gold-gradient">avaliação física</span>
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Perguntas rápidas para a inteligência Shape em V montar seu protocolo personalizado.
-                </p>
+          {/* Próximo passo — bloco em destaque */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative mt-8 overflow-hidden rounded-3xl gold-border bg-card p-6 shadow-gold"
+          >
+            <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-primary/20 blur-3xl" />
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+                <Compass className="h-3 w-3" /> Seu próximo passo
+              </div>
+              <h2 className="mt-4 text-2xl font-black leading-tight text-foreground">
+                {nextStep.title}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {nextStep.hint}
+              </p>
+
+              {!hasAssessment && (
                 <Link to="/quiz" className="mt-6 block">
                   <Button className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm">
-                    Fazer minha avaliação <ArrowRight className="ml-2 h-5 w-5" />
+                    Começar minha avaliação <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
+              )}
+
+              {hasAssessment && !isUnlocked && (
+                <div className="mt-6 rounded-2xl border border-border bg-background/50 p-4 text-center">
+                  <div className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                    <Timer className="h-3 w-3 text-primary" /> Abre em
+                  </div>
+                  <div className="mt-2 flex items-center justify-center gap-1.5 font-black tabular-nums">
+                    <TimeBlock value={pad(h)} unit="h" />
+                    <TimeBlock value={pad(m)} unit="min" />
+                    <TimeBlock value={pad(s)} unit="s" />
+                  </div>
+                </div>
+              )}
+
+              {isUnlocked && (
+                <Link to="/protocol" className="mt-6 block">
+                  <Button className="h-14 w-full rounded-2xl gold-gradient text-base font-bold text-primary-foreground shadow-gold-sm">
+                    Abrir meu treino <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </motion.section>
+
+          {/* Jornada em 3 passos — checklist vertical */}
+          <section className="mt-8">
+            <SectionTitle eyebrow="Sua jornada" title="Como funciona por aqui" />
+            <div className="mt-4 space-y-3">
+              <JourneyStep
+                index={1}
+                title="Avaliação Shape em V"
+                subtitle="Base para calibrar seu protocolo."
+                state={currentStep > 1 ? "done" : currentStep === 1 ? "current" : "locked"}
+              />
+              <JourneyStep
+                index={2}
+                title="Análise do método"
+                subtitle="Cruzamos suas respostas com o método Cantarelli."
+                state={currentStep > 2 ? "done" : currentStep === 2 ? "current" : "locked"}
+              />
+              <JourneyStep
+                index={3}
+                title="Protocolo liberado"
+                subtitle="Treinos organizados por dia, com vídeo e carga."
+                state={currentStep === 3 ? "current" : "locked"}
+              />
+            </div>
+          </section>
+
+          {/* Acessos principais — cards verticais */}
+          <section className="mt-10">
+            <SectionTitle eyebrow="Acessos" title="Seu material liberado" />
+
+            <div className="mt-4 space-y-4">
+              <AccessCard
+                step="01"
+                icon={<ClipboardCheck className="h-5 w-5" />}
+                title="Sua avaliação completa"
+                description={insightAvaliacao ?? "Diagnóstico de shape, IMC e prioridades."}
+                to="/results"
+                locked={!isUnlocked}
+                hasAssessment={hasAssessment}
+                countdown={countdown}
+                onLockedTap={handleLockedTap}
+              />
+
+              <AccessCard
+                step="02"
+                icon={<Dumbbell className="h-5 w-5" />}
+                title="Protocolo de treino"
+                description={insightProtocolo ?? "Sequência de treinos e execução guiada."}
+                to="/protocol"
+                locked={!isUnlocked}
+                hasAssessment={hasAssessment}
+                countdown={countdown}
+                onLockedTap={handleLockedTap}
+              />
+            </div>
+          </section>
+
+          {/* Orientações importantes */}
+          <section className="mt-10">
+            <SectionTitle eyebrow="Orientações" title="Antes de treinar, lembre" />
+            <div className="mt-4 space-y-3">
+              <TipRow text="Siga a ordem dos exercícios. Cada posição foi pensada." />
+              <TipRow text="Anote sua carga a cada treino e tente evoluir aos poucos." />
+              <TipRow text="Descanso é parte do plano. Respeite os dias OFF." />
+            </div>
+          </section>
+
+          {/* Compartilhe */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative mt-10 overflow-hidden rounded-3xl border border-border bg-card p-6"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                <Instagram className="h-5 w-5" />
               </div>
-            </motion.div>
-          )}
-
-          {/* Cards principais */}
-          <div className="mt-8 space-y-4">
-            <HubCard
-              icon={<CheckCircle2 className="h-6 w-6" />}
-              title="Sua Avaliação Shape em V"
-              description={insightAvaliacao ?? "Confira a sua avaliação física completa."}
-              to="/results"
-              locked={!isUnlocked}
-              hasAssessment={hasAssessment}
-              countdown={countdown}
-              onLockedTap={handleLockedTap}
-            />
-
-            <HubCard
-              icon={<Dumbbell className="h-6 w-6" />}
-              title="Seu Protocolo está Pronto"
-              description={insightProtocolo ?? "Acesse seu treino personalizado."}
-              to="/protocol"
-              locked={!isUnlocked}
-              hasAssessment={hasAssessment}
-              countdown={countdown}
-              onLockedTap={handleLockedTap}
-            />
-
-            {/* Countdown quando respondeu e ainda está bloqueado */}
-            {hasAssessment && !isUnlocked && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl border border-border bg-card/60 p-5 text-center"
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Liberação em
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+                  Faça parte
                 </p>
-                <div className="mt-3 flex items-center justify-center gap-2 font-black tabular-nums">
-                  <TimeBlock value={pad(h)} />
-                  <span className="text-3xl text-primary/40">:</span>
-                  <TimeBlock value={pad(m)} />
-                  <span className="text-3xl text-primary/40">:</span>
-                  <TimeBlock value={pad(s)} />
-                </div>
-                <div className="mt-3 flex justify-around text-[10px] uppercase tracking-wider text-muted-foreground">
-                  <span>horas</span>
-                  <span>min</span>
-                  <span>seg</span>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Compartilhe sua Jornada */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative overflow-hidden rounded-3xl gold-border bg-card p-6 shadow-gold"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                  <Zap className="h-5 w-5" />
-                </div>
-                <h3 className="pt-1.5 text-xl font-black text-foreground">
-                  Compartilhe sua Jornada
+                <h3 className="mt-1 text-lg font-black text-foreground">
+                  Mostre a sua evolução
                 </h3>
               </div>
+            </div>
 
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Agora você faz parte de um grupo de pessoas diferenciadas… Que estão construindo a melhor versão de si mesmas.
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                A sua evolução merece ser vista! Inspire pessoas e fortaleça o nosso movimento!
-              </p>
-
-              <div className="mt-5 rounded-2xl gold-border bg-primary/10 p-4">
-                <p className="text-sm font-bold text-primary">
-                  Poste stories do seu treino marcando{" "}
-                  <a
-                    href="https://instagram.com/shapeemv"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline-offset-2 hover:underline"
-                  >
-                    @fernandocantarelli_
-                  </a>
-                </p>
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Sparkles className="h-3 w-3 text-primary" />
-                  Vou gostar de ver, vou repostar e você ainda ganhará seguidores!
-                </p>
-              </div>
-            </motion.div>
-          </div>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              Poste um story do seu treino e marque{" "}
+              <a
+                href="https://instagram.com/shapeemv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-primary underline-offset-2 hover:underline"
+              >
+                @fernandocantarelli_
+              </a>
+              . Eu curto acompanhar de perto e costumo repostar quem chega junto.
+            </p>
+          </motion.section>
 
           {/* Rodapé */}
           <footer className="mt-10 text-center">
@@ -248,7 +302,66 @@ function DashboardPage() {
   );
 }
 
-function HubCard({
+function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary/70">
+        {eyebrow}
+      </p>
+      <h2 className="mt-1 text-lg font-black text-foreground">{title}</h2>
+    </div>
+  );
+}
+
+function JourneyStep({
+  index,
+  title,
+  subtitle,
+  state,
+}: {
+  index: number;
+  title: string;
+  subtitle: string;
+  state: "done" | "current" | "locked";
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-4 rounded-2xl border p-4 transition-colors",
+        state === "current"
+          ? "border-primary/50 bg-primary/[0.06]"
+          : state === "done"
+            ? "border-border bg-card/60"
+            : "border-border bg-card/30 opacity-70",
+      )}
+    >
+      <div
+        className={cn(
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black",
+          state === "done"
+            ? "bg-primary/20 text-primary"
+            : state === "current"
+              ? "gold-gradient text-primary-foreground shadow-gold-sm"
+              : "bg-background text-muted-foreground",
+        )}
+      >
+        {state === "done" ? "✓" : index}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-bold text-foreground">{title}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      {state === "current" && (
+        <span className="shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+          agora
+        </span>
+      )}
+    </div>
+  );
+}
+
+function AccessCard({
+  step,
   icon,
   title,
   description,
@@ -258,6 +371,7 @@ function HubCard({
   countdown,
   onLockedTap,
 }: {
+  step: string;
   icon: React.ReactNode;
   title: string;
   description: string;
@@ -268,34 +382,42 @@ function HubCard({
   onLockedTap: () => void;
 }) {
   const cardClass = cn(
-    "group relative flex items-start gap-4 overflow-hidden rounded-3xl border bg-card p-5 text-left transition-all",
+    "group relative block w-full overflow-hidden rounded-3xl border bg-card p-5 text-left transition-all",
     locked
-      ? "border-border opacity-80"
+      ? "border-border opacity-90"
       : "border-primary/40 shadow-gold-sm hover:border-primary hover:shadow-gold",
   );
 
   const inner = (
     <>
-      <div
-        className={cn(
-          "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl",
-          locked ? "bg-background text-muted-foreground" : "bg-primary/15 text-primary",
-        )}
-      >
-        {icon}
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-primary/70">
+          Etapa {step}
+        </span>
+        <div className="text-muted-foreground">
+          {locked ? <Lock className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+        </div>
       </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-base font-black text-foreground">{title}</h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {locked
-            ? hasAssessment
-              ? `Disponível em ${countdown}`
-              : "Disponível após sua avaliação"
-            : description}
-        </p>
-      </div>
-      <div className="self-center text-muted-foreground">
-        {locked ? <Lock className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+
+      <div className="mt-4 flex items-start gap-4">
+        <div
+          className={cn(
+            "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl",
+            locked ? "bg-background text-muted-foreground" : "bg-primary/15 text-primary",
+          )}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-lg font-black leading-tight text-foreground">{title}</h3>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {locked
+              ? hasAssessment
+                ? `Abre em ${countdown}`
+                : "Destrave respondendo sua avaliação"
+              : description}
+          </p>
+        </div>
       </div>
     </>
   );
@@ -315,10 +437,24 @@ function HubCard({
   );
 }
 
-function TimeBlock({ value }: { value: string }) {
+function TipRow({ text }: { text: string }) {
   return (
-    <span className="inline-flex min-w-[56px] justify-center rounded-xl bg-background px-2 py-2.5 text-3xl text-gold-gradient">
-      {value}
-    </span>
+    <div className="flex items-start gap-3 rounded-2xl border border-border bg-card/50 p-4">
+      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+      <p className="text-sm leading-relaxed text-foreground/85">{text}</p>
+    </div>
+  );
+}
+
+function TimeBlock({ value, unit }: { value: string; unit: string }) {
+  return (
+    <div className="flex flex-col items-center">
+      <span className="inline-flex min-w-[52px] justify-center rounded-xl bg-background px-2 py-2 text-2xl text-gold-gradient">
+        {value}
+      </span>
+      <span className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+        {unit}
+      </span>
+    </div>
   );
 }
