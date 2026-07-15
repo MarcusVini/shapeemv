@@ -161,7 +161,7 @@ function Upsell2Page() {
               cursor: "pointer",
             }}
           >
-            SIM, QUERO GARANTIR ESSA OFERTA
+            QUERO ACELERAR MEUS RESULTADOS
           </a>
           <a
             href="/downsell"
