@@ -28,6 +28,20 @@ export const Route = createFileRoute("/_authenticated/upsell")({
       { rel: "dns-prefetch", href: "https://images.converteai.net" },
       { rel: "dns-prefetch", href: "https://license.vturb.com" },
     ],
+    scripts: [
+      {
+        type: "text/javascript",
+        children:
+          '!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);',
+      },
+      {
+        src: "https://cdn.utmify.com.br/scripts/utms/latest.js",
+        async: true,
+        defer: true,
+        "data-utmify-prevent-xcod-sck": "",
+        "data-utmify-prevent-subids": "",
+      } as unknown as Record<string, string>,
+    ],
   }),
 });
 
