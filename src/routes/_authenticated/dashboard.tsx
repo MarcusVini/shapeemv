@@ -104,8 +104,9 @@ function DashboardPage() {
   return (
     <>
       <WelcomeModal show={show} onDismiss={dismiss} />
-      <main className="min-h-screen bg-background pb-28">
-        <div className="mx-auto max-w-md px-6 pt-10">
+      <main className="min-h-screen bg-background pb-10">
+        <div className="mx-auto max-w-md px-6 pt-24">
+
           {/* Boas-vindas */}
           <div className="flex items-start justify-between">
             <div className="min-w-0">
