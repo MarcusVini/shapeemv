@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
+import { Route as AuthenticatedUpsell2RouteImport } from './routes/_authenticated/upsell-2'
 import { Route as AuthenticatedUpsellRouteImport } from './routes/_authenticated/upsell'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
   id: '/waiting',
   path: '/waiting',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUpsell2Route = AuthenticatedUpsell2RouteImport.update({
+  id: '/upsell-2',
+  path: '/upsell-2',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedUpsellRoute = AuthenticatedUpsellRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/upsell': typeof AuthenticatedUpsellRoute
+  '/upsell-2': typeof AuthenticatedUpsell2Route
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesByTo {
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/upsell': typeof AuthenticatedUpsellRoute
+  '/upsell-2': typeof AuthenticatedUpsell2Route
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesById {
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/results': typeof AuthenticatedResultsRoute
   '/_authenticated/upsell': typeof AuthenticatedUpsellRoute
+  '/_authenticated/upsell-2': typeof AuthenticatedUpsell2Route
   '/_authenticated/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRouteTypes {
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/upsell'
+    | '/upsell-2'
     | '/waiting'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/upsell'
+    | '/upsell-2'
     | '/waiting'
   id:
     | '__root__'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz'
     | '/_authenticated/results'
     | '/_authenticated/upsell'
+    | '/_authenticated/upsell-2'
     | '/_authenticated/waiting'
   fileRoutesById: FileRoutesById
 }
@@ -168,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/waiting'
       fullPath: '/waiting'
       preLoaderRoute: typeof AuthenticatedWaitingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/upsell-2': {
+      id: '/_authenticated/upsell-2'
+      path: '/upsell-2'
+      fullPath: '/upsell-2'
+      preLoaderRoute: typeof AuthenticatedUpsell2RouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/upsell': {
@@ -230,6 +249,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedQuizRoute: typeof AuthenticatedQuizRoute
   AuthenticatedResultsRoute: typeof AuthenticatedResultsRoute
   AuthenticatedUpsellRoute: typeof AuthenticatedUpsellRoute
+  AuthenticatedUpsell2Route: typeof AuthenticatedUpsell2Route
   AuthenticatedWaitingRoute: typeof AuthenticatedWaitingRoute
 }
 
@@ -241,6 +261,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedQuizRoute: AuthenticatedQuizRoute,
   AuthenticatedResultsRoute: AuthenticatedResultsRoute,
   AuthenticatedUpsellRoute: AuthenticatedUpsellRoute,
+  AuthenticatedUpsell2Route: AuthenticatedUpsell2Route,
   AuthenticatedWaitingRoute: AuthenticatedWaitingRoute,
 }
 
