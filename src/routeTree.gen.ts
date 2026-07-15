@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
+import { Route as AuthenticatedUpsell2RouteImport } from './routes/_authenticated/upsell-2'
 import { Route as AuthenticatedUpsellRouteImport } from './routes/_authenticated/upsell'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
 import { Route as AuthenticatedProtocolRouteImport } from './routes/_authenticated/protocol'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProcessingRouteImport } from './routes/_authenticated/processing'
+import { Route as AuthenticatedDownsellRouteImport } from './routes/_authenticated/downsell'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -32,6 +34,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
   id: '/waiting',
   path: '/waiting',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUpsell2Route = AuthenticatedUpsell2RouteImport.update({
+  id: '/upsell-2',
+  path: '/upsell-2',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedUpsellRoute = AuthenticatedUpsellRouteImport.update({
@@ -64,6 +71,11 @@ const AuthenticatedProcessingRoute = AuthenticatedProcessingRouteImport.update({
   path: '/processing',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDownsellRoute = AuthenticatedDownsellRouteImport.update({
+  id: '/downsell',
+  path: '/downsell',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -73,23 +85,27 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/downsell': typeof AuthenticatedDownsellRoute
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/protocol': typeof AuthenticatedProtocolRoute
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/upsell': typeof AuthenticatedUpsellRoute
+  '/upsell-2': typeof AuthenticatedUpsell2Route
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/downsell': typeof AuthenticatedDownsellRoute
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/protocol': typeof AuthenticatedProtocolRoute
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/upsell': typeof AuthenticatedUpsellRoute
+  '/upsell-2': typeof AuthenticatedUpsell2Route
   '/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRoutesById {
@@ -97,12 +113,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/downsell': typeof AuthenticatedDownsellRoute
   '/_authenticated/processing': typeof AuthenticatedProcessingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/protocol': typeof AuthenticatedProtocolRoute
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/results': typeof AuthenticatedResultsRoute
   '/_authenticated/upsell': typeof AuthenticatedUpsellRoute
+  '/_authenticated/upsell-2': typeof AuthenticatedUpsell2Route
   '/_authenticated/waiting': typeof AuthenticatedWaitingRoute
 }
 export interface FileRouteTypes {
@@ -110,35 +128,41 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/downsell'
     | '/processing'
     | '/profile'
     | '/protocol'
     | '/quiz'
     | '/results'
     | '/upsell'
+    | '/upsell-2'
     | '/waiting'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
+    | '/downsell'
     | '/processing'
     | '/profile'
     | '/protocol'
     | '/quiz'
     | '/results'
     | '/upsell'
+    | '/upsell-2'
     | '/waiting'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/dashboard'
+    | '/_authenticated/downsell'
     | '/_authenticated/processing'
     | '/_authenticated/profile'
     | '/_authenticated/protocol'
     | '/_authenticated/quiz'
     | '/_authenticated/results'
     | '/_authenticated/upsell'
+    | '/_authenticated/upsell-2'
     | '/_authenticated/waiting'
   fileRoutesById: FileRoutesById
 }
@@ -168,6 +192,13 @@ declare module '@tanstack/react-router' {
       path: '/waiting'
       fullPath: '/waiting'
       preLoaderRoute: typeof AuthenticatedWaitingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/upsell-2': {
+      id: '/_authenticated/upsell-2'
+      path: '/upsell-2'
+      fullPath: '/upsell-2'
+      preLoaderRoute: typeof AuthenticatedUpsell2RouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/upsell': {
@@ -212,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProcessingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/downsell': {
+      id: '/_authenticated/downsell'
+      path: '/downsell'
+      fullPath: '/downsell'
+      preLoaderRoute: typeof AuthenticatedDownsellRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -224,23 +262,27 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDownsellRoute: typeof AuthenticatedDownsellRoute
   AuthenticatedProcessingRoute: typeof AuthenticatedProcessingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProtocolRoute: typeof AuthenticatedProtocolRoute
   AuthenticatedQuizRoute: typeof AuthenticatedQuizRoute
   AuthenticatedResultsRoute: typeof AuthenticatedResultsRoute
   AuthenticatedUpsellRoute: typeof AuthenticatedUpsellRoute
+  AuthenticatedUpsell2Route: typeof AuthenticatedUpsell2Route
   AuthenticatedWaitingRoute: typeof AuthenticatedWaitingRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDownsellRoute: AuthenticatedDownsellRoute,
   AuthenticatedProcessingRoute: AuthenticatedProcessingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProtocolRoute: AuthenticatedProtocolRoute,
   AuthenticatedQuizRoute: AuthenticatedQuizRoute,
   AuthenticatedResultsRoute: AuthenticatedResultsRoute,
   AuthenticatedUpsellRoute: AuthenticatedUpsellRoute,
+  AuthenticatedUpsell2Route: AuthenticatedUpsell2Route,
   AuthenticatedWaitingRoute: AuthenticatedWaitingRoute,
 }
 
