@@ -119,7 +119,7 @@ function DownsellPage() {
               SIM, QUERO GARANTIR ESSA CONDIÇÃO
             </a>
             <a
-              href="/dashboard"
+              href="/downsell-2"
               style={{
                 display: "block",
                 background: "transparent",
