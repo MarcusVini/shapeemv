@@ -23,7 +23,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { ArrowRight, Flame, Info, Sparkles, Target } from "lucide-react";
+import { ArrowRight, Flame, Info, Target } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
