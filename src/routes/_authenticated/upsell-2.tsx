@@ -46,6 +46,52 @@ function withUtms(url: string) {
   return url.includes("?") ? `${url}&${qs.slice(1)}` : `${url}${qs}`;
 }
 
+function JourneySteps({ steps }: { steps: { text: string; status: "done" | "current" }[] }) {
+  return (
+    <div
+      className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4"
+      style={{ maxWidth: "400px", margin: "0 auto" }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        {steps.map((step, idx) => (
+          <div key={idx} className="flex flex-1 flex-col items-center text-center">
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold"
+              style={{
+                backgroundColor: step.status === "done" ? "#27AF60" : "#FFFFFF",
+                color: step.status === "done" ? "#FFFFFF" : "#0B0B0B",
+                opacity: step.status === "current" ? 1 : 0.7,
+              }}
+            >
+              {step.status === "done" ? "✓" : idx + 1}
+            </div>
+            <p
+              className="mt-1.5 text-[10px] font-medium leading-tight"
+              style={{
+                color: step.status === "current" ? "#FFFFFF" : "#A1A1AA",
+              }}
+            >
+              {step.text}
+            </p>
+            {idx < steps.length - 1 && (
+              <div
+                className="absolute h-0.5 w-full"
+                style={{
+                  backgroundColor: "#27AF60",
+                  opacity: 0.4,
+                  top: "1.1rem",
+                  left: "50%",
+                  transform: "translateX(50%)",
+                }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Upsell2Page() {
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
@@ -64,7 +110,21 @@ function Upsell2Page() {
           Assista o vídeo abaixo até o final para entender essa oferta liberada 👇
         </p>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-6">
+          <JourneySteps
+            steps={[
+              { text: "Acesso iniciado", status: "done" },
+              { text: "Avaliação preenchida", status: "done" },
+              { text: "Assista ao vídeo importante agora", status: "current" },
+            ]}
+          />
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed text-zinc-400">
+          Você está quase finalizando sua jornada. Assista ao vídeo abaixo com atenção para entender essa condição liberada antes de seguir para o aplicativo.
+        </p>
+
+        <div className="mt-6 flex justify-center">
           <vturb-smartplayer
             id="vid-6a43902140698aa96bc8797c"
             style={{
