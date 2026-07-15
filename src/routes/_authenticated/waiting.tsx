@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
-import { ArrowLeft, Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
@@ -52,57 +52,108 @@ function WaitingPage() {
   const s = Math.floor((diff % 60_000) / 1000);
   const pad = (n: number) => String(n).padStart(2, "0");
 
+  const journey = [
+    { title: "Avaliação enviada", done: true, current: false },
+    { title: "Diagnóstico em análise", done: true, current: false },
+    { title: "Protocolo em liberação", done: false, current: true },
+  ];
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <div className="w-full max-w-md text-center">
+    <main className="min-h-screen bg-background px-6 py-10">
+      <div className="mx-auto w-full max-w-md">
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+            Etapa 03 · Liberação
+          </p>
+          <span className="rounded-full border border-border bg-card/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Aguardando
+          </span>
+        </div>
+
         <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl gold-border bg-card shadow-gold"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 overflow-hidden rounded-[28px] border border-border bg-card p-6 shadow-card-premium"
         >
-          <Lock className="h-10 w-10 text-primary" />
+          <div className="flex items-center gap-4">
+            <motion.div
+              animate={{ y: [0, -4, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl gold-border bg-primary/10"
+            >
+              <Lock className="h-6 w-6 text-primary" />
+            </motion.div>
+            <div className="min-w-0">
+              <h1 className="text-xl font-black leading-tight text-foreground">
+                Seu protocolo <span className="text-gold-gradient">está sendo liberado</span>
+              </h1>
+              <p className="mt-1 text-[12px] text-muted-foreground">
+                Método Fernando Cantarelli · versão personalizada
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl bg-background p-5">
+            <p className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Liberação em
+            </p>
+            <div className="mt-3 flex items-center justify-center gap-2 font-black tabular-nums">
+              <TimeBlock value={pad(h)} label="horas" />
+              <span className="text-2xl text-primary/40">:</span>
+              <TimeBlock value={pad(m)} label="min" />
+              <span className="text-2xl text-primary/40">:</span>
+              <TimeBlock value={pad(s)} label="seg" />
+            </div>
+          </div>
         </motion.div>
 
-        <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
-          <Sparkles className="h-3 w-3" /> Avaliação recebida
-        </div>
-
-        <h1 className="mt-5 text-3xl font-black leading-tight text-foreground">
-          Avaliação Recebida <span className="text-gold-gradient">com Sucesso!</span>
-        </h1>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Nossa inteligência artificial e a metodologia de{" "}
-          <span className="font-semibold text-foreground">Fernando Cantarelli</span>{" "}
-          estão analisando as suas respostas. Seu Protocolo Shape em V será liberado em breve.
-        </p>
-        <p className="mt-3 text-xs leading-relaxed text-muted-foreground/80">
-          Salve o link deste site. O cronômetro abaixo mostra o tempo exato para a sua liberação:
-        </p>
-
-        <div className="mt-10 rounded-3xl gold-border bg-card p-6 shadow-card-premium">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Liberação em
+        <div className="mt-6 rounded-3xl border border-border bg-card/60 p-5">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            Sua jornada
           </p>
-          <div className="mt-4 flex items-center justify-center gap-2 font-black tabular-nums">
-            <TimeBlock value={pad(h)} />
-            <span className="text-3xl text-primary/40">:</span>
-            <TimeBlock value={pad(m)} />
-            <span className="text-3xl text-primary/40">:</span>
-            <TimeBlock value={pad(s)} />
-          </div>
-          <div className="mt-4 flex justify-around text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span>horas</span>
-            <span>min</span>
-            <span>seg</span>
-          </div>
+          <ol className="mt-3 space-y-2">
+            {journey.map((j, i) => (
+              <li
+                key={j.title}
+                className="flex items-center gap-3 rounded-2xl border border-border/60 bg-background p-3"
+              >
+                <span
+                  className={
+                    j.done
+                      ? "grid h-7 w-7 place-items-center rounded-full gold-gradient text-primary-foreground"
+                      : j.current
+                        ? "grid h-7 w-7 place-items-center rounded-full border border-primary/60 bg-primary/10 text-[11px] font-black tabular-nums text-primary"
+                        : "grid h-7 w-7 place-items-center rounded-full border border-border bg-background text-[11px] font-bold tabular-nums text-muted-foreground"
+                  }
+                >
+                  {j.done ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : i + 1}
+                </span>
+                <span
+                  className={
+                    j.done
+                      ? "text-sm text-foreground/80"
+                      : j.current
+                        ? "text-sm font-semibold text-foreground"
+                        : "text-sm text-muted-foreground"
+                  }
+                >
+                  {j.title}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
 
-        <Link to="/dashboard" className="mt-6 inline-block">
+        <p className="mt-5 text-center text-[11px] text-muted-foreground">
+          Salve este link. Ao encerrar o cronômetro, seu protocolo abre automaticamente.
+        </p>
+
+        <Link to="/dashboard" className="mt-6 block">
           <Button
             variant="outline"
-            className="h-12 rounded-2xl border-border bg-card/60 px-6 text-sm font-bold text-foreground hover:bg-card"
+            className="h-12 w-full rounded-2xl border-border bg-card/60 text-sm font-bold text-foreground hover:bg-card"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para página inicial
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para a jornada
           </Button>
         </Link>
       </div>
@@ -110,10 +161,15 @@ function WaitingPage() {
   );
 }
 
-function TimeBlock({ value }: { value: string }) {
+function TimeBlock({ value, label }: { value: string; label: string }) {
   return (
-    <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-background px-2 py-3 text-4xl text-gold-gradient">
-      {value}
+    <span className="flex min-w-[64px] flex-col items-center">
+      <span className="inline-flex min-w-[64px] justify-center rounded-2xl bg-card px-2 py-3 text-3xl text-gold-gradient">
+        {value}
+      </span>
+      <span className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
     </span>
   );
 }

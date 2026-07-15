@@ -165,21 +165,33 @@ function ResultsPage() {
 
   return (
     <main className="min-h-screen bg-background pb-40">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-md items-center gap-4 px-6 pt-12 pb-6">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl gold-gradient text-xl font-black text-primary-foreground shadow-gold-sm">
-            {getInitials(nome, email)}
+      {/* Header — nova identidade */}
+      <header className="relative overflow-hidden border-b border-border">
+        <div className="pointer-events-none absolute -top-24 right-[-15%] h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
+        <div className="relative mx-auto max-w-md px-6 pt-12 pb-8">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+              Etapa 03 · Diagnóstico
+            </p>
+            <span className="rounded-full border border-border bg-card/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Liberado
+            </span>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-foreground">{nome || "Atleta"}</p>
-            <p className="truncate text-xs text-muted-foreground">{email}</p>
+          <div className="mt-5 flex items-center gap-4">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl gold-gradient text-xl font-black text-primary-foreground shadow-gold-sm">
+              {getInitials(nome, email)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-base font-black text-foreground">{nome || "Atleta"}</p>
+              <p className="truncate text-xs text-muted-foreground">{email}</p>
+            </div>
           </div>
-        </div>
-        <div className="mx-auto max-w-md px-6 pb-5">
-          <div className="inline-flex items-center gap-2 rounded-full gold-border bg-primary/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary">
-            <Sparkles className="h-3 w-3" /> Avaliação Personalizada
-          </div>
+          <h1 className="mt-6 text-2xl font-black leading-tight text-foreground">
+            Seu <span className="text-gold-gradient">diagnóstico Shape em V</span>
+          </h1>
+          <p className="mt-2 text-[13px] text-muted-foreground">
+            Cruzamos suas respostas com o método Cantarelli para desenhar o próximo passo.
+          </p>
         </div>
       </header>
 

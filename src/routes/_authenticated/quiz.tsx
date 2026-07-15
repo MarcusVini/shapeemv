@@ -181,34 +181,48 @@ function QuizPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-5 pt-6 pb-3">
+      {/* Header — segmented progress */}
+      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-md items-center gap-3 px-5 pt-5 pb-2">
           <button
             onClick={handleBack}
-            className="-ml-2 rounded-full p-2 text-foreground hover:bg-card"
+            className="-ml-2 grid h-9 w-9 place-items-center rounded-xl border border-border bg-card text-foreground hover:border-primary/40"
             aria-label="Voltar"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </button>
-          <div className="flex-1">
-            {step.category && catProgress && (
-              <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                {CATEGORY_LABEL[step.category]} · {catProgress.current}/{catProgress.total}
+          <div className="min-w-0 flex-1">
+            {step.category && catProgress ? (
+              <p className="truncate text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                {CATEGORY_LABEL[step.category]}
               </p>
+            ) : (
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Diagnóstico</p>
             )}
+            <p className="text-[11px] text-muted-foreground">
+              Etapa <span className="font-bold text-foreground tabular-nums">{stepIdx + 1}</span>
+              <span className="opacity-50"> de {TOTAL_STEPS}</span>
+            </p>
           </div>
-          <p className="text-xs font-medium text-muted-foreground tabular-nums">
-            {stepIdx + 1} <span className="opacity-50">/ {TOTAL_STEPS}</span>
-          </p>
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl gold-border bg-primary/10 text-[11px] font-black tabular-nums text-primary">
+            {Math.round(progress)}%
+          </div>
         </div>
         <div className="mx-auto max-w-md px-5 pb-3">
-          <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-            <motion.div
-              className="h-full gold-gradient"
-              animate={{ width: `${progress}%` }}
-              transition={{ type: "spring", stiffness: 120, damping: 20 }}
-            />
+          <div className="flex gap-[3px]">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "h-1 flex-1 rounded-full transition-colors",
+                  i < stepIdx
+                    ? "bg-primary"
+                    : i === stepIdx
+                      ? "gold-gradient"
+                      : "bg-secondary",
+                )}
+              />
+            ))}
           </div>
         </div>
       </header>
