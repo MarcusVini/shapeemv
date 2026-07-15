@@ -9,7 +9,16 @@ import { toast } from "sonner";
 
 const WHATSAPP_NUMBER = "554999557290";
 
+/**
+ * Top navigation bar.
+ * The file is still named `BottomNav.tsx` for import compatibility across pages,
+ * but the component is now rendered fixed at the top of the screen.
+ */
 export function BottomNav() {
+  return <TopNav />;
+}
+
+export function TopNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const session = useSession();
@@ -32,15 +41,19 @@ export function BottomNav() {
   );
   const supportHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${supportMessage}`;
 
-  const linkClasses = (active: boolean) =>
-    cn(
-      "flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[10px] font-medium transition-colors",
-      active ? "text-primary" : "text-muted-foreground",
-    );
+  const itemBase =
+    "group relative shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors";
+  const itemFor = (active: boolean) =>
+    cn(itemBase, active ? "text-primary" : "text-muted-foreground hover:text-foreground");
 
-  const homeActive = pathname === "/dashboard" || pathname === "/quiz" || pathname === "/processing" || pathname === "/waiting";
-  const avaliacaoActive = unlocked && pathname === "/results";
-  const protocoloActive = unlocked && pathname.startsWith("/protocol");
+  const homeActive =
+    pathname === "/dashboard" ||
+    pathname === "/quiz" ||
+    pathname === "/processing" ||
+    pathname === "/waiting";
+  const diagActive = unlocked && pathname === "/results";
+  const treinosActive = unlocked && pathname.startsWith("/protocol");
+  const profileActive = pathname.startsWith("/profile");
 
   const handleLockedClick = () => {
     if (!hasAssessment) {
@@ -51,69 +64,86 @@ export function BottomNav() {
     navigate({ to: "/waiting" });
   };
 
+  const Underline = ({ show }: { show: boolean }) =>
+    show ? (
+      <span className="absolute inset-x-2 -bottom-[9px] h-[2px] rounded-full gold-gradient" />
+    ) : null;
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-md items-center justify-around px-2 py-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-        <Link to="/dashboard" className={linkClasses(homeActive)}>
-          <Home
-            className={cn("h-5 w-5", homeActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
-          />
-          Jornada
-        </Link>
-
-        {unlocked ? (
-          <Link to="/results" className={linkClasses(avaliacaoActive)}>
-            <ClipboardList
-              className={cn("h-5 w-5", avaliacaoActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
-            />
-              Diagnóstico
-          </Link>
-        ) : (
-          <button type="button" onClick={handleLockedClick} className={linkClasses(false)}>
-            <div className="relative">
-              <ClipboardList className="h-5 w-5 opacity-50" />
-              <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-primary" />
-            </div>
-            Diagnóstico
-          </button>
-        )}
-
-        {unlocked ? (
-          <Link to="/protocol" className={linkClasses(protocoloActive)}>
-            <Dumbbell
-              className={cn("h-5 w-5", protocoloActive && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]")}
-            />
-            Treinos
-          </Link>
-        ) : (
-          <button type="button" onClick={handleLockedClick} className={linkClasses(false)}>
-            <div className="relative">
-              <Dumbbell className="h-5 w-5 opacity-50" />
-              <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-primary" />
-            </div>
-            Treinos
-          </button>
-        )}
-
-        <a
-          href={supportHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={linkClasses(false)}
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2">
+        {/* Brand */}
+        <Link
+          to="/dashboard"
+          className="flex shrink-0 items-center gap-2"
+          aria-label="Shape em V"
         >
-          <MessageCircle className="h-5 w-5" />
-          Suporte
-        </a>
-
-        <Link to="/profile" className={linkClasses(pathname.startsWith("/profile"))}>
-          <User
-            className={cn(
-              "h-5 w-5",
-              pathname.startsWith("/profile") && "drop-shadow-[0_0_8px_oklch(0.78_0.14_85)]",
-            )}
-          />
-          Perfil
+          <span className="grid h-8 w-8 place-items-center rounded-lg gold-gradient text-sm font-black text-primary-foreground shadow-gold-sm">
+            V
+          </span>
+          <span className="hidden text-sm font-black uppercase tracking-[0.2em] text-gold-gradient sm:inline">
+            Shape em V
+          </span>
         </Link>
+
+        {/* Scrollable nav items */}
+        <div className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center justify-end gap-1">
+            <Link to="/dashboard" className={itemFor(homeActive)}>
+              <Home className="h-4 w-4" />
+              <span>Início</span>
+              <Underline show={homeActive} />
+            </Link>
+
+            {unlocked ? (
+              <Link to="/results" className={itemFor(diagActive)}>
+                <ClipboardList className="h-4 w-4" />
+                <span>Diagnóstico</span>
+                <Underline show={diagActive} />
+              </Link>
+            ) : (
+              <button type="button" onClick={handleLockedClick} className={itemFor(false)}>
+                <span className="relative">
+                  <ClipboardList className="h-4 w-4 opacity-50" />
+                  <Lock className="absolute -bottom-1 -right-1 h-2.5 w-2.5 text-primary" />
+                </span>
+                <span>Diagnóstico</span>
+              </button>
+            )}
+
+            {unlocked ? (
+              <Link to="/protocol" className={itemFor(treinosActive)}>
+                <Dumbbell className="h-4 w-4" />
+                <span>Treinos</span>
+                <Underline show={treinosActive} />
+              </Link>
+            ) : (
+              <button type="button" onClick={handleLockedClick} className={itemFor(false)}>
+                <span className="relative">
+                  <Dumbbell className="h-4 w-4 opacity-50" />
+                  <Lock className="absolute -bottom-1 -right-1 h-2.5 w-2.5 text-primary" />
+                </span>
+                <span>Treinos</span>
+              </button>
+            )}
+
+            <a
+              href={supportHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={itemFor(false)}
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>Suporte</span>
+            </a>
+
+            <Link to="/profile" className={itemFor(profileActive)}>
+              <User className="h-4 w-4" />
+              <span>Perfil</span>
+              <Underline show={profileActive} />
+            </Link>
+          </div>
+        </div>
       </div>
     </nav>
   );
