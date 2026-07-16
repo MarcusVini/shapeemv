@@ -48,6 +48,22 @@ function QuizPage() {
   const [submitting, setSubmitting] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
+  // Track quiz_started once and quiz_step_viewed on each step change
+  useEffect(() => {
+    trackEvent({ event_name: "quiz_started", funnel_step: "quiz", user_id: session?.id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    trackEvent({
+      event_name: "quiz_step_viewed",
+      funnel_step: "quiz",
+      quiz_step: stepIdx + 1,
+      user_id: session?.id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIdx]);
+
+
   // Restore from localStorage, then fall back to server draft (cross-device safety).
   useEffect(() => {
     let cancelled = false;
