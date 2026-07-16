@@ -18,6 +18,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminFunilRouteImport } from './routes/admin/funil'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
@@ -68,6 +69,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminFunilRoute = AdminFunilRouteImport.update({
+  id: '/funil',
+  path: '/funil',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
   '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesByTo {
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
   '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesById {
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/results': typeof AuthenticatedResultsRoute
   '/_authenticated/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
   '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRouteTypes {
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/waiting'
+    | '/admin/funil'
     | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/waiting'
+    | '/admin/funil'
     | '/admin/login'
   id:
     | '__root__'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz'
     | '/_authenticated/results'
     | '/_authenticated/waiting'
+    | '/admin/funil'
     | '/admin/login'
   fileRoutesById: FileRoutesById
 }
@@ -290,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/funil': {
+      id: '/admin/funil'
+      path: '/funil'
+      fullPath: '/admin/funil'
+      preLoaderRoute: typeof AdminFunilRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_authenticated/waiting': {
       id: '/_authenticated/waiting'
       path: '/waiting'
@@ -366,10 +385,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AdminRouteRouteChildren {
+  AdminFunilRoute: typeof AdminFunilRoute
   AdminLoginRoute: typeof AdminLoginRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminFunilRoute: AdminFunilRoute,
   AdminLoginRoute: AdminLoginRoute,
 }
 
