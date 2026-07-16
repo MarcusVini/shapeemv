@@ -14,6 +14,7 @@ import { Route as UpsellRouteImport } from './routes/upsell'
 import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
 import { Route as Downsell2RouteImport } from './routes/downsell-2'
 import { Route as DownsellRouteImport } from './routes/downsell'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
@@ -47,6 +48,11 @@ const Downsell2Route = Downsell2RouteImport.update({
 const DownsellRoute = DownsellRouteImport.update({
   id: '/downsell',
   path: '/downsell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -96,6 +102,7 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admin': typeof AdminRouteRoute
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRoute
   DownsellRoute: typeof DownsellRoute
   Downsell2Route: typeof Downsell2Route
   RoletaEliteTesteRoute: typeof RoletaEliteTesteRoute
@@ -235,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/downsell'
       fullPath: '/downsell'
       preLoaderRoute: typeof DownsellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -329,6 +349,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRoute,
   DownsellRoute: DownsellRoute,
   Downsell2Route: Downsell2Route,
   RoletaEliteTesteRoute: RoletaEliteTesteRoute,
