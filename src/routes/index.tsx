@@ -45,6 +45,7 @@ function LandingPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  usePageView("page_view", "landing");
 
   useEffect(() => {
     if (getSession()) navigate({ to: "/dashboard", replace: true });
