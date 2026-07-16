@@ -69,6 +69,7 @@ function ResultsPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
   const session = useSession();
+  usePageView("result_viewed", "results");
   const { data, isLoading } = useQuery({
     queryKey: ["state", session?.id],
     queryFn: () => fetchState({ data: { userId: session!.id } }),
