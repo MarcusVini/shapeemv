@@ -147,6 +147,13 @@ function Upsell2Page() {
                 "href",
                 withUtms("https://pay.kiwify.com.br/YQg1R83"),
               );
+              trackEvent({
+                event_name: "upsell_2_buy_clicked",
+                funnel_step: "upsell_2",
+                button_name: "cta_buy",
+                checkout_url: "https://pay.kiwify.com.br/YQg1R83",
+                offer_name: "Upsell 2",
+              });
             }}
             style={{
               display: "block",
