@@ -94,9 +94,11 @@ function JourneySteps({ steps }: { steps: { text: string; status: "done" | "curr
 }
 
 function Upsell2Page() {
+  usePageView("upsell_2_viewed", "upsell_2");
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
   }, []);
+
 
   return (
     <main
