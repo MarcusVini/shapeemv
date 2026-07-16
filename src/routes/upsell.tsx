@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/upsell")({
   component: UpsellPage,
