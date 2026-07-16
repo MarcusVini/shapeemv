@@ -34,6 +34,7 @@ function ProtocolPage() {
   const navigate = useNavigate();
   const fetchState = useServerFn(getLatestState);
   const session = useSession();
+  usePageView("protocol_viewed", "protocol");
   const { data: state, isLoading } = useQuery({
     queryKey: ["state", session?.id],
     queryFn: () => fetchState({ data: { userId: session!.id } }),
