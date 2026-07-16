@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a57c0d8269dbf6f97c9db1e/v4/player.js";
@@ -49,6 +50,8 @@ function withUtms(url: string) {
 
 function DownsellPage() {
   const [showOffer, setShowOffer] = useState(false);
+  usePageView("downsell_1_viewed", "downsell_1");
+
 
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
@@ -99,6 +102,13 @@ function DownsellPage() {
                   "href",
                   withUtms("https://pay.kiwify.com.br/1r1xQNB"),
                 );
+                trackEvent({
+                  event_name: "downsell_1_buy_clicked",
+                  funnel_step: "downsell_1",
+                  button_name: "cta_buy",
+                  checkout_url: "https://pay.kiwify.com.br/1r1xQNB",
+                  offer_name: "Downsell 1",
+                });
               }}
               style={{
                 display: "block",
@@ -120,6 +130,13 @@ function DownsellPage() {
             </a>
             <a
               href="/downsell-2"
+              onClick={() =>
+                trackEvent({
+                  event_name: "downsell_1_decline_clicked",
+                  funnel_step: "downsell_1",
+                  button_name: "cta_decline",
+                })
+              }
               style={{
                 display: "block",
                 background: "transparent",

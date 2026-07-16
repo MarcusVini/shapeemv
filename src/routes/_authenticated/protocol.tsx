@@ -21,6 +21,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { usePageView } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/protocol")({
@@ -33,6 +34,7 @@ function ProtocolPage() {
   const navigate = useNavigate();
   const fetchState = useServerFn(getLatestState);
   const session = useSession();
+  usePageView("protocol_viewed", "protocol");
   const { data: state, isLoading } = useQuery({
     queryKey: ["state", session?.id],
     queryFn: () => fetchState({ data: { userId: session!.id } }),

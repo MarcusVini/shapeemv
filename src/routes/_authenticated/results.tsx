@@ -23,6 +23,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { usePageView } from "@/lib/tracking";
 import {
   buildLevers,
   calcComposicaoScore,
@@ -68,6 +69,7 @@ function ResultsPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
   const session = useSession();
+  usePageView("result_viewed", "results");
   const { data, isLoading } = useQuery({
     queryKey: ["state", session?.id],
     queryFn: () => fetchState({ data: { userId: session!.id } }),

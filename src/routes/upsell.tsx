@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/upsell")({
   component: UpsellPage,
@@ -62,6 +63,8 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   const [showOffer, setShowOffer] = useState(false);
+  usePageView("upsell_1_viewed", "upsell_1");
+
 
 
   // Inject Vturb script on mount
@@ -111,6 +114,15 @@ function UpsellPage() {
           >
             <a
               href="https://pay.kiwify.com.br/zByOXHf"
+              onClick={() =>
+                trackEvent({
+                  event_name: "upsell_1_buy_clicked",
+                  funnel_step: "upsell_1",
+                  button_name: "cta_buy",
+                  checkout_url: "https://pay.kiwify.com.br/zByOXHf",
+                  offer_name: "Upsell 1",
+                })
+              }
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
@@ -131,6 +143,13 @@ function UpsellPage() {
             </a>
             <a
               href="/downsell-2"
+              onClick={() =>
+                trackEvent({
+                  event_name: "upsell_1_decline_clicked",
+                  funnel_step: "upsell_1",
+                  button_name: "cta_decline",
+                })
+              }
               style={{
                 display: "block",
                 background: "transparent",

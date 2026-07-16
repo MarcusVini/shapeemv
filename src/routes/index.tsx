@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { getSession, setSession } from "@/lib/session";
 import { loginOrCreateUser } from "@/lib/auth.functions";
+import { usePageView } from "@/lib/tracking";
 
 
 export const Route = createFileRoute("/")({
@@ -44,6 +45,7 @@ function LandingPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  usePageView("page_view", "landing");
 
   useEffect(() => {
     if (getSession()) navigate({ to: "/dashboard", replace: true });

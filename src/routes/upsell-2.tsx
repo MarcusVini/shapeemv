@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js";
@@ -93,9 +94,11 @@ function JourneySteps({ steps }: { steps: { text: string; status: "done" | "curr
 }
 
 function Upsell2Page() {
+  usePageView("upsell_2_viewed", "upsell_2");
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
   }, []);
+
 
   return (
     <main
@@ -144,6 +147,13 @@ function Upsell2Page() {
                 "href",
                 withUtms("https://pay.kiwify.com.br/YQg1R83"),
               );
+              trackEvent({
+                event_name: "upsell_2_buy_clicked",
+                funnel_step: "upsell_2",
+                button_name: "cta_buy",
+                checkout_url: "https://pay.kiwify.com.br/YQg1R83",
+                offer_name: "Upsell 2",
+              });
             }}
             style={{
               display: "block",
@@ -165,6 +175,13 @@ function Upsell2Page() {
           </a>
           <a
             href="/downsell"
+            onClick={() =>
+              trackEvent({
+                event_name: "upsell_2_decline_clicked",
+                funnel_step: "upsell_2",
+                button_name: "cta_decline",
+              })
+            }
             style={{
               display: "block",
               background: "transparent",

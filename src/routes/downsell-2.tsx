@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/downsell-2")({
   component: Downsell2Page,
@@ -67,6 +68,7 @@ function JourneySteps() {
 }
 
 function Downsell2Page() {
+  usePageView("downsell_2_viewed", "downsell_2");
   return (
     <main
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
@@ -142,6 +144,13 @@ function Downsell2Page() {
                 "href",
                 withUtms("https://pay.kiwify.com.br/kyyCqoh"),
               );
+              trackEvent({
+                event_name: "downsell_2_buy_clicked",
+                funnel_step: "downsell_2",
+                button_name: "cta_buy",
+                checkout_url: "https://pay.kiwify.com.br/kyyCqoh",
+                offer_name: "Downsell 2",
+              });
             }}
             className="cta-pulse"
             style={{
@@ -165,6 +174,13 @@ function Downsell2Page() {
           </a>
           <a
             href="/dashboard"
+            onClick={() =>
+              trackEvent({
+                event_name: "downsell_2_decline_clicked",
+                funnel_step: "downsell_2",
+                button_name: "cta_decline",
+              })
+            }
             style={{
               display: "block",
               background: "transparent",

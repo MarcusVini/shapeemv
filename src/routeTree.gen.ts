@@ -14,8 +14,11 @@ import { Route as UpsellRouteImport } from './routes/upsell'
 import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
 import { Route as Downsell2RouteImport } from './routes/downsell-2'
 import { Route as DownsellRouteImport } from './routes/downsell'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminFunilRouteImport } from './routes/admin/funil'
 import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
 import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
 import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
@@ -49,6 +52,11 @@ const DownsellRoute = DownsellRouteImport.update({
   path: '/downsell',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -57,6 +65,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminFunilRoute = AdminFunilRouteImport.update({
+  id: '/funil',
+  path: '/funil',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
   id: '/waiting',
@@ -96,6 +114,7 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -108,9 +127,12 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -123,11 +145,14 @@ export interface FileRoutesByTo {
   '/quiz': typeof AuthenticatedQuizRoute
   '/results': typeof AuthenticatedResultsRoute
   '/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
@@ -140,11 +165,14 @@ export interface FileRoutesById {
   '/_authenticated/quiz': typeof AuthenticatedQuizRoute
   '/_authenticated/results': typeof AuthenticatedResultsRoute
   '/_authenticated/waiting': typeof AuthenticatedWaitingRoute
+  '/admin/funil': typeof AdminFunilRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -157,9 +185,12 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/waiting'
+    | '/admin/funil'
+    | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -172,10 +203,13 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/results'
     | '/waiting'
+    | '/admin/funil'
+    | '/admin/login'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/admin'
     | '/downsell'
     | '/downsell-2'
     | '/roleta-elite-teste'
@@ -188,11 +222,14 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz'
     | '/_authenticated/results'
     | '/_authenticated/waiting'
+    | '/admin/funil'
+    | '/admin/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   DownsellRoute: typeof DownsellRoute
   Downsell2Route: typeof Downsell2Route
   RoletaEliteTesteRoute: typeof RoletaEliteTesteRoute
@@ -237,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownsellRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -250,6 +294,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/funil': {
+      id: '/admin/funil'
+      path: '/funil'
+      fullPath: '/admin/funil'
+      preLoaderRoute: typeof AdminFunilRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_authenticated/waiting': {
       id: '/_authenticated/waiting'
@@ -326,9 +384,24 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AdminRouteRouteChildren {
+  AdminFunilRoute: typeof AdminFunilRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminFunilRoute: AdminFunilRoute,
+  AdminLoginRoute: AdminLoginRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   DownsellRoute: DownsellRoute,
   Downsell2Route: Downsell2Route,
   RoletaEliteTesteRoute: RoletaEliteTesteRoute,

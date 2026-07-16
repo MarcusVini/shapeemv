@@ -17,6 +17,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment, saveQuizDraft, getQuizDraft } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { trackEvent } from "@/lib/tracking";
 
 
 import { toast } from "sonner";
@@ -46,6 +47,22 @@ function QuizPage() {
   const [answers, setAnswers] = useState<Answers>({});
   const [submitting, setSubmitting] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+
+  // Track quiz_started once and quiz_step_viewed on each step change
+  useEffect(() => {
+    trackEvent({ event_name: "quiz_started", funnel_step: "quiz", user_id: session?.id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    trackEvent({
+      event_name: "quiz_step_viewed",
+      funnel_step: "quiz",
+      quiz_step: stepIdx + 1,
+      user_id: session?.id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIdx]);
+
 
   // Restore from localStorage, then fall back to server draft (cross-device safety).
   useEffect(() => {
@@ -148,6 +165,20 @@ function QuizPage() {
   }
 
   async function handleNext() {
+    // Track answer for the current step
+    try {
+      const currentStep = QUIZ_STEPS[stepIdx];
+      trackEvent({
+        event_name: "quiz_question_answered",
+        funnel_step: "quiz",
+        quiz_step: stepIdx + 1,
+        quiz_question: currentStep?.question ?? currentStep?.id ?? String(stepIdx + 1),
+        quiz_answer: JSON.stringify(answers[currentStep?.id ?? ""] ?? null),
+        user_id: session?.id,
+      });
+    } catch {
+      // ignore
+    }
     if (stepIdx < TOTAL_STEPS - 1) {
       setStepIdx((i) => i + 1);
       return;
@@ -159,6 +190,7 @@ function QuizPage() {
       await submitFn({
         data: { userId: session.id, respostas: answers },
       });
+      trackEvent({ event_name: "quiz_completed", funnel_step: "quiz", user_id: session.id });
       try {
         window.localStorage.removeItem(STORAGE_KEY);
       } catch {
@@ -170,6 +202,7 @@ function QuizPage() {
       setSubmitting(false);
     }
   }
+
 
   function handleBack() {
     if (stepIdx === 0) {

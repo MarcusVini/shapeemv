@@ -21,6 +21,7 @@ import { getLatestState } from "@/lib/assessment.functions";
 import { calcIMC, calcScoreGeral, imcLabel } from "@/lib/assessment-calc";
 import { clearSession, useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
+import { usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -30,6 +31,8 @@ function DashboardPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
   const session = useSession();
+  usePageView("app_dashboard_viewed", "app_dashboard");
+
 
   const { data, isLoading } = useQuery({
     queryKey: ["state", session?.id],
