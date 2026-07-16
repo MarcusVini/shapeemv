@@ -50,6 +50,8 @@ function withUtms(url: string) {
 
 function DownsellPage() {
   const [showOffer, setShowOffer] = useState(false);
+  usePageView("downsell_1_viewed", "downsell_1");
+
 
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
