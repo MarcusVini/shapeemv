@@ -21,6 +21,7 @@ import { getLatestState } from "@/lib/assessment.functions";
 import { calcIMC, calcScoreGeral, imcLabel } from "@/lib/assessment-calc";
 import { clearSession, useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
+import { usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
