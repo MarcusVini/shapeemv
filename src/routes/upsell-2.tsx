@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js";
