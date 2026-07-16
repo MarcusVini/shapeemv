@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { getSession, setSession } from "@/lib/session";
 import { loginOrCreateUser } from "@/lib/auth.functions";
+import { usePageView } from "@/lib/tracking";
 
 
 export const Route = createFileRoute("/")({
