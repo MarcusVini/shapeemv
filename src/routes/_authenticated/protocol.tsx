@@ -21,6 +21,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { usePageView } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/protocol")({
