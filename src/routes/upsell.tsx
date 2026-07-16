@@ -130,7 +130,7 @@ function UpsellPage() {
               Sim, eu aceito essa oferta especial!
             </a>
             <a
-              href="/upsell-2"
+              href="/downsell-2"
               style={{
                 display: "block",
                 background: "transparent",
