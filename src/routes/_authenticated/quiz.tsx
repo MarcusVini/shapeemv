@@ -172,7 +172,7 @@ function QuizPage() {
         event_name: "quiz_question_answered",
         funnel_step: "quiz",
         quiz_step: stepIdx + 1,
-        quiz_question: currentStep?.pergunta ?? currentStep?.id ?? String(stepIdx + 1),
+        quiz_question: currentStep?.question ?? currentStep?.id ?? String(stepIdx + 1),
         quiz_answer: JSON.stringify(answers[currentStep?.id ?? ""] ?? null),
         user_id: session?.id,
       });
