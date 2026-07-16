@@ -63,6 +63,8 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   const [showOffer, setShowOffer] = useState(false);
+  usePageView("upsell_1_viewed", "upsell_1");
+
 
 
   // Inject Vturb script on mount
