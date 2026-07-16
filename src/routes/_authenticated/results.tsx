@@ -23,6 +23,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { usePageView } from "@/lib/tracking";
 import {
   buildLevers,
   calcComposicaoScore,
