@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Upsell2RouteImport } from './routes/upsell-2'
 import { Route as UpsellRouteImport } from './routes/upsell'
+import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
 import { Route as Downsell2RouteImport } from './routes/downsell-2'
 import { Route as DownsellRouteImport } from './routes/downsell'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -31,6 +32,11 @@ const Upsell2Route = Upsell2RouteImport.update({
 const UpsellRoute = UpsellRouteImport.update({
   id: '/upsell',
   path: '/upsell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoletaEliteTesteRoute = RoletaEliteTesteRouteImport.update({
+  id: '/roleta-elite-teste',
+  path: '/roleta-elite-teste',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Downsell2Route = Downsell2RouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
+  '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
   '/upsell-2': typeof Upsell2Route
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
+  '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
   '/upsell-2': typeof Upsell2Route
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
   '/downsell-2': typeof Downsell2Route
+  '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
   '/upsell-2': typeof Upsell2Route
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/downsell'
     | '/downsell-2'
+    | '/roleta-elite-teste'
     | '/upsell'
     | '/upsell-2'
     | '/dashboard'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/'
     | '/downsell'
     | '/downsell-2'
+    | '/roleta-elite-teste'
     | '/upsell'
     | '/upsell-2'
     | '/dashboard'
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/downsell'
     | '/downsell-2'
+    | '/roleta-elite-teste'
     | '/upsell'
     | '/upsell-2'
     | '/_authenticated/dashboard'
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   DownsellRoute: typeof DownsellRoute
   Downsell2Route: typeof Downsell2Route
+  RoletaEliteTesteRoute: typeof RoletaEliteTesteRoute
   UpsellRoute: typeof UpsellRoute
   Upsell2Route: typeof Upsell2Route
 }
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       path: '/upsell'
       fullPath: '/upsell'
       preLoaderRoute: typeof UpsellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roleta-elite-teste': {
+      id: '/roleta-elite-teste'
+      path: '/roleta-elite-teste'
+      fullPath: '/roleta-elite-teste'
+      preLoaderRoute: typeof RoletaEliteTesteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/downsell-2': {
@@ -311,6 +331,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   DownsellRoute: DownsellRoute,
   Downsell2Route: Downsell2Route,
+  RoletaEliteTesteRoute: RoletaEliteTesteRoute,
   UpsellRoute: UpsellRoute,
   Upsell2Route: Upsell2Route,
 }
