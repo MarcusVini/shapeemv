@@ -31,6 +31,8 @@ function DashboardPage() {
   const fetchState = useServerFn(getLatestState);
   const navigate = useNavigate();
   const session = useSession();
+  usePageView("app_dashboard_viewed", "app_dashboard");
+
 
   const { data, isLoading } = useQuery({
     queryKey: ["state", session?.id],
