@@ -68,6 +68,7 @@ function JourneySteps() {
 }
 
 function Downsell2Page() {
+  usePageView("downsell_2_viewed", "downsell_2");
   return (
     <main
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
