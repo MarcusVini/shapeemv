@@ -59,6 +59,111 @@ export type Database = {
         }
         Relationships: []
       }
+      funnel_events: {
+        Row: {
+          action_type: string | null
+          amount: number | null
+          browser: string | null
+          button_name: string | null
+          button_text: string | null
+          checkout_url: string | null
+          created_at: string
+          device_type: string | null
+          event_name: string
+          fbclid: string | null
+          funnel_step: string | null
+          gclid: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json
+          offer_name: string | null
+          os: string | null
+          page_path: string | null
+          page_title: string | null
+          product_name: string | null
+          quiz_answer: string | null
+          quiz_question: string | null
+          quiz_step: number | null
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          action_type?: string | null
+          amount?: number | null
+          browser?: string | null
+          button_name?: string | null
+          button_text?: string | null
+          checkout_url?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_name: string
+          fbclid?: string | null
+          funnel_step?: string | null
+          gclid?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          offer_name?: string | null
+          os?: string | null
+          page_path?: string | null
+          page_title?: string | null
+          product_name?: string | null
+          quiz_answer?: string | null
+          quiz_question?: string | null
+          quiz_step?: number | null
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          action_type?: string | null
+          amount?: number | null
+          browser?: string | null
+          button_name?: string | null
+          button_text?: string | null
+          checkout_url?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_name?: string
+          fbclid?: string | null
+          funnel_step?: string | null
+          gclid?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          offer_name?: string | null
+          os?: string | null
+          page_path?: string | null
+          page_title?: string | null
+          product_name?: string | null
+          quiz_answer?: string | null
+          quiz_question?: string | null
+          quiz_step?: number | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
