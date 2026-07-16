@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent, usePageView } from "@/lib/tracking";
 
 export const Route = createFileRoute("/downsell-2")({
   component: Downsell2Page,
