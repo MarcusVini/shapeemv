@@ -165,6 +165,20 @@ function QuizPage() {
   }
 
   async function handleNext() {
+    // Track answer for the current step
+    try {
+      const currentStep = QUIZ_STEPS[stepIdx];
+      trackEvent({
+        event_name: "quiz_question_answered",
+        funnel_step: "quiz",
+        quiz_step: stepIdx + 1,
+        quiz_question: currentStep?.pergunta ?? currentStep?.id ?? String(stepIdx + 1),
+        quiz_answer: JSON.stringify(answers[currentStep?.id ?? ""] ?? null),
+        user_id: session?.id,
+      });
+    } catch {
+      // ignore
+    }
     if (stepIdx < TOTAL_STEPS - 1) {
       setStepIdx((i) => i + 1);
       return;
@@ -176,6 +190,7 @@ function QuizPage() {
       await submitFn({
         data: { userId: session.id, respostas: answers },
       });
+      trackEvent({ event_name: "quiz_completed", funnel_step: "quiz", user_id: session.id });
       try {
         window.localStorage.removeItem(STORAGE_KEY);
       } catch {
@@ -187,6 +202,7 @@ function QuizPage() {
       setSubmitting(false);
     }
   }
+
 
   function handleBack() {
     if (stepIdx === 0) {
