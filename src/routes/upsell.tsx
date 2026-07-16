@@ -114,6 +114,15 @@ function UpsellPage() {
           >
             <a
               href="https://pay.kiwify.com.br/zByOXHf"
+              onClick={() =>
+                trackEvent({
+                  event_name: "upsell_1_buy_clicked",
+                  funnel_step: "upsell_1",
+                  button_name: "cta_buy",
+                  checkout_url: "https://pay.kiwify.com.br/zByOXHf",
+                  offer_name: "Upsell 1",
+                })
+              }
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
