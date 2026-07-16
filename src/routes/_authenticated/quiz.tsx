@@ -17,6 +17,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment, saveQuizDraft, getQuizDraft } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
+import { trackEvent } from "@/lib/tracking";
 
 
 import { toast } from "sonner";
