@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { useSession, getCookie } from "@tanstack/react-start/server";
+import { useSession } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { createHash, timingSafeEqual } from "node:crypto";
 
