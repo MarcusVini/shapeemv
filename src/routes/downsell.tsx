@@ -102,6 +102,13 @@ function DownsellPage() {
                   "href",
                   withUtms("https://pay.kiwify.com.br/1r1xQNB"),
                 );
+                trackEvent({
+                  event_name: "downsell_1_buy_clicked",
+                  funnel_step: "downsell_1",
+                  button_name: "cta_buy",
+                  checkout_url: "https://pay.kiwify.com.br/1r1xQNB",
+                  offer_name: "Downsell 1",
+                });
               }}
               style={{
                 display: "block",
