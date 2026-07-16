@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/downsell-2")({
+export const Route = createFileRoute("/downsell-2")({
   component: Downsell2Page,
   head: () => ({
     meta: [
