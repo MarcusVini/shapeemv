@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
-export const Route = createFileRoute("/_authenticated/upsell")({
+export const Route = createFileRoute("/upsell")({
   component: UpsellPage,
   head: () => ({
     links: [

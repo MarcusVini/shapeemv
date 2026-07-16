@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js";
 
-export const Route = createFileRoute("/_authenticated/upsell-2")({
+export const Route = createFileRoute("/upsell-2")({
   component: Upsell2Page,
   head: () => ({
     links: [
