@@ -143,6 +143,13 @@ function UpsellPage() {
             </a>
             <a
               href="/downsell-2"
+              onClick={() =>
+                trackEvent({
+                  event_name: "upsell_1_decline_clicked",
+                  funnel_step: "upsell_1",
+                  button_name: "cta_decline",
+                })
+              }
               style={{
                 display: "block",
                 background: "transparent",
