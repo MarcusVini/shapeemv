@@ -163,31 +163,6 @@ function Downsell2HotPage() {
           }
         >
           <HotmartFunnel />
-
-          <a
-            href="/dashboard"
-            onClick={() =>
-              trackEvent({
-                event_name: "downsell_2_hot_decline_clicked",
-                funnel_step: "downsell_2_hot",
-                button_name: "cta_decline",
-              })
-            }
-            style={{
-              display: "block",
-              background: "transparent",
-              border: "none",
-              marginTop: "1rem",
-              cursor: "pointer",
-              fontSize: "13px",
-              textDecoration: "underline",
-              color: "rgba(255,255,255,0.55)",
-              fontFamily: "sans-serif",
-              textAlign: "center",
-            }}
-          >
-            Não, obrigado. Quero seguir sem o acesso ao aplicativo.
-          </a>
         </div>
       </div>
     </main>
