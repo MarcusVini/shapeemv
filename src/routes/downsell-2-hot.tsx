@@ -63,20 +63,21 @@ function JourneySteps() {
 
 function HotmartFunnel() {
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.hotmart.com/lib/hotmart-checkout-elements.js";
-    script.async = true;
-    script.onload = () => {
-      try {
-        // @ts-expect-error hotmart global injected by script
-        window.checkoutElements?.init("salesFunnel").mount("#hotmart-sales-funnel");
-      } catch {
-        /* ignore */
-      }
+    const container = document.getElementById("hotmart-sales-funnel");
+    if (!container) return;
+
+    const loader = document.createElement("script");
+    loader.src = "https://checkout.hotmart.com/lib/hotmart-checkout-elements.js";
+    loader.async = true;
+    loader.onload = () => {
+      const init = document.createElement("script");
+      init.innerHTML = `checkoutElements.init('salesFunnel').mount('#hotmart-sales-funnel')`;
+      document.body.appendChild(init);
     };
-    document.body.appendChild(script);
+    document.body.appendChild(loader);
+
     return () => {
-      script.remove();
+      loader.remove();
     };
   }, []);
 
@@ -162,31 +163,6 @@ function Downsell2HotPage() {
           }
         >
           <HotmartFunnel />
-
-          <a
-            href="/dashboard"
-            onClick={() =>
-              trackEvent({
-                event_name: "downsell_2_hot_decline_clicked",
-                funnel_step: "downsell_2_hot",
-                button_name: "cta_decline",
-              })
-            }
-            style={{
-              display: "block",
-              background: "transparent",
-              border: "none",
-              marginTop: "1rem",
-              cursor: "pointer",
-              fontSize: "13px",
-              textDecoration: "underline",
-              color: "rgba(255,255,255,0.55)",
-              fontFamily: "sans-serif",
-              textAlign: "center",
-            }}
-          >
-            Não, obrigado. Quero seguir sem o acesso ao aplicativo.
-          </a>
         </div>
       </div>
     </main>
