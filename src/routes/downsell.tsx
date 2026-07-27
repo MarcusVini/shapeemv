@@ -103,7 +103,9 @@ function DownsellPage() {
             className="mt-8"
             style={{ textAlign: "center" }}
           >
+            <OfferTimer />
             <a
+
               href={withUtms("https://pay.kiwify.com.br/1r1xQNB")}
               onClick={(e) => {
                 e.currentTarget.setAttribute(
