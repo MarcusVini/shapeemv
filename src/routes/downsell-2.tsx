@@ -69,7 +69,6 @@ function JourneySteps() {
 }
 
 const OFFER_SECONDS = 4 * 60 + 45;
-const BUTTON_DELAY_MS = 60_000;
 
 function useCountdown(seconds: number) {
   const [left, setLeft] = useState(seconds);
@@ -92,13 +91,10 @@ function todayLabel() {
 function Downsell2Page() {
   usePageView("downsell_2_viewed", "downsell_2");
   const timer = useCountdown(OFFER_SECONDS);
-  const [showCta, setShowCta] = useState(false);
   const [dateLabel, setDateLabel] = useState("");
 
   useEffect(() => {
     setDateLabel(todayLabel());
-    const t = setTimeout(() => setShowCta(true), BUTTON_DELAY_MS);
-    return () => clearTimeout(t);
   }, []);
 
   return (

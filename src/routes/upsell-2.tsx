@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { trackEvent, usePageView } from "@/lib/tracking";
 import {
@@ -99,12 +99,17 @@ function JourneySteps({ steps }: { steps: { text: string; status: "done" | "curr
   );
 }
 
+const BUTTON_DELAY_MS = 60_000;
+
 function Upsell2Page() {
   usePageView("upsell_2_viewed", "upsell_2");
+  const [showCta, setShowCta] = useState(false);
+
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
+    const t = setTimeout(() => setShowCta(true), BUTTON_DELAY_MS);
+    return () => clearTimeout(t);
   }, []);
-
 
   return (
     <main
