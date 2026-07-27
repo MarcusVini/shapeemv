@@ -142,7 +142,7 @@ function UpsellPage() {
               Sim, eu aceito essa oferta especial!
             </a>
             <a
-              href="/downsell-2"
+              href="/upsell-2"
               onClick={() =>
                 trackEvent({
                   event_name: "upsell_1_decline_clicked",
