@@ -112,7 +112,9 @@ function UpsellPage() {
         </div>
 
         <div className="mt-8" style={{ textAlign: "center" }}>
-          <SpotRelease delayMs={150000}>
+          {showCta && (
+            <>
+            <OfferTimer />
             <a
               href="https://pay.kiwify.com.br/zByOXHf"
               onClick={() =>
