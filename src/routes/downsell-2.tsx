@@ -68,8 +68,39 @@ function JourneySteps() {
   );
 }
 
+const OFFER_SECONDS = 4 * 60 + 45;
+const BUTTON_DELAY_MS = 60_000;
+
+function useCountdown(seconds: number) {
+  const [left, setLeft] = useState(seconds);
+  useEffect(() => {
+    const t = setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const m = Math.floor(left / 60);
+  const s = left % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function todayLabel() {
+  return new Date().toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "long",
+  });
+}
+
 function Downsell2Page() {
   usePageView("downsell_2_viewed", "downsell_2");
+  const timer = useCountdown(OFFER_SECONDS);
+  const [showCta, setShowCta] = useState(false);
+  const [dateLabel, setDateLabel] = useState("");
+
+  useEffect(() => {
+    setDateLabel(todayLabel());
+    const t = setTimeout(() => setShowCta(true), BUTTON_DELAY_MS);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <main
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
@@ -77,10 +108,10 @@ function Downsell2Page() {
     >
       <style>{`
         @keyframes softPulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(39,175,96,0.55); }
-          50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(39,175,96,0); }
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(39,175,96,0.35); }
+          50% { transform: scale(1.012); box-shadow: 0 0 0 8px rgba(39,175,96,0); }
         }
-        .cta-pulse { animation: softPulse 1.8s ease-in-out infinite; }
+        .cta-pulse { animation: softPulse 2.4s ease-in-out infinite; }
       `}</style>
 
       <div className="mx-auto w-full max-w-md text-center">
