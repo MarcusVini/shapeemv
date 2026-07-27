@@ -140,8 +140,10 @@ function DownsellPage() {
             >
               SIM, QUERO GARANTIR ESSA CONDIÇÃO
             </a>
+            <PromoUntilToday />
             <a
               href="/downsell-2"
+
               onClick={() =>
                 trackEvent({
                   event_name: "downsell_1_decline_clicked",
