@@ -26,12 +26,18 @@ function Spinner() {
   );
 }
 
-function StepIcon({ kind }: { kind: StepKind }) {
+function StepIcon({ kind }: { kind: StepKind | "done" }) {
   if (kind === "loading") return <Spinner />;
   if (kind === "fail")
     return (
       <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-[9px] font-bold text-red-400">
         ✕
+      </span>
+    );
+  if (kind === "done")
+    return (
+      <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] text-[9px] font-bold text-zinc-400">
+        ✓
       </span>
     );
   return (
@@ -43,6 +49,7 @@ function StepIcon({ kind }: { kind: StepKind }) {
     </span>
   );
 }
+
 
 function VirtualQueue() {
   const [updatedAt, setUpdatedAt] = useState<string>("");
@@ -188,19 +195,31 @@ export function SpotRelease({
           Verificação de vaga
         </p>
         <ul className="mt-4 space-y-3">
-          {STEPS.slice(0, visible + 1).map((step, idx) => (
-            <li key={idx} className="spot-fade flex items-start gap-2.5">
-              <span className="mt-0.5">
-                <StepIcon kind={idx < visible ? step.kind : step.kind === "loading" ? "loading" : step.kind} />
-              </span>
-              <span
-                className="text-xs leading-relaxed"
-                style={{ color: idx === visible ? "#FFFFFF" : "#A1A1AA" }}
-              >
-                {step.text}
-              </span>
-            </li>
-          ))}
+          {STEPS.slice(0, visible + 1).map((step, idx) => {
+            const isCurrent = idx === visible;
+            const iconKind: StepKind | "done" = isCurrent
+              ? step.kind
+              : step.kind === "loading"
+                ? "done"
+                : step.kind;
+            return (
+              <li key={idx} className="spot-fade flex items-start gap-2.5">
+                <span className="mt-0.5">
+                  <StepIcon kind={iconKind} />
+                </span>
+                <span
+                  className="text-xs leading-relaxed"
+                  style={{
+                    color: isCurrent ? "#FFFFFF" : "#8A8A93",
+                    fontWeight: isCurrent ? 600 : 400,
+                  }}
+                >
+                  {step.text}
+                </span>
+              </li>
+            );
+          })}
+
         </ul>
       </div>
       <div className="mt-4">
