@@ -148,7 +148,9 @@ function Upsell2Page() {
         </div>
 
         <div className="mt-8" style={{ textAlign: "center" }}>
+          <OfferTimer />
           <a
+
             href={withUtms("https://pay.kiwify.com.br/YQg1R83")}
             onClick={(e) => {
               e.currentTarget.setAttribute(
