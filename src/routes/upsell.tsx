@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { trackEvent, usePageView } from "@/lib/tracking";
+import { useState } from "react";
 import {
   CtaPulseStyle,
+  OfferTimer,
   PromoUntilToday,
 } from "@/components/OfferUrgency";
-import { SpotRelease, SpotReleaseStyle } from "@/components/SpotRelease";
 
 
 
@@ -69,10 +70,16 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   usePageView("upsell_1_viewed", "upsell_1");
+  const [showCta, setShowCta] = useState(false);
 
   // Inject Vturb script on mount
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowCta(true), 150000);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -81,7 +88,7 @@ function UpsellPage() {
       style={{ backgroundColor: "#0B0B0B" }}
     >
       <CtaPulseStyle />
-      <SpotReleaseStyle />
+
 
       <div className="mx-auto w-full max-w-md text-center">
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
@@ -105,7 +112,9 @@ function UpsellPage() {
         </div>
 
         <div className="mt-8" style={{ textAlign: "center" }}>
-          <SpotRelease delayMs={150000}>
+          {showCta && (
+            <>
+            <OfferTimer />
             <a
               href="https://pay.kiwify.com.br/zByOXHf"
               onClick={() =>
@@ -161,7 +170,8 @@ function UpsellPage() {
             >
               Não, eu gostaria de abrir mão dessa vaga
             </a>
-          </SpotRelease>
+            </>
+          )}
         </div>
       </div>
     </main>
