@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { trackEvent, usePageView } from "@/lib/tracking";
 import {
   CtaPulseStyle,
-  OfferTimer,
   PromoUntilToday,
 } from "@/components/OfferUrgency";
+import { SpotRelease, SpotReleaseStyle } from "@/components/SpotRelease";
+
 
 
 const VTURB_SRC =
@@ -55,17 +55,10 @@ function withUtms(url: string) {
 }
 
 function DownsellPage() {
-  const [showOffer, setShowOffer] = useState(false);
   usePageView("downsell_1_viewed", "downsell_1");
-
 
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
-  }, []);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShowOffer(true), 280000);
-    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -74,8 +67,8 @@ function DownsellPage() {
       style={{ backgroundColor: "#0B0B0B" }}
     >
       <CtaPulseStyle />
+      <SpotReleaseStyle />
       <div className="mx-auto w-full max-w-md text-center">
-
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
           Espera! Tenho uma última condição pra você
         </h1>
@@ -95,17 +88,9 @@ function DownsellPage() {
           />
         </div>
 
-        {showOffer && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="mt-8"
-            style={{ textAlign: "center" }}
-          >
-            <OfferTimer />
+        <div className="mt-8" style={{ textAlign: "center" }}>
+          <SpotRelease delayMs={280000}>
             <a
-
               href={withUtms("https://pay.kiwify.com.br/1r1xQNB")}
               onClick={(e) => {
                 e.currentTarget.setAttribute(
@@ -122,7 +107,6 @@ function DownsellPage() {
               }}
               className="cta-pulse"
               style={{
-
                 display: "block",
                 backgroundColor: "#27AF60",
                 padding: "12px 16px",
@@ -138,12 +122,11 @@ function DownsellPage() {
                 cursor: "pointer",
               }}
             >
-              SIM, QUERO GARANTIR ESSA CONDIÇÃO
+              QUERO GARANTIR MINHA VAGA AGORA
             </a>
             <PromoUntilToday />
             <a
               href="/downsell-2"
-
               onClick={() =>
                 trackEvent({
                   event_name: "downsell_1_decline_clicked",
@@ -164,11 +147,12 @@ function DownsellPage() {
                 textAlign: "center",
               }}
             >
-              Não, obrigado. Quero continuar sem essa condição.
+              Não, obrigado. Quero abrir mão dessa vaga.
             </a>
-          </motion.div>
-        )}
+          </SpotRelease>
+        </div>
       </div>
     </main>
   );
 }
+
