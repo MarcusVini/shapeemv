@@ -68,20 +68,11 @@ function injectScript(src: string, target: HTMLElement) {
 }
 
 function UpsellPage() {
-  const [showOffer, setShowOffer] = useState(false);
   usePageView("upsell_1_viewed", "upsell_1");
-
-
 
   // Inject Vturb script on mount
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
-  }, []);
-
-  // 2min30s delay before showing offer block
-  useEffect(() => {
-    const t = setTimeout(() => setShowOffer(true), 150000);
-    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -90,6 +81,7 @@ function UpsellPage() {
       style={{ backgroundColor: "#0B0B0B" }}
     >
       <CtaPulseStyle />
+      <SpotReleaseStyle />
 
       <div className="mx-auto w-full max-w-md text-center">
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
@@ -112,17 +104,9 @@ function UpsellPage() {
           />
         </div>
 
-        {showOffer && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="mt-8"
-            style={{ textAlign: "center" }}
-          >
-            <OfferTimer />
+        <div className="mt-8" style={{ textAlign: "center" }}>
+          <SpotRelease delayMs={150000}>
             <a
-
               href="https://pay.kiwify.com.br/zByOXHf"
               onClick={() =>
                 trackEvent({
@@ -150,12 +134,11 @@ function UpsellPage() {
                 cursor: "pointer",
               }}
             >
-              Sim, eu aceito essa oferta especial!
+              QUERO GARANTIR MINHA VAGA AGORA
             </a>
             <PromoUntilToday />
             <a
               href="/upsell-2"
-
               onClick={() =>
                 trackEvent({
                   event_name: "upsell_1_decline_clicked",
@@ -176,11 +159,12 @@ function UpsellPage() {
                 textAlign: "center",
               }}
             >
-              Não, eu gostaria de recusar essa oferta
+              Não, eu gostaria de abrir mão dessa vaga
             </a>
-          </motion.div>
-        )}
+          </SpotRelease>
+        </div>
       </div>
     </main>
   );
 }
+
