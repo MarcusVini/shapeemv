@@ -177,50 +177,41 @@ function Downsell2Page() {
             </span>
           </div>
 
-          {showCta ? (
-            <a
-              href={withUtms("https://pay.kiwify.com.br/kyyCqoh")}
-              onClick={(e) => {
-                e.currentTarget.setAttribute(
-                  "href",
-                  withUtms("https://pay.kiwify.com.br/kyyCqoh"),
-                );
-                trackEvent({
-                  event_name: "downsell_2_buy_clicked",
-                  funnel_step: "downsell_2",
-                  button_name: "cta_buy",
-                  checkout_url: "https://pay.kiwify.com.br/kyyCqoh",
-                  offer_name: "Downsell 2",
-                });
-              }}
-              className="cta-pulse"
-              style={{
-                display: "block",
-                backgroundColor: "#27AF60",
-                padding: "16px 20px",
-                color: "#FFFFFF",
-                fontWeight: 800,
-                borderRadius: "12px",
-                border: "1px solid #27AF60",
-                fontSize: "18px",
-                width: "100%",
-                maxWidth: "400px",
-                margin: "0 auto",
-                textDecoration: "none",
-                cursor: "pointer",
-                letterSpacing: "0.02em",
-              }}
-            >
-              SIM, QUERO ACESSAR POR R$9,90/MÊS
-            </a>
-          ) : (
-            <div
-              className="mx-auto rounded-xl border border-dashed border-white/15 px-5 py-4 text-xs text-zinc-500"
-              style={{ maxWidth: "400px" }}
-            >
-              Liberando sua condição final...
-            </div>
-          )}
+          <a
+            href={withUtms("https://pay.kiwify.com.br/kyyCqoh")}
+            onClick={(e) => {
+              e.currentTarget.setAttribute(
+                "href",
+                withUtms("https://pay.kiwify.com.br/kyyCqoh"),
+              );
+              trackEvent({
+                event_name: "downsell_2_buy_clicked",
+                funnel_step: "downsell_2",
+                button_name: "cta_buy",
+                checkout_url: "https://pay.kiwify.com.br/kyyCqoh",
+                offer_name: "Downsell 2",
+              });
+            }}
+            className="cta-pulse"
+            style={{
+              display: "block",
+              backgroundColor: "#27AF60",
+              padding: "16px 20px",
+              color: "#FFFFFF",
+              fontWeight: 800,
+              borderRadius: "12px",
+              border: "1px solid #27AF60",
+              fontSize: "18px",
+              width: "100%",
+              maxWidth: "400px",
+              margin: "0 auto",
+              textDecoration: "none",
+              cursor: "pointer",
+              letterSpacing: "0.02em",
+            }}
+          >
+            SIM, QUERO ACESSAR POR R$9,90/MÊS
+          </a>
 
           {dateLabel && (
             <p className="mx-auto mt-3 text-[11px] leading-relaxed text-zinc-500" style={{ maxWidth: "400px" }}>
@@ -228,32 +219,30 @@ function Downsell2Page() {
             </p>
           )}
 
-          {showCta && (
-            <a
-              href="/dashboard"
-              onClick={() =>
-                trackEvent({
-                  event_name: "downsell_2_decline_clicked",
-                  funnel_step: "downsell_2",
-                  button_name: "cta_decline",
-                })
-              }
-              style={{
-                display: "block",
-                background: "transparent",
-                border: "none",
-                marginTop: "1rem",
-                cursor: "pointer",
-                fontSize: "13px",
-                textDecoration: "underline",
-                color: "rgba(255,255,255,0.55)",
-                fontFamily: "sans-serif",
-                textAlign: "center",
-              }}
-            >
-              Não, obrigado. Quero seguir sem o acesso ao aplicativo.
-            </a>
-          )}
+          <a
+            href="/dashboard"
+            onClick={() =>
+              trackEvent({
+                event_name: "downsell_2_decline_clicked",
+                funnel_step: "downsell_2",
+                button_name: "cta_decline",
+              })
+            }
+            style={{
+              display: "block",
+              background: "transparent",
+              border: "none",
+              marginTop: "1rem",
+              cursor: "pointer",
+              fontSize: "13px",
+              textDecoration: "underline",
+              color: "rgba(255,255,255,0.55)",
+              fontFamily: "sans-serif",
+              textAlign: "center",
+            }}
+          >
+            Não, obrigado. Quero seguir sem o acesso ao aplicativo.
+          </a>
         </div>
       </div>
     </main>
