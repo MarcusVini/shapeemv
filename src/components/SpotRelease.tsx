@@ -26,12 +26,18 @@ function Spinner() {
   );
 }
 
-function StepIcon({ kind }: { kind: StepKind }) {
+function StepIcon({ kind }: { kind: StepKind | "done" }) {
   if (kind === "loading") return <Spinner />;
   if (kind === "fail")
     return (
       <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-[9px] font-bold text-red-400">
         ✕
+      </span>
+    );
+  if (kind === "done")
+    return (
+      <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] text-[9px] font-bold text-zinc-400">
+        ✓
       </span>
     );
   return (
@@ -43,6 +49,7 @@ function StepIcon({ kind }: { kind: StepKind }) {
     </span>
   );
 }
+
 
 function VirtualQueue() {
   const [updatedAt, setUpdatedAt] = useState<string>("");
