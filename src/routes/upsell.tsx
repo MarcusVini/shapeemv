@@ -120,7 +120,9 @@ function UpsellPage() {
             className="mt-8"
             style={{ textAlign: "center" }}
           >
+            <OfferTimer />
             <a
+
               href="https://pay.kiwify.com.br/zByOXHf"
               onClick={() =>
                 trackEvent({
