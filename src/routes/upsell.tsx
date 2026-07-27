@@ -170,7 +170,8 @@ function UpsellPage() {
             >
               Não, eu gostaria de abrir mão dessa vaga
             </a>
-          </SpotRelease>
+            </>
+          )}
         </div>
       </div>
     </main>
