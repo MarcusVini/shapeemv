@@ -154,67 +154,76 @@ function Upsell2Page() {
 
         <div className="mt-8" style={{ textAlign: "center" }}>
           <OfferTimer />
-          <a
-
-            href={withUtms("https://pay.kiwify.com.br/YQg1R83")}
-            onClick={(e) => {
-              e.currentTarget.setAttribute(
-                "href",
-                withUtms("https://pay.kiwify.com.br/YQg1R83"),
-              );
-              trackEvent({
-                event_name: "upsell_2_buy_clicked",
-                funnel_step: "upsell_2",
-                button_name: "cta_buy",
-                checkout_url: "https://pay.kiwify.com.br/YQg1R83",
-                offer_name: "Upsell 2",
-              });
-            }}
-            className="cta-pulse"
-            style={{
-              display: "block",
-              backgroundColor: "#27AF60",
-              padding: "12px 16px",
-              color: "#FFFFFF",
-              fontWeight: 700,
-              borderRadius: "4px",
-              border: "1px solid #27AF60",
-              fontSize: "20px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "0 auto",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            QUERO ACELERAR MEUS RESULTADOS
-          </a>
-          <PromoUntilToday />
-          <a
-            href="/downsell-2"
-
-            onClick={() =>
-              trackEvent({
-                event_name: "upsell_2_decline_clicked",
-                funnel_step: "upsell_2",
-                button_name: "cta_decline",
-              })
-            }
-            style={{
-              display: "block",
-              background: "transparent",
-              border: "none",
-              marginTop: "1rem",
-              cursor: "pointer",
-              fontSize: "14px",
-              textDecoration: "underline",
-              color: "#A1A1AA",
-              fontFamily: "sans-serif",
-              textAlign: "center",
-            }}
-          >
-            Não, obrigado. Quero continuar sem essa oferta.
-          </a>
+          {showCta ? (
+            <>
+              <a
+                href={withUtms("https://pay.kiwify.com.br/YQg1R83")}
+                onClick={(e) => {
+                  e.currentTarget.setAttribute(
+                    "href",
+                    withUtms("https://pay.kiwify.com.br/YQg1R83"),
+                  );
+                  trackEvent({
+                    event_name: "upsell_2_buy_clicked",
+                    funnel_step: "upsell_2",
+                    button_name: "cta_buy",
+                    checkout_url: "https://pay.kiwify.com.br/YQg1R83",
+                    offer_name: "Upsell 2",
+                  });
+                }}
+                className="cta-pulse"
+                style={{
+                  display: "block",
+                  backgroundColor: "#27AF60",
+                  padding: "12px 16px",
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  borderRadius: "4px",
+                  border: "1px solid #27AF60",
+                  fontSize: "20px",
+                  width: "100%",
+                  maxWidth: "400px",
+                  margin: "0 auto",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                QUERO ACELERAR MEUS RESULTADOS
+              </a>
+              <PromoUntilToday />
+              <a
+                href="/downsell-2"
+                onClick={() =>
+                  trackEvent({
+                    event_name: "upsell_2_decline_clicked",
+                    funnel_step: "upsell_2",
+                    button_name: "cta_decline",
+                  })
+                }
+                style={{
+                  display: "block",
+                  background: "transparent",
+                  border: "none",
+                  marginTop: "1rem",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  textDecoration: "underline",
+                  color: "#A1A1AA",
+                  fontFamily: "sans-serif",
+                  textAlign: "center",
+                }}
+              >
+                Não, obrigado. Quero continuar sem essa oferta.
+              </a>
+            </>
+          ) : (
+            <div
+              className="mx-auto rounded-xl border border-dashed border-white/15 px-5 py-4 text-xs text-zinc-500"
+              style={{ maxWidth: "400px" }}
+            >
+              Liberando sua condição especial...
+            </div>
+          )}
         </div>
       </div>
     </main>
