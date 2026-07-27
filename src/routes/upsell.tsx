@@ -70,10 +70,16 @@ function injectScript(src: string, target: HTMLElement) {
 
 function UpsellPage() {
   usePageView("upsell_1_viewed", "upsell_1");
+  const [showCta, setShowCta] = useState(false);
 
   // Inject Vturb script on mount
   useEffect(() => {
     injectScript(VTURB_SRC, document.head);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowCta(true), 150000);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -82,7 +88,7 @@ function UpsellPage() {
       style={{ backgroundColor: "#0B0B0B" }}
     >
       <CtaPulseStyle />
-      <SpotReleaseStyle />
+
 
       <div className="mx-auto w-full max-w-md text-center">
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
