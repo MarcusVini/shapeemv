@@ -184,8 +184,10 @@ function Upsell2Page() {
           >
             QUERO ACELERAR MEUS RESULTADOS
           </a>
+          <PromoUntilToday />
           <a
             href="/downsell-2"
+
             onClick={() =>
               trackEvent({
                 event_name: "upsell_2_decline_clicked",
