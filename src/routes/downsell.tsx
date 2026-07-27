@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { trackEvent, usePageView } from "@/lib/tracking";
+import {
+  CtaPulseStyle,
+  OfferTimer,
+  PromoUntilToday,
+} from "@/components/OfferUrgency";
+
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a57c0d8269dbf6f97c9db1e/v4/player.js";
@@ -67,7 +73,9 @@ function DownsellPage() {
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
       style={{ backgroundColor: "#0B0B0B" }}
     >
+      <CtaPulseStyle />
       <div className="mx-auto w-full max-w-md text-center">
+
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
           Espera! Tenho uma última condição pra você
         </h1>
@@ -95,7 +103,9 @@ function DownsellPage() {
             className="mt-8"
             style={{ textAlign: "center" }}
           >
+            <OfferTimer />
             <a
+
               href={withUtms("https://pay.kiwify.com.br/1r1xQNB")}
               onClick={(e) => {
                 e.currentTarget.setAttribute(
@@ -110,7 +120,9 @@ function DownsellPage() {
                   offer_name: "Downsell 1",
                 });
               }}
+              className="cta-pulse"
               style={{
+
                 display: "block",
                 backgroundColor: "#27AF60",
                 padding: "12px 16px",
@@ -128,8 +140,10 @@ function DownsellPage() {
             >
               SIM, QUERO GARANTIR ESSA CONDIÇÃO
             </a>
+            <PromoUntilToday />
             <a
               href="/downsell-2"
+
               onClick={() =>
                 trackEvent({
                   event_name: "downsell_1_decline_clicked",
