@@ -130,6 +130,7 @@ function UpsellPage() {
                   offer_name: "Upsell 1",
                 })
               }
+              className="cta-pulse"
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
