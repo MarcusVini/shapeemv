@@ -73,7 +73,9 @@ function DownsellPage() {
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
       style={{ backgroundColor: "#0B0B0B" }}
     >
+      <CtaPulseStyle />
       <div className="mx-auto w-full max-w-md text-center">
+
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
           Espera! Tenho uma última condição pra você
         </h1>
