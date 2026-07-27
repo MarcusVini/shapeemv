@@ -195,19 +195,31 @@ export function SpotRelease({
           Verificação de vaga
         </p>
         <ul className="mt-4 space-y-3">
-          {STEPS.slice(0, visible + 1).map((step, idx) => (
-            <li key={idx} className="spot-fade flex items-start gap-2.5">
-              <span className="mt-0.5">
-                <StepIcon kind={idx < visible ? step.kind : step.kind === "loading" ? "loading" : step.kind} />
-              </span>
-              <span
-                className="text-xs leading-relaxed"
-                style={{ color: idx === visible ? "#FFFFFF" : "#A1A1AA" }}
-              >
-                {step.text}
-              </span>
-            </li>
-          ))}
+          {STEPS.slice(0, visible + 1).map((step, idx) => {
+            const isCurrent = idx === visible;
+            const iconKind: StepKind | "done" = isCurrent
+              ? step.kind
+              : step.kind === "loading"
+                ? "done"
+                : step.kind;
+            return (
+              <li key={idx} className="spot-fade flex items-start gap-2.5">
+                <span className="mt-0.5">
+                  <StepIcon kind={iconKind} />
+                </span>
+                <span
+                  className="text-xs leading-relaxed"
+                  style={{
+                    color: isCurrent ? "#FFFFFF" : "#8A8A93",
+                    fontWeight: isCurrent ? 600 : 400,
+                  }}
+                >
+                  {step.text}
+                </span>
+              </li>
+            );
+          })}
+
         </ul>
       </div>
       <div className="mt-4">
