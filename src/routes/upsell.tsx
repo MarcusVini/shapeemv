@@ -83,6 +83,13 @@ function UpsellPage() {
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
       style={{ backgroundColor: "#0B0B0B" }}
     >
+      <style>{`
+        @keyframes softPulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(39,175,96,0.35); }
+          50% { transform: scale(1.012); box-shadow: 0 0 0 8px rgba(39,175,96,0); }
+        }
+        .cta-pulse { animation: softPulse 2.4s ease-in-out infinite; }
+      `}</style>
       <div className="mx-auto w-full max-w-md text-center">
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
           Sua avaliação está sendo concluída...
@@ -123,6 +130,7 @@ function UpsellPage() {
                   offer_name: "Upsell 1",
                 })
               }
+              className="cta-pulse"
               style={{
                 display: "block",
                 backgroundColor: "#27AF60",
@@ -142,7 +150,7 @@ function UpsellPage() {
               Sim, eu aceito essa oferta especial!
             </a>
             <a
-              href="/downsell-2"
+              href="/upsell-2"
               onClick={() =>
                 trackEvent({
                   event_name: "upsell_1_decline_clicked",

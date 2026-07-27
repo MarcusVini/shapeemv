@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { trackEvent, usePageView } from "@/lib/tracking";
 
@@ -67,8 +68,39 @@ function JourneySteps() {
   );
 }
 
+const OFFER_SECONDS = 4 * 60 + 45;
+const BUTTON_DELAY_MS = 60_000;
+
+function useCountdown(seconds: number) {
+  const [left, setLeft] = useState(seconds);
+  useEffect(() => {
+    const t = setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const m = Math.floor(left / 60);
+  const s = left % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function todayLabel() {
+  return new Date().toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "long",
+  });
+}
+
 function Downsell2Page() {
   usePageView("downsell_2_viewed", "downsell_2");
+  const timer = useCountdown(OFFER_SECONDS);
+  const [showCta, setShowCta] = useState(false);
+  const [dateLabel, setDateLabel] = useState("");
+
+  useEffect(() => {
+    setDateLabel(todayLabel());
+    const t = setTimeout(() => setShowCta(true), BUTTON_DELAY_MS);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <main
       className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
@@ -76,10 +108,10 @@ function Downsell2Page() {
     >
       <style>{`
         @keyframes softPulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(39,175,96,0.55); }
-          50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(39,175,96,0); }
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(39,175,96,0.35); }
+          50% { transform: scale(1.012); box-shadow: 0 0 0 8px rgba(39,175,96,0); }
         }
-        .cta-pulse { animation: softPulse 1.8s ease-in-out infinite; }
+        .cta-pulse { animation: softPulse 2.4s ease-in-out infinite; }
       `}</style>
 
       <div className="mx-auto w-full max-w-md text-center">
@@ -137,65 +169,95 @@ function Downsell2Page() {
         </p>
 
         <div className="mt-6" style={{ textAlign: "center" }}>
-          <a
-            href={withUtms("https://pay.kiwify.com.br/kyyCqoh")}
-            onClick={(e) => {
-              e.currentTarget.setAttribute(
-                "href",
-                withUtms("https://pay.kiwify.com.br/kyyCqoh"),
-              );
-              trackEvent({
-                event_name: "downsell_2_buy_clicked",
-                funnel_step: "downsell_2",
-                button_name: "cta_buy",
-                checkout_url: "https://pay.kiwify.com.br/kyyCqoh",
-                offer_name: "Downsell 2",
-              });
-            }}
-            className="cta-pulse"
-            style={{
-              display: "block",
-              backgroundColor: "#27AF60",
-              padding: "16px 20px",
-              color: "#FFFFFF",
-              fontWeight: 800,
-              borderRadius: "12px",
-              border: "1px solid #27AF60",
-              fontSize: "18px",
-              width: "100%",
-              maxWidth: "400px",
-              margin: "0 auto",
-              textDecoration: "none",
-              cursor: "pointer",
-              letterSpacing: "0.02em",
-            }}
+          <div
+            className="mx-auto mb-4 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3"
+            style={{ maxWidth: "400px" }}
           >
-            SIM, QUERO ACESSAR POR R$9,90/MÊS
-          </a>
-          <a
-            href="/dashboard"
-            onClick={() =>
-              trackEvent({
-                event_name: "downsell_2_decline_clicked",
-                funnel_step: "downsell_2",
-                button_name: "cta_decline",
-              })
-            }
-            style={{
-              display: "block",
-              background: "transparent",
-              border: "none",
-              marginTop: "1rem",
-              cursor: "pointer",
-              fontSize: "13px",
-              textDecoration: "underline",
-              color: "rgba(255,255,255,0.55)",
-              fontFamily: "sans-serif",
-              textAlign: "center",
-            }}
-          >
-            Não, obrigado. Quero seguir sem o acesso ao aplicativo.
-          </a>
+            <span className="text-[11px] uppercase tracking-widest text-zinc-400">
+              Oferta expira em
+            </span>
+            <span className="font-mono text-lg font-bold text-white tabular-nums">
+              {timer}
+            </span>
+          </div>
+
+          {showCta ? (
+            <a
+              href={withUtms("https://pay.kiwify.com.br/kyyCqoh")}
+              onClick={(e) => {
+                e.currentTarget.setAttribute(
+                  "href",
+                  withUtms("https://pay.kiwify.com.br/kyyCqoh"),
+                );
+                trackEvent({
+                  event_name: "downsell_2_buy_clicked",
+                  funnel_step: "downsell_2",
+                  button_name: "cta_buy",
+                  checkout_url: "https://pay.kiwify.com.br/kyyCqoh",
+                  offer_name: "Downsell 2",
+                });
+              }}
+              className="cta-pulse"
+              style={{
+                display: "block",
+                backgroundColor: "#27AF60",
+                padding: "16px 20px",
+                color: "#FFFFFF",
+                fontWeight: 800,
+                borderRadius: "12px",
+                border: "1px solid #27AF60",
+                fontSize: "18px",
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+                textDecoration: "none",
+                cursor: "pointer",
+                letterSpacing: "0.02em",
+              }}
+            >
+              SIM, QUERO ACESSAR POR R$9,90/MÊS
+            </a>
+          ) : (
+            <div
+              className="mx-auto rounded-xl border border-dashed border-white/15 px-5 py-4 text-xs text-zinc-500"
+              style={{ maxWidth: "400px" }}
+            >
+              Liberando sua condição final...
+            </div>
+          )}
+
+          {dateLabel && (
+            <p className="mx-auto mt-3 text-[11px] leading-relaxed text-zinc-500" style={{ maxWidth: "400px" }}>
+              Essa promoção só vai até hoje, {dateLabel}.
+            </p>
+          )}
+
+          {showCta && (
+            <a
+              href="/dashboard"
+              onClick={() =>
+                trackEvent({
+                  event_name: "downsell_2_decline_clicked",
+                  funnel_step: "downsell_2",
+                  button_name: "cta_decline",
+                })
+              }
+              style={{
+                display: "block",
+                background: "transparent",
+                border: "none",
+                marginTop: "1rem",
+                cursor: "pointer",
+                fontSize: "13px",
+                textDecoration: "underline",
+                color: "rgba(255,255,255,0.55)",
+                fontFamily: "sans-serif",
+                textAlign: "center",
+              }}
+            >
+              Não, obrigado. Quero seguir sem o acesso ao aplicativo.
+            </a>
+          )}
         </div>
       </div>
     </main>
