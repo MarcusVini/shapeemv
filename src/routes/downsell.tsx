@@ -120,7 +120,9 @@ function DownsellPage() {
                   offer_name: "Downsell 1",
                 });
               }}
+              className="cta-pulse"
               style={{
+
                 display: "block",
                 backgroundColor: "#27AF60",
                 padding: "12px 16px",
