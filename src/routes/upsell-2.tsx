@@ -3,11 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { trackEvent, usePageView } from "@/lib/tracking";
 import {
   CtaPulseStyle,
+  OfferTimer,
   PromoUntilToday,
 } from "@/components/OfferUrgency";
-import { SpotRelease, SpotReleaseStyle } from "@/components/SpotRelease";
-
-
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a43902140698aa96bc8797c/v4/player.js";
@@ -38,6 +36,17 @@ export const Route = createFileRoute("/upsell-2")({
     ],
   }),
 });
+
+declare module "react" {
+  namespace JSX {
+    interface IntrinsicElements {
+      "vturb-smartplayer": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & { id?: string },
+        HTMLElement
+      >;
+    }
+  }
+}
 
 function injectScript(src: string, target: HTMLElement) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -100,8 +109,6 @@ function JourneySteps({ steps }: { steps: { text: string; status: "done" | "curr
   );
 }
 
-const BUTTON_DELAY_MS = 60_000;
-
 function Upsell2Page() {
   usePageView("upsell_2_viewed", "upsell_2");
 
@@ -115,7 +122,6 @@ function Upsell2Page() {
       style={{ backgroundColor: "#0B0B0B" }}
     >
       <CtaPulseStyle />
-      <SpotReleaseStyle />
 
       <div className="mx-auto w-full max-w-md text-center">
         <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
@@ -152,70 +158,68 @@ function Upsell2Page() {
         </div>
 
         <div className="mt-8" style={{ textAlign: "center" }}>
-          <SpotRelease delayMs={BUTTON_DELAY_MS}>
-            <a
-              href={withUtms("https://pay.kiwify.com.br/YQg1R83")}
-              onClick={(e) => {
-                e.currentTarget.setAttribute(
-                  "href",
-                  withUtms("https://pay.kiwify.com.br/YQg1R83"),
-                );
-                trackEvent({
-                  event_name: "upsell_2_buy_clicked",
-                  funnel_step: "upsell_2",
-                  button_name: "cta_buy",
-                  checkout_url: "https://pay.kiwify.com.br/YQg1R83",
-                  offer_name: "Upsell 2",
-                });
-              }}
-              className="cta-pulse"
-              style={{
-                display: "block",
-                backgroundColor: "#27AF60",
-                padding: "12px 16px",
-                color: "#FFFFFF",
-                fontWeight: 700,
-                borderRadius: "4px",
-                border: "1px solid #27AF60",
-                fontSize: "20px",
-                width: "100%",
-                maxWidth: "400px",
-                margin: "0 auto",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              QUERO GARANTIR MINHA VAGA AGORA
-            </a>
-            <PromoUntilToday />
-            <a
-              href="/downsell-2"
-              onClick={() =>
-                trackEvent({
-                  event_name: "upsell_2_decline_clicked",
-                  funnel_step: "upsell_2",
-                  button_name: "cta_decline",
-                })
-              }
-              style={{
-                display: "block",
-                background: "transparent",
-                border: "none",
-                marginTop: "1rem",
-                cursor: "pointer",
-                fontSize: "14px",
-                textDecoration: "underline",
-                color: "#A1A1AA",
-                fontFamily: "sans-serif",
-                textAlign: "center",
-              }}
-            >
-              Não, obrigado. Quero abrir mão dessa vaga.
-            </a>
-          </SpotRelease>
+          <OfferTimer />
+          <a
+            href={withUtms("https://pay.kiwify.com.br/YQg1R83")}
+            onClick={(e) => {
+              e.currentTarget.setAttribute(
+                "href",
+                withUtms("https://pay.kiwify.com.br/YQg1R83"),
+              );
+              trackEvent({
+                event_name: "upsell_2_buy_clicked",
+                funnel_step: "upsell_2",
+                button_name: "cta_buy",
+                checkout_url: "https://pay.kiwify.com.br/YQg1R83",
+                offer_name: "Upsell 2",
+              });
+            }}
+            className="cta-pulse"
+            style={{
+              display: "block",
+              backgroundColor: "#27AF60",
+              padding: "12px 16px",
+              color: "#FFFFFF",
+              fontWeight: 700,
+              borderRadius: "4px",
+              border: "1px solid #27AF60",
+              fontSize: "20px",
+              width: "100%",
+              maxWidth: "400px",
+              margin: "0 auto",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            QUERO ACELERAR MEUS RESULTADOS
+          </a>
+          <PromoUntilToday />
+          <a
+            href="/downsell-2"
+            onClick={() =>
+              trackEvent({
+                event_name: "upsell_2_decline_clicked",
+                funnel_step: "upsell_2",
+                button_name: "cta_decline",
+              })
+            }
+            style={{
+              display: "block",
+              background: "transparent",
+              border: "none",
+              marginTop: "1rem",
+              cursor: "pointer",
+              fontSize: "14px",
+              textDecoration: "underline",
+              color: "#A1A1AA",
+              fontFamily: "sans-serif",
+              textAlign: "center",
+            }}
+          >
+            Não, obrigado. Quero abrir mão dessa vaga.
+          </a>
         </div>
       </div>
     </main>
   );
 }
-
