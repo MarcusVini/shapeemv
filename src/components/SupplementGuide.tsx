@@ -131,7 +131,7 @@ export function SupplementGuide() {
                         <span className="font-black text-primary">CANTARELLI</span>.
                       </p>
                       <div className="mt-3">
-                        <SoldierButton label="Usar cupom CANTARELLI" />
+                        <SoldierButton label={aula.cta} url={aula.url} />
                       </div>
                     </AccordionContent>
                   </AccordionItem>
