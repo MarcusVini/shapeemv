@@ -103,7 +103,13 @@ function ProtocolPage() {
                 registre a carga.
               </p>
 
+              {/* Guia de Suplementos — seção especial */}
+              <div className="mt-8">
+                <SupplementGuide />
+              </div>
+
               {/* Card intro — Comece por aqui */}
+
               <button
                 onClick={() => setView("instrucoes")}
                 className="group mt-8 flex w-full items-center gap-4 rounded-3xl border border-primary/40 bg-card p-5 text-left shadow-gold-sm transition-all hover:border-primary hover:shadow-gold"
