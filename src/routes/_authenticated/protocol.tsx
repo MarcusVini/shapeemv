@@ -18,6 +18,7 @@ import {
   Timer,
 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
+import { SupplementGuide } from "@/components/SupplementGuide";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
@@ -103,7 +104,13 @@ function ProtocolPage() {
                 registre a carga.
               </p>
 
+              {/* Guia de Suplementos — seção especial */}
+              <div className="mt-8">
+                <SupplementGuide />
+              </div>
+
               {/* Card intro — Comece por aqui */}
+
               <button
                 onClick={() => setView("instrucoes")}
                 className="group mt-8 flex w-full items-center gap-4 rounded-3xl border border-primary/40 bg-card p-5 text-left shadow-gold-sm transition-all hover:border-primary hover:shadow-gold"
