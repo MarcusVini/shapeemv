@@ -18,6 +18,7 @@ import {
   Timer,
 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
+import { SupplementGuide } from "@/components/SupplementGuide";
 import { TREINOS, TREINOS_CASA, ABDOMEN, type Treino, type Exercicio } from "@/lib/protocol-data";
 import { getLatestState } from "@/lib/assessment.functions";
 import { useSession } from "@/lib/session";
