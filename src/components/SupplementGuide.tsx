@@ -1,15 +1,21 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ChevronDown, ExternalLink, Gift, Sparkles, Ticket } from "lucide-react";
 
-const SOLDIER_URL = "https://soldiersnutrition.com.br/";
+const SCA_REF = "sca_ref=11106229.X4Uwv7jvjWQv9Br";
+
+const CREATINA_URL = `https://soldiersnutrition.com.br/products/creatina-monohidratada-100-pura-importada-soldiers-nutrition-tamanho-1kg?${SCA_REF}`;
+const WHEY_URL = `https://soldiersnutrition.com.br/collections/whey-protein?${SCA_REF}`;
+const OMEGA3_URL = `https://soldiersnutrition.com.br/products/omega-3-1000mg-meg-3-soldiers-nutrition-quantidade-60-caps?_pos=1&_sid=07516c6b1&_ss=r&${SCA_REF}`;
+const PRE_TREINO_URL = `https://soldiersnutrition.com.br/collections/top-pre-treino?${SCA_REF}`;
+const BARRA_URL = `https://soldiersnutrition.com.br/collections/barra-de-proteina?${SCA_REF}`;
 
 const AULAS = [
-  { id: "intro", label: "Introdução", title: "Como usar este guia", video: "Fpud6bF6K2A" },
-  { id: "a1", label: "Aula 1", title: "Creatina", video: "bLM_PDRWW2s" },
-  { id: "a2", label: "Aula 2", title: "Whey Protein", video: "NSAvpiIVwsE" },
-  { id: "a3", label: "Aula 3", title: "Pré-treinos e termogênicos", video: "BjX9s7DxW4Y" },
-  { id: "a4", label: "Aula 4", title: "Ômega 3", video: "DWnz6JYTA0s" },
-  { id: "a5", label: "Aula 5", title: "Barras de proteína", video: "OGOS7ELCsIE" },
+  { id: "intro", label: "Introdução", title: "Como usar este guia", video: "Fpud6bF6K2A", url: CREATINA_URL, cta: "Conhecer Creatina" },
+  { id: "a1", label: "Aula 1", title: "Creatina", video: "bLM_PDRWW2s", url: CREATINA_URL, cta: "Conhecer Creatina" },
+  { id: "a2", label: "Aula 2", title: "Whey Protein", video: "NSAvpiIVwsE", url: WHEY_URL, cta: "Conhecer Whey Protein" },
+  { id: "a3", label: "Aula 3", title: "Pré-treinos e termogênicos", video: "BjX9s7DxW4Y", url: PRE_TREINO_URL, cta: "Conhecer Pré-treinos" },
+  { id: "a4", label: "Aula 4", title: "Ômega 3", video: "DWnz6JYTA0s", url: OMEGA3_URL, cta: "Conhecer Ômega 3" },
+  { id: "a5", label: "Aula 5", title: "Barras de proteína", video: "OGOS7ELCsIE", url: BARRA_URL, cta: "Conhecer Barra de Proteína" },
 ];
 
 function YouTubeEmbed({ id, title }: { id: string; title: string }) {
