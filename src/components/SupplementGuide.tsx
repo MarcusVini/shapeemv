@@ -1,5 +1,5 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ExternalLink, Sparkles, Ticket } from "lucide-react";
+import { ChevronDown, ExternalLink, Gift, Sparkles, Ticket } from "lucide-react";
 
 const SOLDIER_URL = "https://soldiersnutrition.com.br/";
 
@@ -43,72 +43,103 @@ function SoldierButton({ label }: { label: string }) {
 
 export function SupplementGuide() {
   return (
-    <section className="relative overflow-hidden rounded-3xl gold-border bg-[#141416] p-6 shadow-gold">
+    <div className="relative overflow-hidden rounded-3xl gold-border bg-[#141416] shadow-gold">
       <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
 
-      <div className="relative">
-        <span className="inline-flex items-center gap-1.5 rounded-full gold-gradient px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-primary-foreground">
-          <Sparkles className="h-3 w-3" /> Guia Extra
-        </span>
-
-        <h2 className="mt-3 text-2xl font-black leading-tight text-foreground">
-          <span className="text-gold-gradient">Guia de Suplementos</span>
-        </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Aulas rápidas para você entender como usar suplementos de forma simples e estratégica
-          dentro da sua rotina.
-        </p>
-
-        {/* Recomendação */}
-        <div className="mt-5 rounded-2xl border border-primary/40 bg-primary/5 p-4">
-          <p className="text-xs leading-relaxed text-foreground/90">
-            Antes de começar as aulas, uma recomendação do Fernando Cantarelli: para quem quer
-            incluir suplementos na rotina, a Soldier Nutrition é uma opção para conhecer. Você pode
-            acessar o site oficial e usar o cupom CANTARELLI para garantir desconto na sua compra.
-          </p>
-          <div className="mt-4">
-            <SoldierButton label="Conhecer Soldier Nutrition" />
-          </div>
-          <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-primary">
-            <Ticket className="h-3.5 w-3.5" /> Cupom: CANTARELLI
-          </p>
-        </div>
-
-        {/* Aulas */}
-        <Accordion type="single" collapsible className="mt-6 space-y-3">
-          {AULAS.map((aula) => (
-            <AccordionItem
-              key={aula.id}
-              value={aula.id}
-              className="overflow-hidden rounded-2xl border border-border bg-card px-4"
-            >
-              <AccordionTrigger className="py-4 text-left hover:no-underline">
-                <div className="min-w-0">
-                  <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">
-                    {aula.label}
-                  </p>
-                  <p className="mt-0.5 text-sm font-black text-foreground">{aula.title}</p>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5">
-                <YouTubeEmbed id={aula.video} title={`${aula.label} — ${aula.title}`} />
-                <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                  Quer conhecer os suplementos recomendados pelo Fernando? Acesse a Soldier
-                  Nutrition e use o cupom <span className="font-black text-primary">CANTARELLI</span>.
+      {/* Recolhido por padrão — Bônus Surpresa */}
+      <Accordion type="single" collapsible className="relative">
+        <AccordionItem
+          value="bonus"
+          className="border-b-0"
+        >
+          <AccordionTrigger className="group w-full items-center gap-4 rounded-3xl p-5 text-left hover:no-underline">
+            <div className="flex w-full items-center gap-4">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl gold-gradient text-primary-foreground shadow-gold-sm">
+                <Gift className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                  <Sparkles className="h-3 w-3" /> Bônus Surpresa
+                </span>
+                <p className="mt-0.5 text-base font-black text-foreground">
+                  Guia de <span className="text-gold-gradient">Suplementos</span>
                 </p>
-                <div className="mt-3">
-                  <SoldierButton label="Usar cupom CANTARELLI" />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Toque para abrir. Aulas rápidas sobre creatina, whey e mais.
+                </p>
+              </div>
+              <ChevronDown className="h-5 w-5 shrink-0 text-primary transition-transform duration-300 group-data-[state=open]:rotate-180" />
+            </div>
+          </AccordionTrigger>
 
-        <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-          Suplementos são opcionais e podem complementar a rotina se fizer sentido para você.
-          Nenhum suplemento é obrigatório para evoluir no protocolo.
-        </p>
-      </div>
-    </section>
+          <AccordionContent className="px-5 pb-6">
+            <div className="pt-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full gold-gradient px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-primary-foreground">
+                <Sparkles className="h-3 w-3" /> Guia Extra
+              </span>
+
+              <h2 className="mt-3 text-2xl font-black leading-tight text-foreground">
+                <span className="text-gold-gradient">Guia de Suplementos</span>
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Aulas rápidas para você entender como usar suplementos de forma simples e estratégica
+                dentro da sua rotina.
+              </p>
+
+              {/* Recomendação */}
+              <div className="mt-5 rounded-2xl border border-primary/40 bg-primary/5 p-4">
+                <p className="text-xs leading-relaxed text-foreground/90">
+                  Antes de começar as aulas, uma recomendação do Fernando Cantarelli: para quem quer
+                  incluir suplementos na rotina, a Soldier Nutrition é uma opção para conhecer. Você pode
+                  acessar o site oficial e usar o cupom CANTARELLI para garantir desconto na sua compra.
+                </p>
+                <div className="mt-4">
+                  <SoldierButton label="Conhecer Soldier Nutrition" />
+                </div>
+                <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-primary">
+                  <Ticket className="h-3.5 w-3.5" /> Cupom: CANTARELLI
+                </p>
+              </div>
+
+              {/* Aulas — recolhidas, só expandem ao clicar */}
+              <Accordion type="single" collapsible className="mt-6 space-y-3">
+                {AULAS.map((aula) => (
+                  <AccordionItem
+                    key={aula.id}
+                    value={aula.id}
+                    className="overflow-hidden rounded-2xl border border-border bg-card px-4"
+                  >
+                    <AccordionTrigger className="py-4 text-left hover:no-underline">
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">
+                          {aula.label}
+                        </p>
+                        <p className="mt-0.5 text-sm font-black text-foreground">{aula.title}</p>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5">
+                      <YouTubeEmbed id={aula.video} title={`${aula.label} — ${aula.title}`} />
+                      <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                        Quer conhecer os suplementos recomendados pelo Fernando? Acesse a Soldier
+                        Nutrition e use o cupom{" "}
+                        <span className="font-black text-primary">CANTARELLI</span>.
+                      </p>
+                      <div className="mt-3">
+                        <SoldierButton label="Usar cupom CANTARELLI" />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+
+              <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
+                Suplementos são opcionais e podem complementar a rotina se fizer sentido para você.
+                Nenhum suplemento é obrigatório para evoluir no protocolo.
+              </p>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
   );
 }
