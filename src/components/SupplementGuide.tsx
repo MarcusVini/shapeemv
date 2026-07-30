@@ -100,7 +100,7 @@ export function SupplementGuide() {
                   acessar o site oficial e usar o cupom CANTARELLI para garantir desconto na sua compra.
                 </p>
                 <div className="mt-4">
-                  <SoldierButton label="Conhecer Soldier Nutrition" />
+                  <SoldierButton label="Conhecer Soldier Nutrition" url={CREATINA_URL} />
                 </div>
                 <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-primary">
                   <Ticket className="h-3.5 w-3.5" /> Cupom: CANTARELLI
