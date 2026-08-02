@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Upsell2RouteImport } from './routes/upsell-2'
+import { Route as Upsell1V1220RouteImport } from './routes/upsell-1-v1-220'
 import { Route as UpsellRouteImport } from './routes/upsell'
 import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
 import { Route as Downsell2HotRouteImport } from './routes/downsell-2-hot'
 import { Route as Downsell2RouteImport } from './routes/downsell-2'
+import { Route as Downsell1V1110RouteImport } from './routes/downsell-1-v1-110'
 import { Route as DownsellRouteImport } from './routes/downsell'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -31,6 +33,11 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 const Upsell2Route = Upsell2RouteImport.update({
   id: '/upsell-2',
   path: '/upsell-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Upsell1V1220Route = Upsell1V1220RouteImport.update({
+  id: '/upsell-1-v1-220',
+  path: '/upsell-1-v1-220',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UpsellRoute = UpsellRouteImport.update({
@@ -51,6 +58,11 @@ const Downsell2HotRoute = Downsell2HotRouteImport.update({
 const Downsell2Route = Downsell2RouteImport.update({
   id: '/downsell-2',
   path: '/downsell-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Downsell1V1110Route = Downsell1V1110RouteImport.update({
+  id: '/downsell-1-v1-110',
+  path: '/downsell-1-v1-110',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownsellRoute = DownsellRouteImport.update({
@@ -122,10 +134,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
+  '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
+  '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/processing': typeof AuthenticatedProcessingRoute
@@ -141,10 +155,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
+  '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
+  '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/processing': typeof AuthenticatedProcessingRoute
@@ -162,10 +178,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/downsell': typeof DownsellRoute
+  '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
   '/upsell': typeof UpsellRoute
+  '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/processing': typeof AuthenticatedProcessingRoute
@@ -183,10 +201,12 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/downsell'
+    | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
     | '/roleta-elite-teste'
     | '/upsell'
+    | '/upsell-1-v1-220'
     | '/upsell-2'
     | '/dashboard'
     | '/processing'
@@ -202,10 +222,12 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/downsell'
+    | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
     | '/roleta-elite-teste'
     | '/upsell'
+    | '/upsell-1-v1-220'
     | '/upsell-2'
     | '/dashboard'
     | '/processing'
@@ -222,10 +244,12 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/admin'
     | '/downsell'
+    | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
     | '/roleta-elite-teste'
     | '/upsell'
+    | '/upsell-1-v1-220'
     | '/upsell-2'
     | '/_authenticated/dashboard'
     | '/_authenticated/processing'
@@ -243,10 +267,12 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   DownsellRoute: typeof DownsellRoute
+  Downsell1V1110Route: typeof Downsell1V1110Route
   Downsell2Route: typeof Downsell2Route
   Downsell2HotRoute: typeof Downsell2HotRoute
   RoletaEliteTesteRoute: typeof RoletaEliteTesteRoute
   UpsellRoute: typeof UpsellRoute
+  Upsell1V1220Route: typeof Upsell1V1220Route
   Upsell2Route: typeof Upsell2Route
 }
 
@@ -257,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/upsell-2'
       fullPath: '/upsell-2'
       preLoaderRoute: typeof Upsell2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell-1-v1-220': {
+      id: '/upsell-1-v1-220'
+      path: '/upsell-1-v1-220'
+      fullPath: '/upsell-1-v1-220'
+      preLoaderRoute: typeof Upsell1V1220RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/upsell': {
@@ -285,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/downsell-2'
       fullPath: '/downsell-2'
       preLoaderRoute: typeof Downsell2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downsell-1-v1-110': {
+      id: '/downsell-1-v1-110'
+      path: '/downsell-1-v1-110'
+      fullPath: '/downsell-1-v1-110'
+      preLoaderRoute: typeof Downsell1V1110RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/downsell': {
@@ -423,10 +463,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   DownsellRoute: DownsellRoute,
+  Downsell1V1110Route: Downsell1V1110Route,
   Downsell2Route: Downsell2Route,
   Downsell2HotRoute: Downsell2HotRoute,
   RoletaEliteTesteRoute: RoletaEliteTesteRoute,
   UpsellRoute: UpsellRoute,
+  Upsell1V1220Route: Upsell1V1220Route,
   Upsell2Route: Upsell2Route,
 }
 export const routeTree = rootRouteImport
