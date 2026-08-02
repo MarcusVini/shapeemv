@@ -6,6 +6,7 @@ import {
   OfferTimer,
   PromoUntilToday,
 } from "@/components/OfferUrgency";
+import { JourneySteps } from "@/components/JourneySteps";
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a6fce2426d5697954bde803/v4/player.js";
@@ -92,10 +93,14 @@ function DownsellV1Page() {
       <CtaPulseStyle />
 
       <div className="mx-auto w-full max-w-md text-center">
-        <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
-          Condição Especial Liberada
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+        <JourneySteps
+          steps={[
+            { text: "Avaliação preenchida", status: "done" },
+            { text: "Oferta especial recusada", status: "done" },
+            { text: "Condição final liberada", status: "current" },
+          ]}
+        />
+        <p className="mt-5 text-sm leading-relaxed text-zinc-400 sm:text-base">
           Antes de seguir, assista ao vídeo abaixo até o final 👇
         </p>
 
