@@ -6,6 +6,7 @@ import {
   OfferTimer,
   PromoUntilToday,
 } from "@/components/OfferUrgency";
+import { JourneySteps } from "@/components/JourneySteps";
 
 const VTURB_SRC =
   "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a6fce2426d5697954bde803/v4/player.js";
