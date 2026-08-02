@@ -92,10 +92,14 @@ function DownsellV1Page() {
       <CtaPulseStyle />
 
       <div className="mx-auto w-full max-w-md text-center">
-        <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
-          Condição Especial Liberada
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+        <JourneySteps
+          steps={[
+            { text: "Avaliação preenchida", status: "done" },
+            { text: "Oferta especial recusada", status: "done" },
+            { text: "Condição final liberada", status: "current" },
+          ]}
+        />
+        <p className="mt-5 text-sm leading-relaxed text-zinc-400 sm:text-base">
           Antes de seguir, assista ao vídeo abaixo até o final 👇
         </p>
 

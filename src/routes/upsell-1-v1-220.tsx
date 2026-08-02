@@ -89,10 +89,14 @@ function UpsellV1Page() {
       <CtaPulseStyle />
 
       <div className="mx-auto w-full max-w-md text-center">
-        <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
-          Oferta Especial Liberada
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+        <JourneySteps
+          steps={[
+            { text: "Avaliação preenchida", status: "done" },
+            { text: "Acesso liberado", status: "done" },
+            { text: "Assista ao vídeo agora", status: "current" },
+          ]}
+        />
+        <p className="mt-5 text-sm leading-relaxed text-zinc-400 sm:text-base">
           Assista ao recado que o Fernando gravou especialmente pra você antes
           de continuar 👇
         </p>
