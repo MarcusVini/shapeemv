@@ -1,0 +1,180 @@
+import { useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent, usePageView } from "@/lib/tracking";
+import {
+  CtaPulseStyle,
+  OfferTimer,
+  PromoUntilToday,
+} from "@/components/OfferUrgency";
+
+const VTURB_SRC =
+  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a6fce2426d5697954bde803/v4/player.js";
+const CHECKOUT_URL = "https://pay.kiwify.com.br/JeAnuLR";
+const DELAY_MS = 114_000;
+
+export const Route = createFileRoute("/downsell-1-v1-110")({
+  component: DownsellV1Page,
+  head: () => ({
+    meta: [
+      { title: "Condição Especial Liberada — Shape em V" },
+      {
+        name: "description",
+        content:
+          "Última condição liberada para você entrar no Método Shape em V hoje.",
+      },
+      {
+        property: "og:title",
+        content: "Condição Especial Liberada — Shape em V",
+      },
+      {
+        property: "og:description",
+        content:
+          "Última condição liberada para você entrar no Método Shape em V hoje.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "preload", href: VTURB_SRC, as: "script" },
+      {
+        rel: "preload",
+        href: "https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js",
+        as: "script",
+      },
+      { rel: "dns-prefetch", href: "https://m3u8.vturb.net" },
+      { rel: "dns-prefetch", href: "https://scripts.converteai.net" },
+      { rel: "dns-prefetch", href: "https://images.converteai.net" },
+      { rel: "dns-prefetch", href: "https://license.vturb.com" },
+    ],
+    scripts: [
+      {
+        type: "text/javascript",
+        children:
+          '!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);',
+      },
+    ],
+  }),
+});
+
+function withUtms(url: string) {
+  if (typeof window === "undefined") return url;
+  const qs = window.location.search;
+  if (!qs) return url;
+  return url.includes("?") ? `${url}&${qs.slice(1)}` : `${url}${qs}`;
+}
+
+function injectScript(src: string) {
+  if (document.querySelector(`script[src="${src}"]`)) return;
+  const s = document.createElement("script");
+  s.src = src;
+  s.async = true;
+  document.head.appendChild(s);
+}
+
+function DownsellV1Page() {
+  usePageView("downsell_1_v1_110_viewed", "downsell_1_v1_110");
+  const [showCta, setShowCta] = useState(false);
+
+  useEffect(() => {
+    injectScript(VTURB_SRC);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowCta(true), DELAY_MS);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <main
+      className="flex min-h-screen flex-col items-center px-5 pt-10 pb-16"
+      style={{ backgroundColor: "#0B0B0B" }}
+    >
+      <CtaPulseStyle />
+
+      <div className="mx-auto w-full max-w-md text-center">
+        <h1 className="text-2xl font-black leading-tight text-white sm:text-3xl">
+          Condição Especial Liberada
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+          Antes de seguir, assista ao vídeo abaixo até o final 👇
+        </p>
+
+        <div className="mt-8 flex justify-center">
+          <vturb-smartplayer
+            id="vid-6a6fce2426d5697954bde803"
+            style={{
+              display: "block",
+              margin: "0 auto",
+              width: "100%",
+              maxWidth: "400px",
+            }}
+          />
+        </div>
+
+        <div className="mt-8" style={{ textAlign: "center" }}>
+          {showCta && (
+            <>
+              <OfferTimer />
+              <a
+                href={withUtms(CHECKOUT_URL)}
+                onClick={(e) => {
+                  e.currentTarget.setAttribute("href", withUtms(CHECKOUT_URL));
+                  trackEvent({
+                    event_name: "downsell_1_v1_110_buy_clicked",
+                    funnel_step: "downsell_1_v1_110",
+                    button_name: "cta_buy",
+                    checkout_url: CHECKOUT_URL,
+                    offer_name: "Downsell 1 V1 110",
+                  });
+                }}
+                className="cta-pulse"
+                style={{
+                  display: "block",
+                  backgroundColor: "#27AF60",
+                  padding: "12px 16px",
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  borderRadius: "4px",
+                  border: "1px solid #27AF60",
+                  fontSize: "20px",
+                  width: "100%",
+                  maxWidth: "400px",
+                  margin: "0 auto",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                SIM, QUERO GARANTIR ESSA CONDIÇÃO
+              </a>
+              <PromoUntilToday />
+              <a
+                href="/downsell-2"
+                onClick={() =>
+                  trackEvent({
+                    event_name: "downsell_1_v1_110_decline_clicked",
+                    funnel_step: "downsell_1_v1_110",
+                    button_name: "cta_decline",
+                  })
+                }
+                style={{
+                  display: "block",
+                  background: "transparent",
+                  border: "none",
+                  marginTop: "1rem",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  textDecoration: "underline",
+                  color: "#A1A1AA",
+                  fontFamily: "sans-serif",
+                  textAlign: "center",
+                }}
+              >
+                Não, obrigado. Quero continuar sem essa condição.
+              </a>
+            </>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}
