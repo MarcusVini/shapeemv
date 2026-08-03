@@ -47,7 +47,7 @@ function ProcessingPage() {
     const interval = setInterval(() => {
       setIdx((i) => (i < STEPS.length - 1 ? i + 1 : i));
     }, 950);
-    const t = setTimeout(() => navigate({ to: "/upsell", replace: true }), 6500);
+    const t = setTimeout(() => navigate({ to: "/upsell-1-v1-220", replace: true }), 6500);
     return () => {
       clearInterval(interval);
       clearTimeout(t);
