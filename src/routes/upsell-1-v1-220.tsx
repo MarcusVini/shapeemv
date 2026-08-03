@@ -97,10 +97,14 @@ function UpsellV1Page() {
             { text: "Assista ao vídeo agora", status: "current" },
           ]}
         />
-        <p className="mt-5 text-sm leading-relaxed text-zinc-400 sm:text-base">
-          Assista ao recado que o Fernando gravou especialmente pra você antes
-          de continuar 👇
+        <h1 className="mt-6 text-2xl font-black leading-tight text-white sm:text-3xl">
+          Sua avaliação está sendo concluída...
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+          Enquanto isso, veja o recado importante que o Fernando gravou
+          especialmente pra você 👇
         </p>
+
 
         <div className="mt-8 flex justify-center">
           <vturb-smartplayer
