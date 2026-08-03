@@ -98,12 +98,9 @@ function UpsellV1Page() {
           ]}
         />
         <h1 className="mt-6 text-2xl font-black leading-tight text-white sm:text-3xl">
-          Sua avaliação está sendo concluída...
+          Enquanto isso, assista sua primeira aula para entender como seguir o
+          programa
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
-          Enquanto isso, veja o recado importante que o Fernando gravou
-          especialmente pra você 👇
-        </p>
 
 
         <div className="mt-8 flex justify-center">
