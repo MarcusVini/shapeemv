@@ -9,7 +9,7 @@ import {
 import { JourneySteps } from "@/components/JourneySteps";
 
 const VTURB_SRC =
-  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a6fce2426d5697954bde803/v4/player.js";
+  "https://scripts.converteai.net/2a30d855-9274-4879-8c74-a5f38084eefd/players/6a75d42aad0bc1dbd87bc367/v4/player.js";
 const CHECKOUT_URL = "https://pay.kiwify.com.br/JeAnuLR";
 const DELAY_MS = 114_000;
 
