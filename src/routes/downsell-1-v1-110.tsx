@@ -106,7 +106,7 @@ function DownsellV1Page() {
 
         <div className="mt-8 flex justify-center">
           <vturb-smartplayer
-            id="vid-6a6fce2426d5697954bde803"
+            id="vid-6a75d42aad0bc1dbd87bc367"
             style={{
               display: "block",
               margin: "0 auto",
