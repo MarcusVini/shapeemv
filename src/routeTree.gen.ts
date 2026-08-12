@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Upsell2V2CaroRouteImport } from './routes/upsell-2-v2-caro'
 import { Route as Upsell2RouteImport } from './routes/upsell-2'
 import { Route as Upsell1V1220RouteImport } from './routes/upsell-1-v1-220'
 import { Route as UpsellRouteImport } from './routes/upsell'
@@ -30,6 +31,11 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedProcessingRouteImport } from './routes/_authenticated/processing'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
+const Upsell2V2CaroRoute = Upsell2V2CaroRouteImport.update({
+  id: '/upsell-2-v2-caro',
+  path: '/upsell-2-v2-caro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Upsell2Route = Upsell2RouteImport.update({
   id: '/upsell-2',
   path: '/upsell-2',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
+  '/upsell-2-v2-caro': typeof Upsell2V2CaroRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
+  '/upsell-2-v2-caro': typeof Upsell2V2CaroRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/processing': typeof AuthenticatedProcessingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
+  '/upsell-2-v2-caro': typeof Upsell2V2CaroRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/processing': typeof AuthenticatedProcessingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
+    | '/upsell-2-v2-caro'
     | '/dashboard'
     | '/processing'
     | '/profile'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
+    | '/upsell-2-v2-caro'
     | '/dashboard'
     | '/processing'
     | '/profile'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
+    | '/upsell-2-v2-caro'
     | '/_authenticated/dashboard'
     | '/_authenticated/processing'
     | '/_authenticated/profile'
@@ -274,10 +286,18 @@ export interface RootRouteChildren {
   UpsellRoute: typeof UpsellRoute
   Upsell1V1220Route: typeof Upsell1V1220Route
   Upsell2Route: typeof Upsell2Route
+  Upsell2V2CaroRoute: typeof Upsell2V2CaroRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/upsell-2-v2-caro': {
+      id: '/upsell-2-v2-caro'
+      path: '/upsell-2-v2-caro'
+      fullPath: '/upsell-2-v2-caro'
+      preLoaderRoute: typeof Upsell2V2CaroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/upsell-2': {
       id: '/upsell-2'
       path: '/upsell-2'
@@ -470,7 +490,18 @@ const rootRouteChildren: RootRouteChildren = {
   UpsellRoute: UpsellRoute,
   Upsell1V1220Route: Upsell1V1220Route,
   Upsell2Route: Upsell2Route,
+  Upsell2V2CaroRoute: Upsell2V2CaroRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
