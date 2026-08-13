@@ -194,7 +194,12 @@ function LandingPage() {
             Leva menos de 2 minutos · Sem cartão de crédito
           </p>
         </div>
+
+        <LegalFooter />
       </div>
+
+      <SecurityNoticeModal show={showNotice} onAccept={acceptNotice} />
+
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="rounded-3xl border-border bg-card sm:max-w-sm">
