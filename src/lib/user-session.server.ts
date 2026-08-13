@@ -14,7 +14,9 @@ function userSessionConfig() {
     cookie: {
       httpOnly: true,
       secure: true,
-      sameSite: "lax" as const,
+      // "none" is required so the cookie survives inside an iframe (preview),
+      // which is a cross-site context. Requires secure: true.
+      sameSite: "none" as const,
       path: "/",
     },
   };
