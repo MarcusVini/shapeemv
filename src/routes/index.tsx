@@ -234,14 +234,43 @@ function LandingPage() {
                 placeholder="voce@email.com"
               />
             </div>
+
+            <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3">
+              <input
+                type="checkbox"
+                checked={acceptedLogin}
+                onChange={(e) => setAcceptedLogin(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]"
+              />
+              <span className="text-[11px] leading-snug text-foreground">
+                Li e aceito os{" "}
+                <Link to="/termos-de-uso" className="text-primary underline underline-offset-2">
+                  Termos de Uso
+                </Link>{" "}
+                e a{" "}
+                <Link
+                  to="/politica-de-privacidade"
+                  className="text-primary underline underline-offset-2"
+                >
+                  Política de Privacidade
+                </Link>{" "}
+                do Shape em V.
+              </span>
+            </label>
+
             <Button
               type="submit"
-              disabled={loading}
-              className="h-12 w-full rounded-2xl gold-gradient font-semibold text-primary-foreground shadow-gold-sm"
+              disabled={loading || !acceptedLogin}
+              className="h-12 w-full rounded-2xl gold-gradient font-semibold text-primary-foreground shadow-gold-sm disabled:opacity-50"
             >
               {loading ? "Entrando…" : "Entrar"}
             </Button>
+
+            <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
+              Acesso oficial: {OFFICIAL_URL}. O Shape em V não exige download de aplicativo.
+            </p>
           </form>
+
         </DialogContent>
       </Dialog>
     </main>
