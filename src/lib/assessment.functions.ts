@@ -94,7 +94,7 @@ const GetLatestStateInput = z.object({
 
 export const getLatestState = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GetLatestStateInput.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async () => {
     const { requireUserId } = await import("@/lib/user-session.server");
     const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -175,7 +175,7 @@ const GetQuizDraftInput = z.object({
 
 export const getQuizDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GetQuizDraftInput.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async () => {
     const { requireUserId } = await import("@/lib/user-session.server");
     const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
