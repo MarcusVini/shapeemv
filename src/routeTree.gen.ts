@@ -9,83 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as Upsell2V2CaroRouteImport } from './routes/upsell-2-v2-caro'
-import { Route as Upsell2RouteImport } from './routes/upsell-2'
-import { Route as Upsell1V1220RouteImport } from './routes/upsell-1-v1-220'
-import { Route as UpsellRouteImport } from './routes/upsell'
-import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
-import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
-import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
-import { Route as Downsell2HotRouteImport } from './routes/downsell-2-hot'
-import { Route as Downsell2RouteImport } from './routes/downsell-2'
-import { Route as Downsell1V1110RouteImport } from './routes/downsell-1-v1-110'
-import { Route as DownsellRouteImport } from './routes/downsell'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as AdminFunilRouteImport } from './routes/admin/funil'
-import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
-import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
-import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
-import { Route as AuthenticatedProtocolRouteImport } from './routes/_authenticated/protocol'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedProcessingRouteImport } from './routes/_authenticated/processing'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as DownsellRouteImport } from './routes/downsell'
+import { Route as Downsell1V1110RouteImport } from './routes/downsell-1-v1-110'
+import { Route as Downsell2RouteImport } from './routes/downsell-2'
+import { Route as Downsell2HotRouteImport } from './routes/downsell-2-hot'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
+import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as UpsellRouteImport } from './routes/upsell'
+import { Route as Upsell1V1220RouteImport } from './routes/upsell-1-v1-220'
+import { Route as Upsell2RouteImport } from './routes/upsell-2'
+import { Route as Upsell2V2CaroRouteImport } from './routes/upsell-2-v2-caro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedProcessingRouteImport } from './routes/_authenticated/processing'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedProtocolRouteImport } from './routes/_authenticated/protocol'
+import { Route as AuthenticatedQuizRouteImport } from './routes/_authenticated/quiz'
+import { Route as AuthenticatedResultsRouteImport } from './routes/_authenticated/results'
+import { Route as AuthenticatedWaitingRouteImport } from './routes/_authenticated/waiting'
+import { Route as AdminFunilRouteImport } from './routes/admin/funil'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
 
-const Upsell2V2CaroRoute = Upsell2V2CaroRouteImport.update({
-  id: '/upsell-2-v2-caro',
-  path: '/upsell-2-v2-caro',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Upsell2Route = Upsell2RouteImport.update({
-  id: '/upsell-2',
-  path: '/upsell-2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Upsell1V1220Route = Upsell1V1220RouteImport.update({
-  id: '/upsell-1-v1-220',
-  path: '/upsell-1-v1-220',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UpsellRoute = UpsellRouteImport.update({
-  id: '/upsell',
-  path: '/upsell',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
-  id: '/termos-de-uso',
-  path: '/termos-de-uso',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoletaEliteTesteRoute = RoletaEliteTesteRouteImport.update({
-  id: '/roleta-elite-teste',
-  path: '/roleta-elite-teste',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
-  id: '/politica-de-privacidade',
-  path: '/politica-de-privacidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Downsell2HotRoute = Downsell2HotRouteImport.update({
-  id: '/downsell-2-hot',
-  path: '/downsell-2-hot',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Downsell2Route = Downsell2RouteImport.update({
-  id: '/downsell-2',
-  path: '/downsell-2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Downsell1V1110Route = Downsell1V1110RouteImport.update({
-  id: '/downsell-1-v1-110',
-  path: '/downsell-1-v1-110',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DownsellRoute = DownsellRouteImport.update({
-  id: '/downsell',
-  path: '/downsell',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -93,48 +47,64 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const DownsellRoute = DownsellRouteImport.update({
+  id: '/downsell',
+  path: '/downsell',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const Downsell1V1110Route = Downsell1V1110RouteImport.update({
+  id: '/downsell-1-v1-110',
+  path: '/downsell-1-v1-110',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRouteRoute,
+const Downsell2Route = Downsell2RouteImport.update({
+  id: '/downsell-2',
+  path: '/downsell-2',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminFunilRoute = AdminFunilRouteImport.update({
-  id: '/funil',
-  path: '/funil',
-  getParentRoute: () => AdminRouteRoute,
+const Downsell2HotRoute = Downsell2HotRouteImport.update({
+  id: '/downsell-2-hot',
+  path: '/downsell-2-hot',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
-  id: '/waiting',
-  path: '/waiting',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedResultsRoute = AuthenticatedResultsRouteImport.update({
-  id: '/results',
-  path: '/results',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const RoletaEliteTesteRoute = RoletaEliteTesteRouteImport.update({
+  id: '/roleta-elite-teste',
+  path: '/roleta-elite-teste',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedQuizRoute = AuthenticatedQuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
+  id: '/termos-de-uso',
+  path: '/termos-de-uso',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedProtocolRoute = AuthenticatedProtocolRouteImport.update({
-  id: '/protocol',
-  path: '/protocol',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const UpsellRoute = UpsellRouteImport.update({
+  id: '/upsell',
+  path: '/upsell',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const Upsell1V1220Route = Upsell1V1220RouteImport.update({
+  id: '/upsell-1-v1-220',
+  path: '/upsell-1-v1-220',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Upsell2Route = Upsell2RouteImport.update({
+  id: '/upsell-2',
+  path: '/upsell-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Upsell2V2CaroRoute = Upsell2V2CaroRouteImport.update({
+  id: '/upsell-2-v2-caro',
+  path: '/upsell-2-v2-caro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProcessingRoute = AuthenticatedProcessingRouteImport.update({
@@ -142,10 +112,40 @@ const AuthenticatedProcessingRoute = AuthenticatedProcessingRouteImport.update({
   path: '/processing',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProtocolRoute = AuthenticatedProtocolRouteImport.update({
+  id: '/protocol',
+  path: '/protocol',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedQuizRoute = AuthenticatedQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedResultsRoute = AuthenticatedResultsRouteImport.update({
+  id: '/results',
+  path: '/results',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWaitingRoute = AuthenticatedWaitingRouteImport.update({
+  id: '/waiting',
+  path: '/waiting',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AdminFunilRoute = AdminFunilRouteImport.update({
+  id: '/funil',
+  path: '/funil',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -317,88 +317,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/upsell-2-v2-caro': {
-      id: '/upsell-2-v2-caro'
-      path: '/upsell-2-v2-caro'
-      fullPath: '/upsell-2-v2-caro'
-      preLoaderRoute: typeof Upsell2V2CaroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/upsell-2': {
-      id: '/upsell-2'
-      path: '/upsell-2'
-      fullPath: '/upsell-2'
-      preLoaderRoute: typeof Upsell2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/upsell-1-v1-220': {
-      id: '/upsell-1-v1-220'
-      path: '/upsell-1-v1-220'
-      fullPath: '/upsell-1-v1-220'
-      preLoaderRoute: typeof Upsell1V1220RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/upsell': {
-      id: '/upsell'
-      path: '/upsell'
-      fullPath: '/upsell'
-      preLoaderRoute: typeof UpsellRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/termos-de-uso': {
-      id: '/termos-de-uso'
-      path: '/termos-de-uso'
-      fullPath: '/termos-de-uso'
-      preLoaderRoute: typeof TermosDeUsoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/roleta-elite-teste': {
-      id: '/roleta-elite-teste'
-      path: '/roleta-elite-teste'
-      fullPath: '/roleta-elite-teste'
-      preLoaderRoute: typeof RoletaEliteTesteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/politica-de-privacidade': {
-      id: '/politica-de-privacidade'
-      path: '/politica-de-privacidade'
-      fullPath: '/politica-de-privacidade'
-      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downsell-2-hot': {
-      id: '/downsell-2-hot'
-      path: '/downsell-2-hot'
-      fullPath: '/downsell-2-hot'
-      preLoaderRoute: typeof Downsell2HotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downsell-2': {
-      id: '/downsell-2'
-      path: '/downsell-2'
-      fullPath: '/downsell-2'
-      preLoaderRoute: typeof Downsell2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downsell-1-v1-110': {
-      id: '/downsell-1-v1-110'
-      path: '/downsell-1-v1-110'
-      fullPath: '/downsell-1-v1-110'
-      preLoaderRoute: typeof Downsell1V1110RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downsell': {
-      id: '/downsell'
-      path: '/downsell'
-      fullPath: '/downsell'
-      preLoaderRoute: typeof DownsellRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -408,60 +331,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRouteRoute
+    '/downsell': {
+      id: '/downsell'
+      path: '/downsell'
+      fullPath: '/downsell'
+      preLoaderRoute: typeof DownsellRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/funil': {
-      id: '/admin/funil'
-      path: '/funil'
-      fullPath: '/admin/funil'
-      preLoaderRoute: typeof AdminFunilRouteImport
-      parentRoute: typeof AdminRouteRoute
+    '/downsell-1-v1-110': {
+      id: '/downsell-1-v1-110'
+      path: '/downsell-1-v1-110'
+      fullPath: '/downsell-1-v1-110'
+      preLoaderRoute: typeof Downsell1V1110RouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/waiting': {
-      id: '/_authenticated/waiting'
-      path: '/waiting'
-      fullPath: '/waiting'
-      preLoaderRoute: typeof AuthenticatedWaitingRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/downsell-2': {
+      id: '/downsell-2'
+      path: '/downsell-2'
+      fullPath: '/downsell-2'
+      preLoaderRoute: typeof Downsell2RouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/results': {
-      id: '/_authenticated/results'
-      path: '/results'
-      fullPath: '/results'
-      preLoaderRoute: typeof AuthenticatedResultsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/downsell-2-hot': {
+      id: '/downsell-2-hot'
+      path: '/downsell-2-hot'
+      fullPath: '/downsell-2-hot'
+      preLoaderRoute: typeof Downsell2HotRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/quiz': {
-      id: '/_authenticated/quiz'
-      path: '/quiz'
-      fullPath: '/quiz'
-      preLoaderRoute: typeof AuthenticatedQuizRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/protocol': {
-      id: '/_authenticated/protocol'
-      path: '/protocol'
-      fullPath: '/protocol'
-      preLoaderRoute: typeof AuthenticatedProtocolRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/roleta-elite-teste': {
+      id: '/roleta-elite-teste'
+      path: '/roleta-elite-teste'
+      fullPath: '/roleta-elite-teste'
+      preLoaderRoute: typeof RoletaEliteTesteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+    '/termos-de-uso': {
+      id: '/termos-de-uso'
+      path: '/termos-de-uso'
+      fullPath: '/termos-de-uso'
+      preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell': {
+      id: '/upsell'
+      path: '/upsell'
+      fullPath: '/upsell'
+      preLoaderRoute: typeof UpsellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell-1-v1-220': {
+      id: '/upsell-1-v1-220'
+      path: '/upsell-1-v1-220'
+      fullPath: '/upsell-1-v1-220'
+      preLoaderRoute: typeof Upsell1V1220RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell-2': {
+      id: '/upsell-2'
+      path: '/upsell-2'
+      fullPath: '/upsell-2'
+      preLoaderRoute: typeof Upsell2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell-2-v2-caro': {
+      id: '/upsell-2-v2-caro'
+      path: '/upsell-2-v2-caro'
+      fullPath: '/upsell-2-v2-caro'
+      preLoaderRoute: typeof Upsell2V2CaroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/processing': {
@@ -471,12 +429,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProcessingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/protocol': {
+      id: '/_authenticated/protocol'
+      path: '/protocol'
+      fullPath: '/protocol'
+      preLoaderRoute: typeof AuthenticatedProtocolRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/quiz': {
+      id: '/_authenticated/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof AuthenticatedQuizRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/results': {
+      id: '/_authenticated/results'
+      path: '/results'
+      fullPath: '/results'
+      preLoaderRoute: typeof AuthenticatedResultsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/waiting': {
+      id: '/_authenticated/waiting'
+      path: '/waiting'
+      fullPath: '/waiting'
+      preLoaderRoute: typeof AuthenticatedWaitingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/admin/funil': {
+      id: '/admin/funil'
+      path: '/funil'
+      fullPath: '/admin/funil'
+      preLoaderRoute: typeof AdminFunilRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
