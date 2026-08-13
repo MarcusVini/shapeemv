@@ -10,6 +10,7 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => LoginInput.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { setUserSession } = await import("@/lib/user-session.server");
     const email = data.email; // already lower+trim from zod
     const nome = data.nome_completo;
 
@@ -26,6 +27,7 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
     try {
       const existing = await findByEmail();
       if (existing) {
+        await setUserSession(existing.id, existing.email ?? email);
         return {
           id: existing.id,
           email: existing.email,
@@ -44,6 +46,7 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
         // (unique index on lower(email)). Re-fetch.
         const retry = await findByEmail();
         if (retry) {
+          await setUserSession(retry.id, retry.email ?? email);
           return {
             id: retry.id,
             email: retry.email,
@@ -54,6 +57,7 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
         throw new Error("Erro ao criar conta. Tente novamente.");
       }
 
+      await setUserSession(created.id, created.email ?? email);
       return {
         id: created.id,
         email: created.email,
