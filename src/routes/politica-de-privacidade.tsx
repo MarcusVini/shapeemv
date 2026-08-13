@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { OFFICIAL_URL } from "@/lib/legal";
-import { LegalLayout } from "./termos-de-uso";
+import { LegalLayout } from "@/components/LegalLayout";
 
 export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
