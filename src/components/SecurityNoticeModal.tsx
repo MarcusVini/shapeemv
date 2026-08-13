@@ -136,7 +136,6 @@ export function SecurityNoticeModal({ show, onAccept }: { show: boolean; onAccep
 
               <button
                 onClick={handleContinue}
-                aria-disabled={!checked}
                 className={`mt-4 h-12 w-full rounded-2xl text-sm font-bold transition-all ${
                   checked
                     ? "gold-gradient text-primary-foreground shadow-gold-sm active:scale-[0.98]"
