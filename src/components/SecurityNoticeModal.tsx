@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ShieldCheck, AlertTriangle, Globe, Ban } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Globe, Ban, Mail } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -75,7 +75,7 @@ export function SecurityNoticeModal({ show, onAccept }: { show: boolean; onAccep
                   icon={<Globe className="h-3.5 w-3.5 text-primary" />}
                   text={
                     <>
-                      Por segurança, o acesso ao Shape em V acontece somente pela versão web
+                      Para sua segurança, o acesso ao Shape em V acontece somente pela versão web
                       oficial, através deste link:{" "}
                       <span className="font-semibold text-primary">{OFFICIAL_URL}</span>
                     </>
@@ -83,23 +83,17 @@ export function SecurityNoticeModal({ show, onAccept }: { show: boolean; onAccep
                 />
                 <NoticeItem
                   icon={<Ban className="h-3.5 w-3.5 text-primary" />}
-                  text="Você não precisa baixar nenhum aplicativo, arquivo, programa, APK ou extensão no seu celular para acessar o Shape em V."
+                  text="Você não precisa baixar nenhum aplicativo no celular. Não instale apps, arquivos ou links enviados por terceiros dizendo ser o Shape em V ou o aplicativo do Fernando."
+                />
+                <NoticeItem
+                  icon={<Mail className="h-3.5 w-3.5 text-primary" />}
+                  text="Para acessar, basta entrar no link oficial e inserir o mesmo e-mail usado na sua compra."
                 />
                 <NoticeItem
                   icon={<AlertTriangle className="h-3.5 w-3.5 text-primary" />}
-                  text="Se alguém enviar um link para baixar um aplicativo, instalar algo no celular ou acessar uma página diferente dizendo ser o Shape em V, não faça o download e não informe seus dados."
-                />
-                <NoticeItem
-                  icon={<ShieldCheck className="h-3.5 w-3.5 text-primary" />}
-                  text="O acesso deve ser feito apenas pelo navegador, usando o mesmo e-mail informado na compra."
+                  text="Qualquer acesso fora deste link pode não ser oficial e não é de responsabilidade do Shape em V."
                 />
               </div>
-
-              <p className="mt-3 rounded-xl border border-white/5 bg-white/[0.03] p-3 text-[11px] leading-relaxed text-muted-foreground">
-                O Shape em V não se responsabiliza por acessos, downloads, aplicativos, links,
-                páginas, perfis, mensagens, grupos ou cobranças feitas fora do link oficial
-                informado acima.
-              </p>
 
               <label className="mt-4 flex cursor-pointer items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3">
                 <input
@@ -112,8 +106,8 @@ export function SecurityNoticeModal({ show, onAccept }: { show: boolean; onAccep
                   className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]"
                 />
                 <span className="text-[11px] leading-snug text-foreground">
-                  Declaro que entendi que o Shape em V é acessado somente pelo link oficial, que não
-                  preciso baixar nenhum aplicativo e que li e aceito os{" "}
+                  Li e entendi que não devo baixar nenhum aplicativo ou arquivo, e que o acesso é
+                  somente pelo link oficial. Li e aceito os{" "}
                   <Link to="/termos-de-uso" className="text-primary underline underline-offset-2">
                     Termos de Uso
                   </Link>{" "}
