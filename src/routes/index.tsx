@@ -18,6 +18,12 @@ import { toast } from "sonner";
 import { getSession, setSession } from "@/lib/session";
 import { loginOrCreateUser } from "@/lib/auth.functions";
 import { usePageView } from "@/lib/tracking";
+import { Link } from "@tanstack/react-router";
+import { SecurityNoticeModal, useSecurityNotice } from "@/components/SecurityNoticeModal";
+import { LegalFooter } from "@/components/LegalFooter";
+import { OFFICIAL_URL, TERMS_VERSION } from "@/lib/legal";
+import { recordTermsAcceptance } from "@/lib/legal.functions";
+
 
 
 export const Route = createFileRoute("/")({
@@ -45,6 +51,8 @@ function LandingPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [acceptedLogin, setAcceptedLogin] = useState(false);
+  const { show: showNotice, accept: acceptNotice } = useSecurityNotice();
   usePageView("page_view", "landing");
 
   useEffect(() => {
@@ -53,6 +61,10 @@ function LandingPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!acceptedLogin) {
+      toast.error("Para continuar, confirme que você leu e entendeu o aviso de segurança.");
+      return;
+    }
     const emailNorm = email.trim().toLowerCase();
     const nomeNorm = nome.trim();
     if (!nomeNorm || !emailNorm) {
@@ -69,6 +81,14 @@ function LandingPage() {
         email: user.email,
         nome_completo: user.nome_completo || nomeNorm,
       });
+      void recordTermsAcceptance({
+        data: {
+          email: emailNorm,
+          user_id: user.id,
+          terms_version: TERMS_VERSION,
+          source: "login",
+        },
+      }).catch(() => {});
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -81,6 +101,7 @@ function LandingPage() {
 
   return (
     <main className="relative min-h-screen bg-background overflow-hidden">
+
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 right-[-20%] h-[520px] w-[520px] rounded-full bg-primary/10 blur-[130px]" />
         <div className="absolute bottom-[-10%] left-[-20%] h-[420px] w-[420px] rounded-full bg-primary/5 blur-[120px]" />
