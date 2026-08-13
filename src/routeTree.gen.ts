@@ -13,7 +13,9 @@ import { Route as Upsell2V2CaroRouteImport } from './routes/upsell-2-v2-caro'
 import { Route as Upsell2RouteImport } from './routes/upsell-2'
 import { Route as Upsell1V1220RouteImport } from './routes/upsell-1-v1-220'
 import { Route as UpsellRouteImport } from './routes/upsell'
+import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as RoletaEliteTesteRouteImport } from './routes/roleta-elite-teste'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as Downsell2HotRouteImport } from './routes/downsell-2-hot'
 import { Route as Downsell2RouteImport } from './routes/downsell-2'
 import { Route as Downsell1V1110RouteImport } from './routes/downsell-1-v1-110'
@@ -51,9 +53,19 @@ const UpsellRoute = UpsellRouteImport.update({
   path: '/upsell',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
+  id: '/termos-de-uso',
+  path: '/termos-de-uso',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoletaEliteTesteRoute = RoletaEliteTesteRouteImport.update({
   id: '/roleta-elite-teste',
   path: '/roleta-elite-teste',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Downsell2HotRoute = Downsell2HotRouteImport.update({
@@ -143,7 +155,9 @@ export interface FileRoutesByFullPath {
   '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
@@ -165,7 +179,9 @@ export interface FileRoutesByTo {
   '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
@@ -189,7 +205,9 @@ export interface FileRoutesById {
   '/downsell-1-v1-110': typeof Downsell1V1110Route
   '/downsell-2': typeof Downsell2Route
   '/downsell-2-hot': typeof Downsell2HotRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/roleta-elite-teste': typeof RoletaEliteTesteRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
   '/upsell': typeof UpsellRoute
   '/upsell-1-v1-220': typeof Upsell1V1220Route
   '/upsell-2': typeof Upsell2Route
@@ -213,7 +231,9 @@ export interface FileRouteTypes {
     | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
+    | '/politica-de-privacidade'
     | '/roleta-elite-teste'
+    | '/termos-de-uso'
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
@@ -235,7 +255,9 @@ export interface FileRouteTypes {
     | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
+    | '/politica-de-privacidade'
     | '/roleta-elite-teste'
+    | '/termos-de-uso'
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
@@ -258,7 +280,9 @@ export interface FileRouteTypes {
     | '/downsell-1-v1-110'
     | '/downsell-2'
     | '/downsell-2-hot'
+    | '/politica-de-privacidade'
     | '/roleta-elite-teste'
+    | '/termos-de-uso'
     | '/upsell'
     | '/upsell-1-v1-220'
     | '/upsell-2'
@@ -282,7 +306,9 @@ export interface RootRouteChildren {
   Downsell1V1110Route: typeof Downsell1V1110Route
   Downsell2Route: typeof Downsell2Route
   Downsell2HotRoute: typeof Downsell2HotRoute
+  PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   RoletaEliteTesteRoute: typeof RoletaEliteTesteRoute
+  TermosDeUsoRoute: typeof TermosDeUsoRoute
   UpsellRoute: typeof UpsellRoute
   Upsell1V1220Route: typeof Upsell1V1220Route
   Upsell2Route: typeof Upsell2Route
@@ -319,11 +345,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpsellRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/termos-de-uso': {
+      id: '/termos-de-uso'
+      path: '/termos-de-uso'
+      fullPath: '/termos-de-uso'
+      preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/roleta-elite-teste': {
       id: '/roleta-elite-teste'
       path: '/roleta-elite-teste'
       fullPath: '/roleta-elite-teste'
       preLoaderRoute: typeof RoletaEliteTesteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/downsell-2-hot': {
@@ -486,7 +526,9 @@ const rootRouteChildren: RootRouteChildren = {
   Downsell1V1110Route: Downsell1V1110Route,
   Downsell2Route: Downsell2Route,
   Downsell2HotRoute: Downsell2HotRoute,
+  PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   RoletaEliteTesteRoute: RoletaEliteTesteRoute,
+  TermosDeUsoRoute: TermosDeUsoRoute,
   UpsellRoute: UpsellRoute,
   Upsell1V1220Route: Upsell1V1220Route,
   Upsell2Route: Upsell2Route,

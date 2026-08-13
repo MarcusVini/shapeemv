@@ -206,6 +206,33 @@ export type Database = {
         }
         Relationships: []
       }
+      terms_acceptances: {
+        Row: {
+          accepted_at: string
+          email: string | null
+          id: string
+          source: string
+          terms_version: string
+          user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          email?: string | null
+          id?: string
+          source?: string
+          terms_version: string
+          user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          email?: string | null
+          id?: string
+          source?: string
+          terms_version?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       workouts: {
         Row: {
           assessment_id: string | null
