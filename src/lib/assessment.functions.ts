@@ -3,21 +3,25 @@ import { z } from "zod";
 import { nextUnlockDate } from "@/lib/assessment-calc";
 import type { Json } from "@/integrations/supabase/types";
 
+// NOTE: user ids are never taken from the request body. Every handler derives
+// the acting user from the signed, httpOnly session cookie (requireUserId).
 const SaveAssessmentInput = z.object({
-  userId: z.string().uuid(),
+  userId: z.string().uuid().optional(),
   respostas: z.record(z.string(), z.unknown()),
 });
 
 export const saveAssessment = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SaveAssessmentInput.parse(input))
   .handler(async ({ data }) => {
+    const { requireUserId } = await import("@/lib/user-session.server");
+    const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // 1) Always insert a fresh assessment row (keeps full history)
     const { data: assessment, error: aErr } = await supabaseAdmin
       .from("assessments")
       .insert({
-        user_id: data.userId,
+        user_id: userId,
         respostas_json: data.respostas as Json,
         status: "concluido",
       })
@@ -33,7 +37,7 @@ export const saveAssessment = createServerFn({ method: "POST" })
     const { data: existingWorkout, error: wSelErr } = await supabaseAdmin
       .from("workouts")
       .select("id, unlock_date")
-      .eq("user_id", data.userId)
+      .eq("user_id", userId)
       .order("created_at", { ascending: true })
       .limit(1)
       .maybeSingle();
@@ -63,7 +67,7 @@ export const saveAssessment = createServerFn({ method: "POST" })
       const { data: created, error: wInsErr } = await supabaseAdmin
         .from("workouts")
         .insert({
-          user_id: data.userId,
+          user_id: userId,
           assessment_id: assessment.id,
           treinos_json: {},
           unlock_date: newUnlock,
@@ -79,20 +83,21 @@ export const saveAssessment = createServerFn({ method: "POST" })
     }
 
     // 3) Clear any saved draft after a successful submission (best-effort)
-    await supabaseAdmin.from("quiz_drafts").delete().eq("user_id", data.userId);
+    await supabaseAdmin.from("quiz_drafts").delete().eq("user_id", userId);
 
     return { assessmentId: assessment.id, workoutId, unlockDate: unlockDateIso };
   });
 
 const GetLatestStateInput = z.object({
-  userId: z.string().uuid(),
+  userId: z.string().uuid().optional(),
 });
 
 export const getLatestState = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GetLatestStateInput.parse(input))
   .handler(async ({ data }) => {
+    const { requireUserId } = await import("@/lib/user-session.server");
+    const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const userId = data.userId;
 
     const [userRes, assessmentRes, workoutRes] = await Promise.all([
       supabaseAdmin.from("app_users").select("nome_completo, email").eq("id", userId).maybeSingle(),
@@ -135,7 +140,7 @@ export const getLatestState = createServerFn({ method: "POST" })
 // ─── Quiz Drafts (server-side autosave) ──────────────────────────────────────
 
 const SaveQuizDraftInput = z.object({
-  userId: z.string().uuid(),
+  userId: z.string().uuid().optional(),
   respostas: z.record(z.string(), z.unknown()),
   stepIdx: z.number().int().min(0).max(200),
 });
@@ -143,12 +148,14 @@ const SaveQuizDraftInput = z.object({
 export const saveQuizDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SaveQuizDraftInput.parse(input))
   .handler(async ({ data }) => {
+    const { requireUserId } = await import("@/lib/user-session.server");
+    const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("quiz_drafts")
       .upsert(
         {
-          user_id: data.userId,
+          user_id: userId,
           respostas_json: data.respostas as Json,
           step_idx: data.stepIdx,
           updated_at: new Date().toISOString(),
@@ -163,17 +170,19 @@ export const saveQuizDraft = createServerFn({ method: "POST" })
   });
 
 const GetQuizDraftInput = z.object({
-  userId: z.string().uuid(),
+  userId: z.string().uuid().optional(),
 });
 
 export const getQuizDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GetQuizDraftInput.parse(input))
   .handler(async ({ data }) => {
+    const { requireUserId } = await import("@/lib/user-session.server");
+    const userId = await requireUserId();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("quiz_drafts")
       .select("respostas_json, step_idx, updated_at")
-      .eq("user_id", data.userId)
+      .eq("user_id", userId)
       .maybeSingle();
     if (error) {
       console.error("[getQuizDraft] failed:", error);
