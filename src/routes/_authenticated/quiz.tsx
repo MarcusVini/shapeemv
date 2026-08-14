@@ -16,7 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment, saveQuizDraft, getQuizDraft } from "@/lib/assessment.functions";
-import { useSession } from "@/lib/session";
+import { useSession, setSession } from "@/lib/session";
+import { ensureUserSession } from "@/lib/auth.functions";
 import { trackEvent } from "@/lib/tracking";
 
 
