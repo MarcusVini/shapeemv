@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { getSession, clearSession } from "@/lib/session";
+import { getSession, setSession } from "@/lib/session";
 import { ensureUserSession } from "@/lib/auth.functions";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -7,16 +7,16 @@ export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
     const session = getSession();
     if (!session) throw redirect({ to: "/" });
-    // Re-establish the signed httpOnly server session so data functions can
-    // verify ownership server-side instead of trusting a client-sent user id.
+    // Refresh the signed token (and the httpOnly cookie when the browser
+    // accepts it) so data functions can verify ownership server-side.
+    // Network/verification failures must never log the user out.
     try {
       const res = await ensureUserSession({ data: { id: session.id, email: session.email } });
-      if (!res.ok) {
-        clearSession();
-        throw redirect({ to: "/" });
+      if (res.ok && res.token && res.token !== session.token) {
+        setSession({ ...session, token: res.token });
       }
-    } catch (err) {
-      if (err && typeof err === "object" && "to" in err) throw err;
+    } catch {
+      /* keep the local session; data calls still carry the stored token */
     }
     return { user: session };
   },

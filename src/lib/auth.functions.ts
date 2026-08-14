@@ -10,7 +10,7 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => LoginInput.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { setUserSession } = await import("@/lib/user-session.server");
+    const { setUserSession, createAuthToken } = await import("@/lib/user-session.server");
     const email = data.email; // already lower+trim from zod
     const nome = data.nome_completo;
 
@@ -27,11 +27,12 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
     try {
       const existing = await findByEmail();
       if (existing) {
-        await setUserSession(existing.id, existing.email ?? email);
+        await setUserSession(existing.id, existing.email ?? email).catch(() => {});
         return {
           id: existing.id,
           email: existing.email,
           nome_completo: existing.nome_completo || nome,
+          token: await createAuthToken(existing.id),
         };
       }
 
@@ -46,22 +47,24 @@ export const loginOrCreateUser = createServerFn({ method: "POST" })
         // (unique index on lower(email)). Re-fetch.
         const retry = await findByEmail();
         if (retry) {
-          await setUserSession(retry.id, retry.email ?? email);
+          await setUserSession(retry.id, retry.email ?? email).catch(() => {});
           return {
             id: retry.id,
             email: retry.email,
             nome_completo: retry.nome_completo || nome,
+            token: await createAuthToken(retry.id),
           };
         }
         console.error("[loginOrCreateUser] insert failed:", insErr);
         throw new Error("Erro ao criar conta. Tente novamente.");
       }
 
-      await setUserSession(created.id, created.email ?? email);
+      await setUserSession(created.id, created.email ?? email).catch(() => {});
       return {
         id: created.id,
         email: created.email,
         nome_completo: created.nome_completo,
+        token: await createAuthToken(created.id),
       };
     } catch (err) {
       console.error("[loginOrCreateUser] failed:", err);
@@ -83,7 +86,7 @@ export const ensureUserSession = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { setUserSession } = await import("@/lib/user-session.server");
+    const { setUserSession, createAuthToken } = await import("@/lib/user-session.server");
     const { data: row, error } = await supabaseAdmin
       .from("app_users")
       .select("id, email")
@@ -91,8 +94,8 @@ export const ensureUserSession = createServerFn({ method: "POST" })
       .ilike("email", data.email)
       .maybeSingle();
     if (error || !row) return { ok: false as const };
-    await setUserSession(row.id, row.email ?? data.email);
-    return { ok: true as const };
+    await setUserSession(row.id, row.email ?? data.email).catch(() => {});
+    return { ok: true as const, token: await createAuthToken(row.id) };
   });
 
 export const logoutUser = createServerFn({ method: "POST" }).handler(async () => {

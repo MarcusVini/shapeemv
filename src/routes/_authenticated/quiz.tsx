@@ -16,7 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { saveAssessment, saveQuizDraft, getQuizDraft } from "@/lib/assessment.functions";
-import { useSession } from "@/lib/session";
+import { useSession, setSession } from "@/lib/session";
+import { ensureUserSession } from "@/lib/auth.functions";
 import { trackEvent } from "@/lib/tracking";
 
 
@@ -88,7 +89,7 @@ function QuizPage() {
 
       if (!restored && session?.id) {
         try {
-          const res = await getDraftFn({ data: { userId: session.id } });
+          const res = await getDraftFn({ data: { userId: session.id, token: session.token } });
           if (!cancelled && res?.draft) {
             const d = res.draft;
             if (d.respostas && typeof d.respostas === "object") {
@@ -120,7 +121,7 @@ function QuizPage() {
     }
     if (!session?.id) return;
     const t = setTimeout(() => {
-      saveDraftFn({ data: { userId: session.id, respostas: answers, stepIdx } }).catch(() => {
+      saveDraftFn({ data: { userId: session.id, token: session.token, respostas: answers, stepIdx } }).catch(() => {
         // best-effort autosave; localStorage already covers this user
       });
     }, 800);
@@ -187,9 +188,20 @@ function QuizPage() {
     setSubmitting(true);
     try {
       if (!session?.id) throw new Error("Sessão expirada. Entre novamente.");
-      await submitFn({
-        data: { userId: session.id, respostas: answers },
-      });
+      let token = session.token;
+      try {
+        await submitFn({ data: { userId: session.id, token, respostas: answers } });
+      } catch (err) {
+        // Session/token expired: renew it silently and retry once so the user
+        // never loses the answers they just filled in.
+        const msg = err instanceof Error ? err.message : "";
+        if (!msg.includes("SESSION_EXPIRED")) throw err;
+        const res = await ensureUserSession({ data: { id: session.id, email: session.email } });
+        if (!res.ok || !res.token) throw new Error("Sessão expirada. Entre novamente.");
+        token = res.token;
+        setSession({ ...session, token });
+        await submitFn({ data: { userId: session.id, token, respostas: answers } });
+      }
       trackEvent({ event_name: "quiz_completed", funnel_step: "quiz", user_id: session.id });
       try {
         window.localStorage.removeItem(STORAGE_KEY);

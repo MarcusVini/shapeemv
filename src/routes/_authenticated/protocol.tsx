@@ -38,7 +38,7 @@ function ProtocolPage() {
   usePageView("protocol_viewed", "protocol");
   const { data: state, isLoading } = useQuery({
     queryKey: ["state", session?.id],
-    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    queryFn: () => fetchState({ data: { userId: session!.id, token: session!.token } }),
     enabled: !!session?.id,
   });
 
