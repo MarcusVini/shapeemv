@@ -19,7 +19,7 @@ function ProcessingPage() {
   const session = useSession();
   const { data } = useQuery({
     queryKey: ["state", session?.id],
-    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    queryFn: () => fetchState({ data: { userId: session!.id, token: session!.token } }),
     enabled: !!session?.id,
   });
 

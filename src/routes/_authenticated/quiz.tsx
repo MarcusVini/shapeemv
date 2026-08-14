@@ -88,7 +88,7 @@ function QuizPage() {
 
       if (!restored && session?.id) {
         try {
-          const res = await getDraftFn({ data: { userId: session.id } });
+          const res = await getDraftFn({ data: { userId: session.id, token: session.token } });
           if (!cancelled && res?.draft) {
             const d = res.draft;
             if (d.respostas && typeof d.respostas === "object") {
@@ -120,7 +120,7 @@ function QuizPage() {
     }
     if (!session?.id) return;
     const t = setTimeout(() => {
-      saveDraftFn({ data: { userId: session.id, respostas: answers, stepIdx } }).catch(() => {
+      saveDraftFn({ data: { userId: session.id, token: session.token, respostas: answers, stepIdx } }).catch(() => {
         // best-effort autosave; localStorage already covers this user
       });
     }, 800);
@@ -188,7 +188,7 @@ function QuizPage() {
     try {
       if (!session?.id) throw new Error("Sessão expirada. Entre novamente.");
       await submitFn({
-        data: { userId: session.id, respostas: answers },
+        data: { userId: session.id, token: session.token, respostas: answers },
       });
       trackEvent({ event_name: "quiz_completed", funnel_step: "quiz", user_id: session.id });
       try {

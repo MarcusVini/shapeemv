@@ -27,7 +27,7 @@ export function TopNav() {
   const fetchState = useServerFn(getLatestState);
   const { data: state } = useQuery({
     queryKey: ["state", session?.id],
-    queryFn: () => fetchState({ data: { userId: session!.id } }),
+    queryFn: () => fetchState({ data: { userId: session!.id, token: session!.token } }),
     enabled: !!session?.id,
     refetchInterval: 30_000,
   });
