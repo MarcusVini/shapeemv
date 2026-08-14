@@ -80,6 +80,7 @@ function LandingPage() {
         id: user.id,
         email: user.email,
         nome_completo: user.nome_completo || nomeNorm,
+        token: user.token,
       });
       void recordTermsAcceptance({
         data: {
