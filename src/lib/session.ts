@@ -4,7 +4,12 @@ export type AppSession = {
   id: string;
   email: string;
   nome_completo: string;
+  token?: string;
 };
+
+export function getAuthToken(): string | null {
+  return getSession()?.token ?? null;
+}
 
 const KEY = "shapeemv:session";
 
