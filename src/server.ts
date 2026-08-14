@@ -37,6 +37,14 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
+function isAbortError(error: unknown): boolean {
+  const e = error as { name?: string; code?: string; message?: string; cause?: unknown } | null;
+  if (!e || typeof e !== "object") return false;
+  if (e.name === "AbortError" || e.code === "ECONNRESET" || e.code === "ABORT_ERR") return true;
+  if (typeof e.message === "string" && /aborted|ECONNRESET/i.test(e.message)) return true;
+  return e.cause ? isAbortError(e.cause) : false;
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
@@ -44,6 +52,10 @@ export default {
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
+      // The client went away mid-render: not an app error, nothing to report.
+      if (isAbortError(error) || request.signal?.aborted) {
+        return new Response(null, { status: 499 });
+      }
       console.error(error);
       return new Response(renderErrorPage(), {
         status: 500,
@@ -52,3 +64,4 @@ export default {
     }
   },
 };
+
