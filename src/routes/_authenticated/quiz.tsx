@@ -187,9 +187,20 @@ function QuizPage() {
     setSubmitting(true);
     try {
       if (!session?.id) throw new Error("Sessão expirada. Entre novamente.");
-      await submitFn({
-        data: { userId: session.id, token: session.token, respostas: answers },
-      });
+      let token = session.token;
+      try {
+        await submitFn({ data: { userId: session.id, token, respostas: answers } });
+      } catch (err) {
+        // Session/token expired: renew it silently and retry once so the user
+        // never loses the answers they just filled in.
+        const msg = err instanceof Error ? err.message : "";
+        if (!msg.includes("SESSION_EXPIRED")) throw err;
+        const res = await ensureUserSession({ data: { id: session.id, email: session.email } });
+        if (!res.ok || !res.token) throw new Error("Sessão expirada. Entre novamente.");
+        token = res.token;
+        setSession({ ...session, token });
+        await submitFn({ data: { userId: session.id, token, respostas: answers } });
+      }
       trackEvent({ event_name: "quiz_completed", funnel_step: "quiz", user_id: session.id });
       try {
         window.localStorage.removeItem(STORAGE_KEY);
