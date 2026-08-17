@@ -3,6 +3,19 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
+const REDIRECT_ENABLED = true;
+const SELFHOSTED_ORIGIN = "https://app.fernandocantarelli.com.br";
+
+function redirectToSelfHosted(request: Request): Response {
+  const url = new URL(request.url);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: `${SELFHOSTED_ORIGIN}${url.pathname}${url.search}`,
+      "cache-control": "no-store",
+    },
+  });
+}
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
@@ -11,9 +24,7 @@ let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
-    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => (m.default ?? m) as ServerEntry,
-    );
+    serverEntryPromise = import("@tanstack/react-start/server-entry").then((m) => (m.default ?? m) as ServerEntry);
   }
   return serverEntryPromise;
 }
@@ -66,4 +77,3 @@ export default {
     }
   },
 };
-
