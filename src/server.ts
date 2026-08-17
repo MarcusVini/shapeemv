@@ -1,8 +1,29 @@
+// =============================================================================
+// ARQUIVO PARA COLAR NO LOVABLE  →  src/server.ts
+//
+// Substitui o src/server.ts do projeto da Lovable INTEIRO por este conteúdo.
+// A única mudança em relação ao original é o bloco de redirect: o resto do
+// arquivo está idêntico, não foi tocado.
+//
+// Para desligar o redirect depois: troque REDIRECT_ENABLED para false.
+// =============================================================================
+
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
+// ---------------------------------------------------------------------------
+// Cutover para o self-hosted (app.fernandocantarelli.com.br).
+//
+// Toda requisição que cair aqui é redirecionada preservando path e query. A
+// query importa: utm_source/utm_medium/utm_campaign/fbclid/gclid são o que
+// sustenta a atribuição do tráfego pago — perder a query aqui cega o funil.
+//
+// 302 e não 301: o 301 fica cacheado no browser de cada visitante e não dá
+// para desfazer sem esperar o cache expirar em todos eles. Depois que o
+// cutover estiver estável por alguns dias, pode virar 301.
+// ---------------------------------------------------------------------------
 const REDIRECT_ENABLED = true;
 const SELFHOSTED_ORIGIN = "https://app.fernandocantarelli.com.br";
 
@@ -16,6 +37,7 @@ function redirectToSelfHosted(request: Request): Response {
     },
   });
 }
+
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
@@ -60,6 +82,8 @@ function isAbortError(error: unknown): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    if (REDIRECT_ENABLED) return redirectToSelfHosted(request);
+
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
