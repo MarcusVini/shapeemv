@@ -220,7 +220,7 @@ function Downsell2Page() {
           )}
 
           <a
-            href="/dashboard"
+            href="https://shape-v-obrigado.lovable.app"
             onClick={() =>
               trackEvent({
                 event_name: "downsell_2_decline_clicked",
