@@ -59,9 +59,18 @@ export const Route = createFileRoute("/upsell-2-v2-caro")({
 
 function withUtms(url: string) {
   if (typeof window === "undefined") return url;
-  const qs = window.location.search;
-  if (!qs) return url;
-  return url.includes("?") ? `${url}&${qs.slice(1)}` : `${url}${qs}`;
+  try {
+    const u = new URL(url);
+    new URLSearchParams(window.location.search).forEach((v, k) => u.searchParams.set(k, v));
+    const page = window.location.pathname.replace(/^\/+|\/+$/g, "") || "home";
+    if (!u.searchParams.get("utm_source")) u.searchParams.set("utm_source", "app_shapeemv");
+    if (!u.searchParams.get("utm_medium")) u.searchParams.set("utm_medium", "pagina_oferta");
+    if (!u.searchParams.get("utm_campaign")) u.searchParams.set("utm_campaign", page);
+    if (!u.searchParams.get("utm_content")) u.searchParams.set("utm_content", "botao_checkout");
+    return u.toString();
+  } catch {
+    return url;
+  }
 }
 
 function injectScript(src: string) {
